@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// generator client {
+//   provider      = "prisma-client-js"
+//   binaryTargets = ["native", "darwin-arm64"]
+//   output        = "../node_modules/.prisma/client"
+// }
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// *** Building ***
+model Building {
+  id                        Int         @id @default(autoincrement())
+  name                      String      @unique
+  apartmentsCount           Int         @default(0)
+  storeCount                Int         @default(0)
+  basinName                 String
+  basinNumber               String
+  landNumber                String
+  electricBill              String?     @default("-")
+  serviceAmount             Float       @default(0.0)
+  maintenanceAmount         Float       @default(0.0)
+  registeredApartmentsCount Int         @default(0)
+  createdBy                 String?     @default("-")
+  createdAt                 DateTime    @default(now())
+  updatedBy                 String?     @default("-")
+  updatedAt                 DateTime    @updatedAt
+  status                    Boolean     @default(true)
+  Apartment                 Apartment[]
+}
+
+// *** Rent ***
+model Rent {
+  id              Int       @id @default(autoincrement())
+  RenterName      String
+  RenterNumber    String    @default("###")
+  RentDuration    String
+  RentAmount      Float     @default(0.0)
+  RentDate        DateTime  @default(now())
+  RentPaymentWays String?
+  isFurniture     Boolean   @default(false)
+  RentStatus      Int       @default(3)
+  createdBy       String?
+  createdAt       DateTime  @default(now())
+  updatedBy       String?
+  updatedAt       DateTime  @updatedAt
+  status          Boolean   @default(true)
+  Apartment       Apartment @relation(fields: [ApartmentId], references: [id])
+  ApartmentId     Int
+}
+
+// *** Apartment ***
+model Apartment {
+  id                  Int      @id @default(autoincrement())
+  building            Building @relation(fields: [BuildingId], references: [id])
+  ApartmentNumber     String
+  AreaNumber          String
+  LandingNumber       String
+  OwnerName           String
+  OwnerNumber         String?
+  AgentName           String?
+  AgentNumber         String?
+  RealLocation        String?
+  ElectricSub         String?
+  WaterSub            String?
+  Rent                Rent[]
+  CommissionAmount    Int      @default(0)
+  MaintenanceDiscount Int      @default(0)
+  Services            Int      @default(0)
+  ContractFileName    String
+  ClearanceFileName   String?
+  CreatedBy           String?
+  CreatedAt           DateTime @default(now())
+  UpdatedBy           String?
+  UpdatedAt           DateTime @updatedAt
+  Status              Boolean  @default(true)
+  BuildingId          Int
+}
+
+// *** Ads ***
+model Ad {
+  id                    Int                @id @default(autoincrement())
+  Code                  String
+  Number                String
+  PropertyStatus        Int
+  PropertyType          Int
+  PropertyOwnerName     String
+  PropertyOwnerNumber   String             @default("###")
+  PropertyOwnerIdentity String
+  PropertyAgentName     String?
+  PropertyAgentNumber   String             @default("###")
+  PropertyAgentIdentity String             @default(".")
+  FacebookLink          String?
+  InstagramLink         String?
+  PropertyLink          String?
+  Governorate           String
+  Directorate           String
+  Village               String
+  Basin                 String
+  Plot                  String
+  ApartmentNumber       String
+  Classification        String?
+  Neighborhood          String?
+  ExpectedRentAmount    String?
+  Notes                 String?
+  InterestedPeople      InterestedPeople[]
+}
+
+// *** InterestedPeople ***
+model InterestedPeople {
+  id     Int    @id @default(autoincrement())
+  Name   String
+  Number String @default("###")
+
+  Ad   Ad?  @relation(fields: [adId], references: [id])
+  adId Int?
+}

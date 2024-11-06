@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0");
+
+/* 
+primary color: #aecc36
+secondary color: #8c8b8b
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+  /* overflow: hidden; */
+}
+
+html {
+  font-family: "Cairo", "Readex Pro", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  font-family: "Cairo", sans-serif;
+  font-size: 14px !important;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  direction: rtl;
+}
+
+#buttonWrapper button,
+#buttonWrapper a {
+  padding: 0.35rem 1.5rem;
+  margin-left: 0.75rem;
+  border-radius: 0.125rem;
+  border-width: 1px;
+  border-bottom-width: 1px;
+  border-color: #e5e7eb;
+  color: #4b5563;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+#buttonWrapper button:hover,
+#buttonWrapper a:hover {
+  background-color: #f3f4f6;
+}
