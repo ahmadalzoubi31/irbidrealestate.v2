@@ -1,7 +1,3 @@
-// import type { Building } from "@prisma/client";
-// import type BuildingEditDto from "~/server/classes/dto/BuidlingEditDto";
-// import type BuildingCreateDto from "~/server/classes/dto/BuildingCreateDto";
-
 export const useBuildingStore = defineStore("building", {
   state: () => ({
     buildings: [],
@@ -32,21 +28,21 @@ export const useBuildingStore = defineStore("building", {
       }
     },
 
-    // async fetchBuildingById(id) {
-    //   this.loading = true;
-    //   this.error = null;
+    async fetchBuildingById(id) {
+      this.loading = true;
+      this.error = null;
 
-    //   try {
-    //     const data = this.buildings.find((b) => b.id === id);
-    //     if (!data) return [];
+      try {
+        const data = this.buildings.find((b) => b.id === id);
+        if (!data) return [];
 
-    //     return data.value;
-    //   } catch (error) {
-    //     this.error = error.message;
-    //   } finally {
-    //     this.loading = false;
-    //   }
-    // },
+        return data.value;
+      } catch (error) {
+        this.error = error.message;
+      } finally {
+        this.loading = false;
+      }
+    },
 
     async createBuilding(payload) {
       this.loading = true;
