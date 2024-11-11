@@ -1,9 +1,9 @@
 <script setup>
 // Dependencies
-// import { useBuildingStore } from "#imports";
 
 // Define Store
-const _buildingStore = useBuildingStore();
+// const _buildingStore = useBuildingStore();
+const { data: buildings, refresh, status, error } = await useLazyAsyncData("getBuildings", () => $fetch("/api/buildings"));
 
 // Define Variables
 const isOpen = ref(false);
@@ -24,8 +24,8 @@ const columns = [
 const selectedColumns = ref([...columns]);
 
 // Get data from the database
-await _buildingStore.fetchBuildings();
-const buildings = computed(() => _buildingStore.buildings);
+// await _buildingStore.fetchBuildings();
+// const buildings = computed(() => _buildingStore.buildings);
 
 // Define Methods
 function select(row) {

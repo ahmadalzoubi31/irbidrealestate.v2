@@ -5,13 +5,14 @@ useHead({
   bodyAttrs: {},
   htmlAttrs: {
     dir: "rtl",
-    lang: "ar",
+    lang: "ar",    
   },
 });
 </script>
 
 <template>
   <div class="h-full">
+    <NuxtLoadingIndicator color="#aecc36" />
     <NuxtLayout>
       <!-- <UContainer> -->
       <div class="grid grid-cols-8 gap-4">

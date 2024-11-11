@@ -13,13 +13,13 @@
     "@nuxt/ui": "^2.18.7",
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@pinia/nuxt": "^0.7.0",
-    "@prisma/client": "5.21.1",
+    "@prisma/client": "5.22.0",
     "nuxt": "^3.13.2",
     "pinia": "^2.2.6",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
-    "prisma": "^5.21.1"
+    "prisma": "^5.22.0"
   }
 }

@@ -1,9 +1,8 @@
-import BuildingEditDto from "~/server/classes/dto/BuildingEditDto";
-import prisma from "~/lib/prisma";
-import { usePrismaErrorHandling } from "~/composable/usePrismaErrorHandling";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<BuildingEditDto>(event);
+  const body = await readBody(event);
   const id = Number(getRouterParams(event).id);
 
   if (isNaN(id)) {
@@ -40,13 +39,8 @@ export default defineEventHandler(async (event) => {
     //   state: "Success",
     //   errors: [],
     // };
-  } catch (error: any) {
+  } catch (error) {
     // const errorMsg = usePrismaErrorHandling(error);
-    setResponseStatus(event, 400);
-    return {
-      data: null,
-      state: "Failed",
-      errors: [error.message],
-    };
+    console.log("🚀 ~ defineEventHandler ~ errorMsg:", error);
   }
 });

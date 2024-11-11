@@ -1,5 +1,8 @@
 <script setup>
-import { useBuildingStore } from "#imports";
+import { errorMessages } from "vue/compiler-sfc";
+
+// Declare loadingIndicator
+const { progress, isLoading, error, clear, start, finish } = useLoadingIndicator();
 
 // Define State
 const state = reactive({
@@ -15,12 +18,33 @@ const state = reactive({
 });
 
 // Declare Stores
-const _buildingStore = useBuildingStore();
+// const _buildingStore = useBuildingStore();
 
 // Define Computed
-const isLoading = computed(() => _buildingStore.loading);
+// const isLoading = computed(() => _buildingStore.loading);
 // Declare Methods
-const submitForm = async () => await _buildingStore.createBuilding(state);
+// const submitForm = async () => await _buildingStore.createBuilding(state);
+const submitForm = async () => {
+  const { data, refresh, status } = await useLazyAsyncData("createBuilding", () =>
+    $fetch("/api/buildings", {
+      method: "post",
+      body: state,
+    })
+  );
+
+  // if (status.value === "success" && error.value === null) {
+  //   refreshNuxtData("getBuildings");
+  //   await navigateTo("/buildings");
+  // }
+
+  console.log({ status: status.value });
+  console.log(loadingIndicator);
+
+  if (status.value === "error") {
+    start();
+    // useLoadingIndicator().finish();
+  }
+};
 </script>
 
 <template>
@@ -83,7 +107,7 @@ const submitForm = async () => await _buildingStore.createBuilding(state);
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="float-left">
-      <UButton :type="'submit'" :size="'md'" :loading="isLoading" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+      <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
       <UButton :type="'button'" to="/buildings" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
         الغاء
       </UButton>
