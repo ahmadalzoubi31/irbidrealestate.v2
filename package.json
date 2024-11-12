@@ -14,8 +14,10 @@
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@pinia/nuxt": "^0.7.0",
     "@prisma/client": "5.22.0",
+    "date-fns": "^4.1.0",
     "nuxt": "^3.13.2",
     "pinia": "^2.2.6",
+    "v-calendar": "^3.1.2",
     "vue": "latest",
     "vue-router": "latest"
   },

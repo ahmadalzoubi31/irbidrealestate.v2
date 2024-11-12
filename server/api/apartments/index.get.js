@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {
-    return await prisma.building.findMany();
+    return await prisma.apartment.findMany();
   } catch (error) {
     throw createError({
       statusCode: error.statusCode,

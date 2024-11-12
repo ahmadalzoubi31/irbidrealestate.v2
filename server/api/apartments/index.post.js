@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     });
   }
   try {
-    await prisma.building.create({ data: body });
+    await prisma.apartment.create({ data: body });
   } catch (error) {
     console.log({ prisma_code: error.code });
 

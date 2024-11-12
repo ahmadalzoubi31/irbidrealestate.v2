@@ -1,8 +1,5 @@
 <script setup>
-import { errorMessages } from "vue/compiler-sfc";
-
-// Declare loadingIndicator
-const { progress, isLoading, error, clear, start, finish } = useLoadingIndicator();
+const toast = useToast();
 
 // Define State
 const state = reactive({
@@ -17,32 +14,29 @@ const state = reactive({
   maintenanceAmount: 0,
 });
 
-// Declare Stores
-// const _buildingStore = useBuildingStore();
-
-// Define Computed
-// const isLoading = computed(() => _buildingStore.loading);
 // Declare Methods
-// const submitForm = async () => await _buildingStore.createBuilding(state);
 const submitForm = async () => {
-  const { data, refresh, status } = await useLazyAsyncData("createBuilding", () =>
+  const { data, refresh, status, error } = await useAsyncData("createBuilding", () =>
     $fetch("/api/buildings", {
       method: "post",
       body: state,
     })
   );
 
-  // if (status.value === "success" && error.value === null) {
-  //   refreshNuxtData("getBuildings");
-  //   await navigateTo("/buildings");
-  // }
-
-  console.log({ status: status.value });
-  console.log(loadingIndicator);
+  if (status.value === "success") {
+    refreshNuxtData("getBuildings");
+    await navigateTo("/buildings");
+  }
 
   if (status.value === "error") {
-    start();
-    // useLoadingIndicator().finish();
+    // console.log(error.value.data.message);
+
+    toast.add({
+      title: "لقد حدث خطأ ما",
+      description: error.value.data.message,
+      color: "rose",
+      duration: 10000,
+    });
   }
 };
 </script>

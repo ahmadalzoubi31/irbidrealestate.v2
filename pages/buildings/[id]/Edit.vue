@@ -1,7 +1,17 @@
 <script setup>
 // Declare Stores
-const _buildingStore = useBuildingStore();
+// const _buildingStore = useBuildingStore();
 
+// Validate the id
+onBeforeMount(() => {
+  const paramId = parseInt(useRoute().params.id);
+  console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
+  if (!isNaN(paramId)) return;
+
+  // Redirect to the home page
+  navigateTo("/buildings");
+});
+const toast = useToast();
 // Define State
 const state = reactive({
   apartmentsCount: 0,
@@ -15,23 +25,44 @@ const state = reactive({
 });
 const selectedBuildingId = useRoute().params.id;
 
-// const { status, data: building } = await useFetch(`/api/buildings/${selectedBuildingId}`);
-const building = _buildingStore.getBuildingById(selectedBuildingId);
+const { data: building, refresh, status, error } = await useAsyncData("getOneBuilding", () => $fetch(`/api/buildings/${selectedBuildingId}`));
+// const building = _buildingStore.getBuildingById(selectedBuildingId);
 
 // Fill the field with data
-state.apartmentsCount = building.apartmentsCount;
-state.storeCount = building.storeCount;
-state.basinName = building.basinName;
-state.basinNumber = building.basinNumber;
-state.landNumber = building.landNumber;
-state.serviceAmount = building.serviceAmount;
-state.maintenanceAmount = building.maintenanceAmount;
-state.electricBill = building.electricBill;
+state.apartmentsCount = building.value.apartmentsCount;
+state.storeCount = building.value.storeCount;
+state.basinName = building.value.basinName;
+state.basinNumber = building.value.basinNumber;
+state.landNumber = building.value.landNumber;
+state.serviceAmount = building.value.serviceAmount;
+state.maintenanceAmount = building.value.maintenanceAmount;
+state.electricBill = building.value.electricBill;
 
-// Define Computed
-// const isLoading = computed(() => _buildingStore.loading);
 // Declare Methods
-const submitForm = async () => await _buildingStore.editBuilding(selectedBuildingId, state);
+const submitForm = async () => {
+  const { data, refresh, status, error } = await useAsyncData("editBuilding", () =>
+    $fetch("/api/buildings/" + selectedBuildingId, {
+      method: "put",
+      body: state,
+    })
+  );
+
+  if (status.value === "success") {
+    refreshNuxtData("getBuildings");
+    await navigateTo("/buildings");
+  }
+
+  if (status.value === "error") {
+    console.log(error.value);
+
+    toast.add({
+      title: "لقد حدث خطأ ما",
+      description: error.value.data.message,
+      color: "rose",
+      duration: 10000,
+    });
+  }
+};
 </script>
 
 <template>
@@ -43,8 +74,8 @@ const submitForm = async () => await _buildingStore.editBuilding(selectedBuildin
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="buildingName">اسم البناية <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="buildingName" name="buildingName" :size="'sm'" :required="false" :disabled="true" :value="building.name" />
+          <label for="buildingName">اسم البناية </label>
+          <UInput id="buildingName" inputClass="bg-gray-200" name="buildingName" :size="'sm'" :required="false" :disabled="true" :modelValue="building.name" />
         </div>
         <!-- apartmentsCount -->
         <div class="col-span-6 sm:col-span-2">

@@ -5,13 +5,18 @@ useHead({
   bodyAttrs: {},
   htmlAttrs: {
     dir: "rtl",
-    lang: "ar",    
+    lang: "ar",
   },
 });
+
+const desc = useState("description", () => "احمد ");
+const type = useState("type", () => "primary");
 </script>
 
 <template>
   <div class="h-full">
+    <UNotifications />
+
     <NuxtLoadingIndicator color="#aecc36" />
     <NuxtLayout>
       <!-- <UContainer> -->

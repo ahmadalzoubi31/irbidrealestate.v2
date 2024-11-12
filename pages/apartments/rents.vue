@@ -3,7 +3,8 @@
 // import { useApartmentStore } from "#imports";
 
 // Define Store
-const _apartmentStore = useApartmentStore();
+const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
+const toast = useToast();
 
 // Define Variables
 const isOpen = ref(false);
@@ -25,8 +26,8 @@ const columns = [
 const selectedColumns = ref([...columns]);
 
 // Get data from the database
-await _apartmentStore.fetchApartments();
-const apartments = computed(() => _apartmentStore.apartments);
+// await _apartmentStore.fetchApartments();
+// const apartments = computed(() => _apartmentStore.apartments);
 
 // Define Methods
 function select(row) {
@@ -40,17 +41,12 @@ const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;
   const response = confirm("هل انت متأكد من حذف هذا العنصر");
   if (response) {
-    await _apartmentStore.deleteApartment(id);
+    const { data, refresh, status, error } = await useAsyncData("deleteApartment", () =>
+      $fetch("/api/apartments/" + id, {
+        method: "delete",
+      })
+    );
   }
-};
-const viewSelectedRecord = async () => {
-  const id = selected.value[0].id;
-  isOpen.value = true;
-  await navigateTo(`/apartments/${id}/view`);
-};
-const closeSlideOver = async () => {
-  isOpen.value = false;
-  await navigateTo("/apartments");
 };
 
 // Define Filter
@@ -80,7 +76,7 @@ const filteredRows = computed(() => {
       <div id="apartmentTable">
         <div id="buttonWrapper" class="my-3">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة" :to="'/apartments/rents/create'" />
-          <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" />
+          <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
           <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
@@ -104,21 +100,7 @@ const filteredRows = computed(() => {
       </div>
     </div>
     <div class="childWrapper">
-      <div v-if="useRoute().name === 'apartments-rents-id-View'">
-        <USlideover v-model="isOpen">
-          <UCard class="flex flex-col flex-1" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">معلومات البناية</h3>
-                <UButton color="gray" variant="ghost" size="sm" icon="i-heroicons-x-mark-20-solid" class="-my-1" square padded @click="isOpen = false" />
-              </div>
-            </template>
-
-            <NuxtPage />
-          </UCard>
-        </USlideover>
-      </div>
-      <NuxtPage v-else />
+      <NuxtPage />
     </div>
   </div>
 </template>

@@ -3,7 +3,8 @@
 
 // Define Store
 // const _buildingStore = useBuildingStore();
-const { data: buildings, refresh, status, error } = await useLazyAsyncData("getBuildings", () => $fetch("/api/buildings"));
+const { data: buildings, refresh, status, error } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
+const toast = useToast();
 
 // Define Variables
 const isOpen = ref(false);
@@ -33,23 +34,39 @@ function select(row) {
   selected.value.push(row);
 }
 const editSelectedRecord = async (id) => {
-  await navigateTo(`/buildings/${id}/edit`);
+  await navigateTo("/buildings/" + id + "/edit");
 };
 const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;
   const response = confirm("هل انت متأكد من حذف هذا العنصر");
   if (response) {
-    await _buildingStore.deleteBuilding(id);
+    const { data, refresh, status, error } = await useAsyncData("deleteBuilding", () =>
+      $fetch("/api/buildings/" + id, {
+        method: "delete",
+      })
+    );
+
+    if (status.value === "success") {
+      refreshNuxtData("getBuildings");
+      toast.add({
+        title: "نجحت العملية",
+        description: "تم حذف العنصر بنجاح",
+        color: "primary",
+        timeout: 1000,
+      });
+    }
+
+    if (status.value === "error") {
+      // console.log(error.value.data.message);
+
+      toast.add({
+        title: "لقد حدث خطأ ما",
+        description: error.value.data.message,
+        color: "rose",
+        timeout: 6000,
+      });
+    }
   }
-};
-const viewSelectedRecord = async () => {
-  const id = selected.value[0].id;
-  isOpen.value = true;
-  await navigateTo(`/buildings/${id}/view`);
-};
-const closeSlideOver = async () => {
-  isOpen.value = false;
-  await navigateTo("/buildings");
 };
 
 // Define Filter
@@ -79,7 +96,7 @@ const filteredRows = computed(() => {
       <div id="buildingTable">
         <div id="buttonWrapper" class="my-3">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة" :to="'/buildings/create'" />
-          <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" />
+          <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
           <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
@@ -88,13 +105,14 @@ const filteredRows = computed(() => {
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected">
-            <!-- <template #expand="{ row }">
-              <div class="p-4">
-                <pre @click="viewSelectedRecord">
-                  <NuxtPage />
+            <template #expand="{ row }">
+              <div class="px-8">
+                <pre>
+                  <!-- {{ row }} -->
+                  <BuildingDetails :building="row" />
                 </pre>
               </div>
-            </template> -->
+            </template>
             <template #name-data="{ row }">
               <span :class="['font-bold text-primary-500 dark:text-primary-400 underline']" @click="editSelectedRecord(row.id)">
                 {{ row.name }}
@@ -105,21 +123,7 @@ const filteredRows = computed(() => {
       </div>
     </div>
     <div class="childWrapper">
-      <div v-if="useRoute().name === 'buildings-id-View'">
-        <USlideover v-model="isOpen">
-          <UCard class="flex flex-col flex-1" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">معلومات البناية</h3>
-                <UButton color="gray" variant="ghost" size="sm" icon="i-heroicons-x-mark-20-solid" class="-my-1" square padded @click="isOpen = false" />
-              </div>
-            </template>
-
-            <NuxtPage />
-          </UCard>
-        </USlideover>
-      </div>
-      <NuxtPage v-else />
+      <NuxtPage />
     </div>
   </div>
 </template>

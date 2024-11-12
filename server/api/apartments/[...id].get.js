@@ -12,24 +12,20 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const building = await prisma.building.findUnique({
+    const apartment = await prisma.apartment.findUnique({
       where: {
         id: id,
       },
     });
 
-    if (!building) {
+    if (!apartment) {
       throw createError({
         statusCode: 400,
-        message: "No building found",
+        message: "No apartment found",
       });
     }
 
-    await prisma.building.delete({
-      where: {
-        id: id,
-      },
-    });
+    return apartment;
   } catch (error) {
     throw createError({
       statusCode: error.statusCode,
