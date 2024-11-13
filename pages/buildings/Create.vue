@@ -29,7 +29,7 @@ const submitForm = async () => {
   }
 
   if (status.value === "error") {
-    // console.log(error.value.data.message);
+    // console.log(error.value);
 
     toast.add({
       title: "لقد حدث خطأ ما",

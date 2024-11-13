@@ -63,7 +63,7 @@ const submitForm = async () => {
   }
 
   if (status.value === "error") {
-    // console.log(error.value.data.message);
+    console.log(error.value);
 
     toast.add({
       title: "لقد حدث خطأ ما",
@@ -76,9 +76,11 @@ const submitForm = async () => {
 const uploadImage = (event) => console.log(event);
 
 // Get the select menu data
-// const buildings = _buildingStore.buildings.map((el) => {
-//   return { id: el.id, name: el.name };
-// });
+const buildings = useState("buildings");
+console.log("🚀 ~ buildings:", buildings);
+const fetchedBuildings = buildings.value.map((el) => {
+  return { id: el.id, name: el.name };
+});
 
 const selected = ref();
 </script>
@@ -102,7 +104,7 @@ const selected = ref();
             name="buildingName"
             :autofocus="true"
             v-model="state.buildingName"
-            :options="buildings"
+            :options="fetchedBuildings"
             value-attribute="name"
             option-attribute="name"
           />
@@ -212,12 +214,11 @@ const selected = ref();
         <!-- isFurniture -->
         <div class="col-span-6 sm:col-span-2">
           <label for="isFurniture"> هل الشقة مفروشة ؟ </label>
-          <USelect id="isFurniture" name="isFurniture" v-model="state.rent.isFurniture" :options="options" value-attribute="value" option-attribute="name" />
+          <USelectMenu id="isFurniture" name="isFurniture" v-model="state.rent.isFurniture" :options="options" value-attribute="value" option-attribute="name" />
         </div>
         <!-- furnitureImage -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-2" v-if="state.rent.isFurniture">
           <label for="furnitureImage"> صورة كشف الاثاث </label>
-          <!-- <USelect id="furnitureImage" name="furnitureImage" v-model="state.rent.furnitureImage" :options="options" value-attribute="value" option-attribute="name" /> -->
           <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
         </div>
       </div>
