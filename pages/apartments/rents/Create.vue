@@ -69,7 +69,7 @@ const submitForm = async () => {
       title: "لقد حدث خطأ ما",
       description: error.value.data.message,
       color: "rose",
-      duration: 10000,
+      timeout: 10000,
     });
   }
 };
@@ -243,6 +243,11 @@ const selected = ref();
         <div class="col-span-6 sm:col-span-2">
           <label for="services"> الخدمات </label>
           <UInput id="services" name="services" :type="'number'" :size="'sm'" :required="false" v-model="state.services" />
+        </div>
+        <!-- contractFile -->
+        <div class="col-span-6 sm:col-span-2" v-if="state.rent.isFurniture">
+          <label for="contractFile"> صورة كشف الاثاث </label>
+          <UInput id="contractFile" name="contractFile" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>

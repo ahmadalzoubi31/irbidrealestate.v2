@@ -38,87 +38,87 @@ model Building {
 
 // *** Rent ***
 model Rent {
-  id              Int       @id @default(autoincrement())
-  RenterName      String
-  RenterNumber    String    @default("###")
-  RentDuration    String
-  RentAmount      Float     @default(0.0)
-  RentDate        DateTime  @default(now())
-  RentPaymentWays String?
-  isFurniture     Boolean   @default(false)
-  RentStatus      Int       @default(3)
-  createdBy       String?
-  createdAt       DateTime  @default(now())
-  updatedBy       String?
-  updatedAt       DateTime  @updatedAt
-  status          Boolean   @default(true)
-  Apartment       Apartment @relation(fields: [ApartmentId], references: [id])
-  ApartmentId     Int
+  id                Int       @id @default(autoincrement())
+  renterName        String
+  renterNumber      String    @default("###")
+  rentDuration      String
+  rentAmount        Float     @default(0.0)
+  rentDate          DateTime  @default(now())
+  rentPaymentWays   String?
+  isFurniture       Boolean   @default(false)
+  rentStatus        Int       @default(3)
+  contractFileName  String
+  clearanceFileName String?
+  createdBy         String?
+  createdAt         DateTime  @default(now())
+  updatedBy         String?
+  updatedAt         DateTime  @updatedAt
+  status            Boolean   @default(true)
+  apartment         Apartment @relation(fields: [apartmentId], references: [id])
+  apartmentId       Int
 }
 
 // *** Apartment ***
 model Apartment {
   id                  Int      @id @default(autoincrement())
-  building            Building @relation(fields: [BuildingId], references: [id])
-  ApartmentNumber     String
-  AreaNumber          String
-  LandingNumber       String
-  OwnerName           String
-  OwnerNumber         String?
-  AgentName           String?
-  AgentNumber         String?
-  RealLocation        String?
-  ElectricSub         String?
-  WaterSub            String?
-  Rent                Rent[]
-  CommissionAmount    Int      @default(0)
-  MaintenanceDiscount Int      @default(0)
-  Services            Int      @default(0)
-  ContractFileName    String
-  ClearanceFileName   String?
-  CreatedBy           String?
-  CreatedAt           DateTime @default(now())
-  UpdatedBy           String?
-  UpdatedAt           DateTime @updatedAt
-  Status              Boolean  @default(true)
-  BuildingId          Int
+  building            Building @relation(fields: [buildingName], references: [name])
+  apartmentNumber     String
+  areaNumber          String
+  landingNumber       String
+  ownerName           String
+  ownerNumber         String?
+  agentName           String
+  agentNumber         String?
+  realLocation        String?
+  electricSub         String?
+  waterSub            String?
+  rent                Rent[]
+  commissionAmount    Int      @default(0)
+  maintenanceDiscount Int      @default(0)
+  services            Int      @default(0)
+  createdBy           String?
+  createdAt           DateTime @default(now())
+  updatedBy           String?
+  updatedAt           DateTime @updatedAt
+  status              Boolean  @default(true)
+  buildingName        String
 }
 
 // *** Ads ***
 model Ad {
   id                    Int                @id @default(autoincrement())
   Code                  String
-  Number                String
-  PropertyStatus        Int
-  PropertyType          Int
-  PropertyOwnerName     String
-  PropertyOwnerNumber   String             @default("###")
-  PropertyOwnerIdentity String
-  PropertyAgentName     String?
-  PropertyAgentNumber   String             @default("###")
-  PropertyAgentIdentity String             @default(".")
-  FacebookLink          String?
-  InstagramLink         String?
-  PropertyLink          String?
-  Governorate           String
-  Directorate           String
-  Village               String
-  Basin                 String
-  Plot                  String
-  ApartmentNumber       String
-  Classification        String?
-  Neighborhood          String?
-  ExpectedRentAmount    String?
-  Notes                 String?
-  InterestedPeople      InterestedPeople[]
+  number                String
+  propertyStatus        Int
+  propertyType          Int
+  propertyOwnerName     String
+  propertyOwnerNumber   String             @default("###")
+  propertyOwnerIdentity String
+  propertyAgentName     String?
+  propertyAgentNumber   String             @default("###")
+  propertyAgentIdentity String             @default(".")
+  facebookLink          String?
+  instagramLink         String?
+  propertyLink          String?
+  governorate           String
+  directorate           String
+  village               String
+  basin                 String
+  plot                  String
+  apartmentNumber       String
+  classification        String?
+  neighborhood          String?
+  expectedRentAmount    String?
+  notes                 String?
+  interestedPeople      InterestedPeople[]
 }
 
 // *** InterestedPeople ***
 model InterestedPeople {
   id     Int    @id @default(autoincrement())
-  Name   String
-  Number String @default("###")
+  name   String
+  number String @default("###")
 
-  Ad   Ad?  @relation(fields: [adId], references: [id])
+  ad   Ad?  @relation(fields: [adId], references: [id])
   adId Int?
 }

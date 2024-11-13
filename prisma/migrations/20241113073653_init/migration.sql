@@ -46,7 +46,7 @@ CREATE TABLE "Apartment" (
     "LandingNumber" TEXT NOT NULL,
     "OwnerName" TEXT NOT NULL,
     "OwnerNumber" TEXT,
-    "AgentName" TEXT,
+    "AgentName" TEXT NOT NULL,
     "AgentNumber" TEXT,
     "RealLocation" TEXT,
     "ElectricSub" TEXT,
