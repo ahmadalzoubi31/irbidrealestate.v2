@@ -14,13 +14,6 @@ const state = reactive({
   maintenanceAmount: 0,
 });
 
-// Declare Stores
-const _buildingStore = useBuildingStore();
-
-// Define Computed
-const isLoading = computed(() => _buildingStore.loading);
-// Declare Methods
-const submitForm = async () => await _buildingStore.createBuilding(state);
 </script>
 
 <template>
@@ -29,12 +22,7 @@ const submitForm = async () => await _buildingStore.createBuilding(state);
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
-        <!-- buildingName -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="buildingName">اسم البناية <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="buildingName" name="buildingName" :size="'sm'" :autofocus="true" :required="true" v-model="state.name" />
-        </div>
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">        
         <!-- apartmentsCount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentsCount">
@@ -84,7 +72,7 @@ const submitForm = async () => await _buildingStore.createBuilding(state);
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="float-left">
       <UButton :type="'submit'" :size="'md'" :loading="isLoading" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton :type="'button'" to="/buildings" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton :type="'button'" to="/apartments/payments" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
         الغاء
       </UButton>
     </div>

@@ -5,5 +5,6 @@ useState("buildings", () => data.value);
 </script>
 
 <template>
+  <Tabs />
   <NuxtPage />
 </template>

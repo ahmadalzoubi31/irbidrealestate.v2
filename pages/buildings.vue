@@ -1,25 +1,22 @@
 <script setup>
-import { ApartmentDetails } from "#components";
-
 // Dependencies
-const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
+const { data: buildings, refresh, status, error } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
 const toast = useToast();
 
 // Define Variables
 const selected = ref([]);
 const columns = [
   // { key: "id", label: "#", sortable: false },
-  { key: "buildingName", label: "اسم البناية", sortable: true },
-  { key: "apartmentNumber", label: "رقم الشقة", sortable: false },
-  { key: "ownerName", label: "اسم المالك", sortable: false },
-  { key: "ownerNumber", label: "رقم المالك", sortable: true },
-  { key: "renterName", label: "اسم المستأجر", sortable: true },
-  { key: "renterNumber", label: "رقم المستأجر", sortable: true },
-  { key: "rentAmount", label: "قيمة الإيجار", sortable: false },
-  { key: "rentDuration", label: "مدة الإيجار", sortable: false },
-  { key: "rentPaymentWay", label: "طريقة دفع الإيجار", sortable: false },
-  { key: "rentDate", label: "تاريخ الإيجار", sortable: false },
-  { key: "rentStatus", label: "حالة العقد", sortable: false },
+  { key: "name", label: "اسم البناية", sortable: true },
+  { key: "apartmentsCount", label: "عدد الشقق", sortable: false },
+  { key: "storeCount", label: "عدد المخازن", sortable: false },
+  { key: "basinName", label: "اسم الحوض", sortable: true },
+  { key: "basinNumber", label: "رقم الحوض", sortable: true },
+  { key: "landNumber", label: "رقم قطعة للأرض", sortable: true },
+  { key: "serviceAmount", label: "الصيانة", sortable: false },
+  { key: "maintenanceAmount", label: "الخدمات", sortable: false },
+  { key: "electricBill", label: "اشتراك الكهرباء", sortable: false },
+  { key: "registeredApartmentsCount", label: "عدد الشقق المسجلة", sortable: false },
 ];
 const selectedColumns = ref([...columns]);
 
@@ -29,20 +26,20 @@ function select(row) {
   selected.value.push(row);
 }
 const editSelectedRecord = async (id) => {
-  await navigateTo(`/apartments/${id}/edit`);
+  await navigateTo("/buildings/" + id + "/edit");
 };
 const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;
   const response = confirm("هل انت متأكد من حذف هذا العنصر");
   if (response) {
-    const { data, refresh, status, error } = await useAsyncData("deleteApartment", () =>
-      $fetch("/api/apartments/" + id, {
+    const { data, refresh, status, error } = await useAsyncData("deleteBuilding", () =>
+      $fetch("/api/buildings/" + id, {
         method: "delete",
       })
     );
 
     if (status.value === "success") {
-      refreshNuxtData("getApartments");
+      refreshNuxtData("getBuildings");
       toast.add({
         title: "نجحت العملية",
         description: "تم حذف العنصر بنجاح",
@@ -68,10 +65,10 @@ const deleteSelectedRecord = async () => {
 const q = ref("");
 const filteredRows = computed(() => {
   if (!q.value) {
-    return apartments.value;
+    return buildings.value;
   }
 
-  return apartments.value.filter((el) => {
+  return buildings.value.filter((el) => {
     // to avoid search on them
     delete el.createdAt;
     delete el.createdBy;
@@ -96,25 +93,25 @@ const expand = ref({
 </script>
 
 <template>
-  <div id="apartment">
-    <div class="parentWrapper" v-if="useRoute().name === 'apartments-rents'">
-      <div id="apartmentTable">
+  <div id="building">
+    <div class="parentWrapper" v-if="useRoute().name === 'buildings'">
+      <div id="buildingTable">
         <div id="buttonWrapper" class="my-3">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة" :to="'/apartments/rents/create'" />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/buildings/create'" />
           <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" @update:expand="handleExpand">
+            <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" @update:expand="handleExpand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>
                   <!-- {{ row }} -->
-                  <ApartmentDetails :apartment="row" />
+                  <BuildingDetails :building="row" />
                 </pre>
               </div>
             </template>

@@ -23,11 +23,11 @@ const heading = [
   "قيمة الصيانة",
   "قيمة الخدمات",
   "عدد الشقق المسجلة",
+  "الحالة",
   "تم الانشاء بواسطة",
   "تاريخ الانشاء",
   "تم التعديل بواسطة",
   "تاريخ التعديل",
-  "الحالة",
 ];
 // Declare Methods
 const formatted = (r) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
