@@ -28,12 +28,12 @@ model Building {
   serviceAmount             Float       @default(0.0)
   maintenanceAmount         Float       @default(0.0)
   registeredApartmentsCount Int         @default(0)
+  Apartment                 Apartment[]
+  status                    Boolean     @default(true)
   createdBy                 String?     @default("-")
   createdAt                 DateTime    @default(now())
   updatedBy                 String?     @default("-")
   updatedAt                 DateTime    @updatedAt
-  status                    Boolean     @default(true)
-  Apartment                 Apartment[]
 }
 
 // *** Rent ***
@@ -49,13 +49,13 @@ model Rent {
   rentStatus        Int       @default(3)
   contractFileName  String
   clearanceFileName String?
+  apartment         Apartment @relation(fields: [apartmentId], references: [id])
+  apartmentId       Int
+  status            Boolean   @default(true)
   createdBy         String?
   createdAt         DateTime  @default(now())
   updatedBy         String?
   updatedAt         DateTime  @updatedAt
-  status            Boolean   @default(true)
-  apartment         Apartment @relation(fields: [apartmentId], references: [id])
-  apartmentId       Int
 }
 
 // *** Apartment ***
@@ -76,12 +76,12 @@ model Apartment {
   commissionAmount    Int      @default(0)
   maintenanceDiscount Int      @default(0)
   services            Int      @default(0)
+  buildingName        String
+  status              Boolean  @default(true)
   createdBy           String?
   createdAt           DateTime @default(now())
   updatedBy           String?
   updatedAt           DateTime @updatedAt
-  status              Boolean  @default(true)
-  buildingName        String
 }
 
 // *** Ads ***
@@ -111,6 +111,11 @@ model Ad {
   expectedRentAmount    String?
   notes                 String?
   interestedPeople      InterestedPeople[]
+  status                Boolean            @default(true)
+  createdBy             String?
+  createdAt             DateTime           @default(now())
+  updatedBy             String?
+  updatedAt             DateTime           @updatedAt
 }
 
 // *** InterestedPeople ***

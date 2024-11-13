@@ -92,7 +92,7 @@ const filteredRows = computed(() => {
 
 <template>
   <div id="building">
-    <div class="parentWrapper" v-if="useRoute().name === 'buildings'>
+    <div class="parentWrapper" v-if="useRoute().name === 'buildings'">
       <div id="buildingTable">
         <div id="buttonWrapper" class="my-3">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة" :to="'/buildings/create'" />
