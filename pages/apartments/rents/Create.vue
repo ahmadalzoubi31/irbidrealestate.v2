@@ -42,12 +42,7 @@ const options = [
   },
 ];
 
-// Declare Stores
-// const _buildingStore = useBuildingStore();
-// const _apartmentStore = useBuildingStore();
-
 // Define Computed
-// const isLoading = computed(() => _buildingStore.loading);
 // Declare Methods
 const submitForm = async () => {
   const { data, refresh, status, error } = await useAsyncData("createApartment", () =>
@@ -63,8 +58,7 @@ const submitForm = async () => {
   }
 
   if (status.value === "error") {
-    console.log(error.value);
-
+    // console.log(error.value);
     toast.add({
       title: "لقد حدث خطأ ما",
       description: error.value.data.message,
@@ -77,12 +71,9 @@ const uploadImage = (event) => console.log(event);
 
 // Get the select menu data
 const buildings = useState("buildings");
-console.log("🚀 ~ buildings:", buildings);
 const fetchedBuildings = buildings.value.map((el) => {
   return { id: el.id, name: el.name };
 });
-
-const selected = ref();
 </script>
 
 <template>

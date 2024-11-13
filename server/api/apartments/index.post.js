@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  console.log("🚀 ~ defineEventHandler ~ body:", body)
+
   if (!body) {
     var msg = "ERROR: Argument data is missing";
     console.log(msg);

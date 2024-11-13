@@ -24,13 +24,13 @@ const submitForm = async () => {
   );
 
   if (status.value === "success") {
+    toast.remove("saving");
     refreshNuxtData("getBuildings");
     await navigateTo("/buildings");
   }
 
   if (status.value === "error") {
     // console.log(error.value);
-
     toast.add({
       title: "لقد حدث خطأ ما",
       description: error.value.data.message,

@@ -1,8 +1,6 @@
 <script setup>
 // Dependencies
-// import { useApartmentStore } from "#imports";
 
-// Define Store
 const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
 const toast = useToast();
 
