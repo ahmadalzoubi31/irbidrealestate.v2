@@ -1,11 +1,9 @@
 <script setup>
 // Dependencies
-
 const { data: buildings, refresh, status, error } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
 const toast = useToast();
 
 // Define Variables
-const isOpen = ref(false);
 const selected = ref([]);
 const columns = [
   // { key: "id", label: "#", sortable: false },
@@ -21,10 +19,6 @@ const columns = [
   { key: "registeredApartmentsCount", label: "عدد الشقق المسجلة", sortable: false },
 ];
 const selectedColumns = ref([...columns]);
-
-// Get data from the database
-// await _buildingStore.fetchBuildings();
-// const buildings = computed(() => _buildingStore.buildings);
 
 // Define Methods
 function select(row) {
@@ -102,21 +96,21 @@ const filteredRows = computed(() => {
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-            <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected">
-              <template #expand="{ row }">
-                <div class="px-8">
-                  <pre>
+          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected">
+            <template #expand="{ row }">
+              <div class="px-8">
+                <pre>
                   <!-- {{ row }} -->
                   <BuildingDetails :building="row" />
                 </pre>
-                </div>
-              </template>
-              <template #name-data="{ row }">
-                <span :class="['font-bold text-primary-500 dark:text-primary-400 underline']" @click="editSelectedRecord(row.id)">
-                  {{ row.name }}
-                </span>
-              </template>
-            </UTable>
+              </div>
+            </template>
+            <template #name-data="{ row }">
+              <span :class="['font-bold text-primary-500 dark:text-primary-400 underline']" @click="editSelectedRecord(row.id)">
+                {{ row.name }}
+              </span>
+            </template>
+          </UTable>
         </div>
       </div>
     </div>

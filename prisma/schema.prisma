@@ -37,31 +37,31 @@ model Building {
 }
 
 // *** Rent ***
-model Rent {
-  id                Int       @id @default(autoincrement())
-  renterName        String
-  renterNumber      String    @default("###")
-  rentDuration      String
-  rentAmount        Float     @default(0.0)
-  rentDate          DateTime  @default(now())
-  rentPaymentWays   String?
-  isFurniture       Boolean   @default(false)
-  rentStatus        Int       @default(3)
-  contractFileName  String
-  clearanceFileName String?
-  apartment         Apartment @relation(fields: [apartmentId], references: [id])
-  apartmentId       Int
-  status            Boolean   @default(true)
-  createdBy         String?
-  createdAt         DateTime  @default(now())
-  updatedBy         String?
-  updatedAt         DateTime  @updatedAt
-}
+// model Rent {
+//   id                Int       @id @default(autoincrement())
+//   renterName        String
+//   renterNumber      String    @default("###")
+//   rentDuration      String
+//   rentAmount        Float     @default(0.0)
+//   rentDate          DateTime  @default(now())
+//   rentPaymentWays   String?
+//   isFurniture       Boolean   @default(false)
+//   rentStatus        Int       @default(3)
+//   contractFileName  String
+//   clearanceFileName String?
+//   apartment         Apartment @relation(fields: [apartmentId], references: [id])
+//   apartmentId       Int
+//   status            Boolean   @default(true)
+//   createdBy         String?
+//   createdAt         DateTime  @default(now())
+//   updatedBy         String?
+//   updatedAt         DateTime  @updatedAt
+// }
 
 // *** Apartment ***
 model Apartment {
   id                  Int      @id @default(autoincrement())
-  building            Building @relation(fields: [buildingName], references: [name])
+  buildingName        String
   apartmentNumber     String
   areaNumber          String
   landingNumber       String
@@ -72,11 +72,21 @@ model Apartment {
   realLocation        String?
   electricSub         String?
   waterSub            String?
-  rent                Rent[]
+  // rents               Rent[]
+  renterName          String
+  renterNumber        String   @default("###")
+  rentDuration        String
+  rentAmount          Float    @default(0.0)
+  rentDate            DateTime @default(now())
+  rentPaymentWays     String?
+  isFurniture         Boolean  @default(false)
+  rentStatus          Int      @default(3)
+  contractFileName    String
+  clearanceFileName   String?
   commissionAmount    Int      @default(0)
   maintenanceDiscount Int      @default(0)
   services            Int      @default(0)
-  buildingName        String
+  building            Building @relation(fields: [buildingName], references: [name])
   status              Boolean  @default(true)
   createdBy           String?
   createdAt           DateTime @default(now())

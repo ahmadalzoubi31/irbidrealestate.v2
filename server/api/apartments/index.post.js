@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Prisma } from "@prisma/client";
+import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
       message: msg,
     });
   }
+
   try {
     await prisma.apartment.create({ data: body });
   } catch (error) {
@@ -28,6 +29,8 @@ export default defineEventHandler(async (event) => {
         });
       }
     }
+
+    // console.log(error.message);
 
     throw createError({
       statusCode: error.statusCode,

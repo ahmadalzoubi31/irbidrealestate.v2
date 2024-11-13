@@ -1,15 +1,14 @@
 <script setup>
 // Dependencies
-
 const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
+console.log("🚀 ~ data:", apartments);
 const toast = useToast();
 
 // Define Variables
-const isOpen = ref(false);
 const selected = ref([]);
 const columns = [
   // { key: "id", label: "#", sortable: false },
-  { key: "name", label: "اسم البناية", sortable: true },
+  { key: "buildingName", label: "اسم البناية", sortable: true },
   { key: "apartmentNumber", label: "رقم الشقة", sortable: false },
   { key: "ownerName", label: "اسم المالك", sortable: false },
   { key: "ownerNumber", label: "رقم المالك", sortable: true },
@@ -22,10 +21,6 @@ const columns = [
   { key: "rentStatus", label: "حالة العقد", sortable: false },
 ];
 const selectedColumns = ref([...columns]);
-
-// Get data from the database
-// await _apartmentStore.fetchApartments();
-// const apartments = computed(() => _apartmentStore.apartments);
 
 // Define Methods
 function select(row) {
@@ -44,6 +39,27 @@ const deleteSelectedRecord = async () => {
         method: "delete",
       })
     );
+
+    if (status.value === "success") {
+      refreshNuxtData("getApartments");
+      toast.add({
+        title: "نجحت العملية",
+        description: "تم حذف العنصر بنجاح",
+        color: "primary",
+        timeout: 1000,
+      });
+    }
+
+    if (status.value === "error") {
+      // console.log(error.value.data.message);
+
+      toast.add({
+        title: "لقد حدث خطأ ما",
+        description: error.value.data.message,
+        color: "rose",
+        timeout: 6000,
+      });
+    }
   }
 };
 
@@ -70,7 +86,7 @@ const filteredRows = computed(() => {
 
 <template>
   <div id="apartment">
-    <div class="parentWrapper" v-if="useRoute().name === 'apartments-rents' || useRoute().name === 'apartments-rents-id-View'">
+    <div class="parentWrapper" v-if="useRoute().name === 'apartments-rents'">
       <div id="apartmentTable">
         <div id="buttonWrapper" class="my-3">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة" :to="'/apartments/rents/create'" />
@@ -84,8 +100,11 @@ const filteredRows = computed(() => {
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected">
             <template #expand="{ row }">
-              <div class="p-4">
-                <pre>{{ row }}</pre>
+              <div class="px-8">
+                <pre>
+                  {{ row }}
+                  <!-- <BuildingDetails :building="row" /> -->
+                </pre>
               </div>
             </template>
             <template #name-data="{ row }">
