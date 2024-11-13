@@ -16,20 +16,19 @@ const state = reactive({
   waterSub: "",
   renterName: "",
   renterNumber: "",
-  renterNationality: "jordan",
-  renterIdentification: "",
   rentDuration: "",
   rentAmount: 0,
-  isServiceIncluded: false,
-  insurance: 0,
   rentDate: new Date(),
   rentPaymentWay: "",
   isFurniture: false,
   rentStatus: 3,
+  renterNationality: "jordan",
+  renterIdentification: "",
+  isServiceIncluded: false,
+  insurance: 0,
   commissionAmount: 0,
   maintenanceDiscount: 0,
   services: 0,
-  contractFileName: "-",
 });
 const isRegistered = ref(false);
 const isFurnitureOptions = [
@@ -56,7 +55,7 @@ const isServiceIncludedOptions = [
     value: true,
   },
 ];
-const nationalityOptions = [
+const renterNationalityOptions = [
   {
     id: 0,
     name: "اردني",
@@ -183,10 +182,10 @@ const fetchedBuildings = buildings.value.map((el) => {
           <label for="agentNumber"> رقم الوكيل </label>
           <UInput id="agentNumber" name="agentNumber" :size="'sm'" :required="false" v-model="state.agentNumber" />
         </div>
-        <!-- electricBill -->
+        <!-- electricSub -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="electricBill"> رقم اشتراك الكهرباء </label>
-          <UInput id="electricBill" name="electricBill" :size="'sm'" :required="false" v-model="state.electricBill" />
+          <label for="electricSub"> رقم اشتراك الكهرباء </label>
+          <UInput id="electricSub" name="electricSub" :size="'sm'" :required="false" v-model="state.electricSub" />
         </div>
         <!-- waterSub -->
         <div class="col-span-6 sm:col-span-2">
@@ -268,7 +267,7 @@ const fetchedBuildings = buildings.value.map((el) => {
         <!-- insurance  -->
         <div class="col-span-6 sm:col-span-2">
           <label for="insurance "> قيمة تأمين الشقة </label>
-          <UInput id="insurance " name="insurance " :type="'text'" :size="'sm'" :required="false" v-model="state.insurance" />
+          <UInput id="insurance " name="insurance " :type="'number'" :size="'sm'" :required="false" v-model="state.insurance" />
         </div>
       </div>
     </div>
@@ -288,35 +287,35 @@ const fetchedBuildings = buildings.value.map((el) => {
           <label for="renterNumber"> رقم الموبايل <span class="text-xs text-primary-500">(اجباري)</span> </label>
           <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="true" v-model="state.renterNumber" />
         </div>
-        <!-- nationality -->
+        <!-- renterNationality -->
         <div class="col-span-6 sm:col-span-1">
-          <label for="nationality"> الجنسية </label>
-          <!-- <UInput id="nationality" name="nationality" :size="'sm'" :required="false" v-model="state.nationality" /> -->
+          <label for="renterNationality"> الجنسية </label>
+          <!-- <UInput id="renterNationality" name="renterNationality" :size="'sm'" :required="false" v-model="state.renterNationality" /> -->
           <USelectMenu
-            id="nationality"
-            name="nationality"
+            id="renterNationality"
+            name="renterNationality"
             :required="false"
-            v-model="state.nationality"
-            :options="nationalityOptions"
+            v-model="state.renterNationality"
+            :options="renterNationalityOptions"
             value-attribute="value"
             option-attribute="name"
           />
         </div>
-        <!-- identification -->
+        <!-- renterIdentification -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="identification" v-if="state.nationality === 'jordan'"> الرقم الوطني </label>
-          <label for="identification" v-else> رقم جواز السفر </label>
-          <UInput id="identification" name="identification" :size="'sm'" :required="false" v-model="state.identification" />
+          <label for="renterIdentification" v-if="state.renterNationality === 'jordan'"> الرقم الوطني </label>
+          <label for="renterIdentification" v-else> رقم جواز السفر </label>
+          <UInput id="renterIdentification" name="renterIdentification" :size="'sm'" :required="false" v-model="state.renterIdentification" />
         </div>
-        <!-- identificationImage -->
+        <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-1">
-          <label for="identificationImage"> صورة الاثبات </label>
-          <UInput id="identificationImage" name="identificationImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <label for="renterIdentificationImage"> صورة الاثبات </label>
+          <UInput id="renterIdentificationImage" name="renterIdentificationImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="contractImage" name="contractImage" @input="uploadImage()" type="file" size="sm" :required="true" icon="i-heroicons-folder" />
+          <UInput id="contractImage" name="contractImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>
@@ -334,7 +333,7 @@ const fetchedBuildings = buildings.value.map((el) => {
         <!-- maintenanceDiscount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="maintenanceDiscount"> خصم الصيانة </label>
-          <UInput id="maintenanceDiscount" name="maintenanceDiscount" :type="'text'" :size="'sm'" :required="false" v-model="state.maintenanceDiscount" />
+          <UInput id="maintenanceDiscount" name="maintenanceDiscount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceDiscount" />
         </div>
         <!-- services -->
         <div class="col-span-6 sm:col-span-2">

@@ -60,38 +60,40 @@ model Building {
 
 // *** Apartment ***
 model Apartment {
-  id                  Int      @id @default(autoincrement())
-  buildingName        String
-  apartmentNumber     String
-  areaNumber          String
-  landingNumber       String
-  ownerName           String
-  ownerNumber         String?
-  agentName           String
-  agentNumber         String?
-  realLocation        String?
-  electricSub         String?
-  waterSub            String?
+  id                   Int      @id @default(autoincrement())
+  buildingName         String
+  apartmentNumber      String
+  areaNumber           String
+  landingNumber        String
+  ownerName            String
+  ownerNumber          String?
+  agentName            String
+  agentNumber          String?
+  realLocation         String?
+  electricSub          String?
+  waterSub             String?
   // rents               Rent[]
-  renterName          String
-  renterNumber        String   @default("###")
-  rentDuration        String
-  rentAmount          Float    @default(0.0)
-  rentDate            DateTime @default(now())
-  rentPaymentWay      String?
-  isFurniture         Boolean  @default(false)
-  rentStatus          Int      @default(3)
-  contractFileName    String
-  clearanceFileName   String?
-  commissionAmount    Int      @default(0)
-  maintenanceDiscount Int      @default(0)
-  services            Int      @default(0)
-  building            Building @relation(fields: [buildingName], references: [name])
-  status              Boolean  @default(true)
-  createdBy           String?
-  createdAt           DateTime @default(now())
-  updatedBy           String?
-  updatedAt           DateTime @updatedAt
+  renterName           String
+  renterNumber         String   @default("###")
+  rentDuration         String
+  rentAmount           Float    @default(0.0)
+  rentDate             DateTime @default(now())
+  rentPaymentWay       String?
+  isFurniture          Boolean  @default(false)
+  rentStatus           Int      @default(3)
+  renterNationality    String?
+  renterIdentification String?
+  isServiceIncluded    Boolean  @default(false)
+  insurance            Int      @default(0)
+  commissionAmount     Int      @default(0)
+  maintenanceDiscount  Int      @default(0)
+  services             Int      @default(0)
+  building             Building @relation(fields: [buildingName], references: [name])
+  status               Boolean  @default(true)
+  createdBy            String?
+  createdAt            DateTime @default(now())
+  updatedBy            String?
+  updatedAt            DateTime @updatedAt
 }
 
 // *** Ads ***

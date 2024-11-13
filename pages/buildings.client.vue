@@ -97,9 +97,9 @@ const expand = ref({
     <div class="parentWrapper" v-if="useRoute().name === 'buildings'">
       <div id="buildingTable">
         <div id="buttonWrapper" class="my-3">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة" :to="'/buildings/create'" />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/buildings/create'" />
           <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />

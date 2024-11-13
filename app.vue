@@ -8,9 +8,6 @@ useHead({
     lang: "ar",
   },
 });
-
-const desc = useState("description", () => "احمد ");
-const type = useState("type", () => "primary");
 </script>
 
 <template>
@@ -19,12 +16,9 @@ const type = useState("type", () => "primary");
 
     <NuxtLoadingIndicator color="#aecc36" />
     <NuxtLayout>
-      <!-- <UContainer> -->
-      <div class="grid grid-cols-8 gap-4">
-        <!-- <SideBar class="col-span-1 border-l-[2px]" /> -->
-        <NuxtPage class="col-span-8" />
-      </div>
-      <!-- </UContainer> -->
+      <!-- <div class="grid grid-cols-8 gap-4"> -->
+      <NuxtPage class="col-span-8" />
+      <!-- </div> -->
     </NuxtLayout>
   </div>
 </template>

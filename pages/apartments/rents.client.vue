@@ -1,4 +1,6 @@
 <script setup>
+import { ApartmentDetails } from "#components";
+
 // Dependencies
 const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
 const toast = useToast();
@@ -111,8 +113,8 @@ const expand = ref({
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>
-                  {{ row }}
-                  <!-- <BuildingDetails :building="row" /> -->
+                  <!-- {{ row }} -->
+                  <ApartmentDetails :apartment="row" />
                 </pre>
               </div>
             </template>
