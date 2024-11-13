@@ -80,6 +80,16 @@ const filteredRows = computed(() => {
     });
   });
 });
+
+const handleExpand = ({ openedRows, row }) => {
+  // console.log("opened Rows:", openedRows);
+  // console.log("Row Data:", row);
+};
+
+const expand = ref({
+  openedRows: [],
+  row: null,
+});
 </script>
 
 <template>

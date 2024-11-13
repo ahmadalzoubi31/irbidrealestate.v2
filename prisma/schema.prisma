@@ -78,7 +78,7 @@ model Apartment {
   rentDuration        String
   rentAmount          Float    @default(0.0)
   rentDate            DateTime @default(now())
-  rentPaymentWays     String?
+  rentPaymentWay      String?
   isFurniture         Boolean  @default(false)
   rentStatus          Int      @default(3)
   contractFileName    String

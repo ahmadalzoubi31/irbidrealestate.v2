@@ -1,7 +1,6 @@
 <script setup>
 // Dependencies
 const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
-console.log("🚀 ~ data:", apartments);
 const toast = useToast();
 
 // Define Variables
@@ -82,6 +81,16 @@ const filteredRows = computed(() => {
     });
   });
 });
+
+const handleExpand = ({ openedRows, row }) => {
+  // console.log("opened Rows:", openedRows);
+  // console.log("Row Data:", row);
+};
+
+const expand = ref({
+  openedRows: [],
+  row: null,
+});
 </script>
 
 <template>
@@ -98,7 +107,7 @@ const filteredRows = computed(() => {
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected">
+          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" @update:expand="handleExpand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>

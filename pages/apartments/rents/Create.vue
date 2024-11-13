@@ -14,22 +14,25 @@ const state = reactive({
   agentNumber: "",
   electricSub: "",
   waterSub: "",
-  rent: {
-    renterName: "",
-    renterNumber: "",
-    rentDuration: "",
-    rentAmount: 0,
-    rentDate: new Date(),
-    rentPaymentWay: "",
-    isFurniture: false,
-    rentStatus: 0,
-  },
+  renterName: "",
+  renterNumber: "",
+  renterNationality: "jordan",
+  renterIdentification: "",
+  rentDuration: "",
+  rentAmount: 0,
+  isServiceIncluded: false,
+  insurance: 0,
+  rentDate: new Date(),
+  rentPaymentWay: "",
+  isFurniture: false,
+  rentStatus: 3,
   commissionAmount: 0,
   maintenanceDiscount: 0,
   services: 0,
+  contractFileName: "-",
 });
 const isRegistered = ref(false);
-const options = [
+const isFurnitureOptions = [
   {
     id: 0,
     name: "لا",
@@ -39,6 +42,47 @@ const options = [
     id: 1,
     name: "نعم",
     value: true,
+  },
+];
+const isServiceIncludedOptions = [
+  {
+    id: 0,
+    name: "لا",
+    value: false,
+  },
+  {
+    id: 1,
+    name: "نعم",
+    value: true,
+  },
+];
+const nationalityOptions = [
+  {
+    id: 0,
+    name: "اردني",
+    value: "jordan",
+  },
+  {
+    id: 1,
+    name: "غير اردني",
+    value: "other",
+  },
+];
+const rentDurationOptions = [
+  {
+    id: 0,
+    name: "سنة",
+    value: "سنة",
+  },
+  {
+    id: 1,
+    name: "سنتان",
+    value: "سنتان",
+  },
+  {
+    id: 2,
+    name: "3 سنين",
+    value: "3 سنين",
   },
 ];
 
@@ -154,6 +198,24 @@ const fetchedBuildings = buildings.value.map((el) => {
           <label for="realLocation"> موقع العقار الفعلي </label>
           <UInput id="realLocation" name="realLocation" :size="'sm'" :required="false" v-model="state.realLocation" />
         </div>
+        <!-- isFurniture -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="isFurniture"> هل الشقة مفروشة ؟ </label>
+          <USelectMenu
+            id="isFurniture"
+            name="isFurniture"
+            :required="false"
+            v-model="state.isFurniture"
+            :options="isFurnitureOptions"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div>
+        <!-- furnitureImage -->
+        <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
+          <label for="furnitureImage"> صورة كشف الاثاث </label>
+          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
+        </div>
       </div>
     </div>
 
@@ -162,55 +224,99 @@ const fetchedBuildings = buildings.value.map((el) => {
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
-        <!-- renterName -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="renterName"> اسم المستأجر <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="renterName" name="renterName" :size="'sm'" :required="true" v-model="state.rent.renterName" />
-        </div>
-        <!-- renterNumber -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="renterNumber">
-            رقم المستأجر
-            <span class="text-xs text-primary-500">(اجباري)</span>
-          </label>
-          <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="true" v-model="state.rent.renterNumber" />
-        </div>
         <!-- rentAmount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="rentAmount"> قيمة الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="rentAmount" name="rentAmount" :type="'number'" :size="'sm'" :required="true" v-model="state.rent.rentAmount" />
+          <UInput id="rentAmount" name="rentAmount" :type="'number'" :size="'sm'" :required="true" v-model="state.rentAmount" />
         </div>
         <!-- rentDate -->
         <div class="col-span-6 sm:col-span-2">
           <label for="rentDate"> تاريخ الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UPopover :popper="{ placement: 'bottom-start' }">
-            <UInput icon="i-heroicons-calendar-days-20-solid" nam="rentDate" :size="'sm'" class="w-full" :model-value="format(state.rent.rentDate, 'dd/MM/yyyy')" />
+            <UInput icon="i-heroicons-calendar-days-20-solid" nam="rentDate" :size="'sm'" class="w-full" :model-value="format(state.rentDate, 'dd/MM/yyyy')" />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.rent.rentDate" is-required @close="close" />
+              <DatePicker v-model="state.rentDate" is-required @close="close" />
             </template>
           </UPopover>
-          <!-- <UInput id="rentDate" name="rentDate" :size="'sm'" :required="true" v-model="state.rent.rentDate" /> -->
+          <!-- <UInput id="rentDate" name="rentDate" :size="'sm'" :required="true" v-model="state.rentDate" /> -->
         </div>
         <!-- rentDuration -->
         <div class="col-span-6 sm:col-span-2">
           <label for="rentDuration"> مدة الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="rentDuration" name="rentDuration" :size="'sm'" :required="true" v-model="state.rent.rentDuration" />
+          <UInput id="rentDuration" name="rentDuration" :size="'sm'" :required="true" v-model="state.rentDuration" />
+          <!-- <USelectMenu id="rentDuration" name="rentDuration" v-model="state.rentDuration" :options="rentDurationOptions" value-attribute="value" option-attribute="name" /> -->
         </div>
         <!-- rentPaymentWay -->
         <div class="col-span-6 sm:col-span-2">
           <label for="rentPaymentWay"> طريقة دفع الإيجار </label>
-          <UInput id="rentPaymentWay" name="rentPaymentWay" :size="'sm'" :required="false" v-model="state.rent.rentPaymentWay" />
+          <UInput id="rentPaymentWay" name="rentPaymentWay" :size="'sm'" :required="false" v-model="state.rentPaymentWay" />
         </div>
-        <!-- isFurniture -->
+        <!-- isServiceIncluded -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="isFurniture"> هل الشقة مفروشة ؟ </label>
-          <USelectMenu id="isFurniture" name="isFurniture" v-model="state.rent.isFurniture" :options="options" value-attribute="value" option-attribute="name" />
+          <label for="isServiceIncluded"> هل الايجار شامل الخدمات ؟ </label>
+          <USelectMenu
+            id="isServiceIncluded"
+            name="isServiceIncluded"
+            :required="false"
+            v-model="state.isServiceIncluded"
+            :options="isServiceIncludedOptions"
+            value-attribute="value"
+            option-attribute="name"
+          />
         </div>
-        <!-- furnitureImage -->
-        <div class="col-span-6 sm:col-span-2" v-if="state.rent.isFurniture">
-          <label for="furnitureImage"> صورة كشف الاثاث </label>
-          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
+        <!-- insurance  -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="insurance "> قيمة تأمين الشقة </label>
+          <UInput id="insurance " name="insurance " :type="'text'" :size="'sm'" :required="false" v-model="state.insurance" />
+        </div>
+      </div>
+    </div>
+
+    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">معلومات المستأجرين</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+        <!-- renterName -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="renterName"> الاسم الكامل <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput id="renterName" name="renterName" :size="'sm'" :required="true" v-model="state.renterName" />
+        </div>
+        <!-- renterNumber -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="renterNumber"> رقم الموبايل <span class="text-xs text-primary-500">(اجباري)</span> </label>
+          <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="true" v-model="state.renterNumber" />
+        </div>
+        <!-- nationality -->
+        <div class="col-span-6 sm:col-span-1">
+          <label for="nationality"> الجنسية </label>
+          <!-- <UInput id="nationality" name="nationality" :size="'sm'" :required="false" v-model="state.nationality" /> -->
+          <USelectMenu
+            id="nationality"
+            name="nationality"
+            :required="false"
+            v-model="state.nationality"
+            :options="nationalityOptions"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div>
+        <!-- identification -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="identification" v-if="state.nationality === 'jordan'"> الرقم الوطني </label>
+          <label for="identification" v-else> رقم جواز السفر </label>
+          <UInput id="identification" name="identification" :size="'sm'" :required="false" v-model="state.identification" />
+        </div>
+        <!-- identificationImage -->
+        <div class="col-span-6 sm:col-span-1">
+          <label for="identificationImage"> صورة الاثبات </label>
+          <UInput id="identificationImage" name="identificationImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+        </div>
+        <!-- contractImage -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput id="contractImage" name="contractImage" @input="uploadImage()" type="file" size="sm" :required="true" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>
@@ -236,7 +342,7 @@ const fetchedBuildings = buildings.value.map((el) => {
           <UInput id="services" name="services" :type="'number'" :size="'sm'" :required="false" v-model="state.services" />
         </div>
         <!-- contractFile -->
-        <div class="col-span-6 sm:col-span-2" v-if="state.rent.isFurniture">
+        <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
           <label for="contractFile"> صورة كشف الاثاث </label>
           <UInput id="contractFile" name="contractFile" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
         </div>
