@@ -21,7 +21,8 @@ const state = reactive({
 // const fillServices = computed(() => _apartmentStore.apartments?.find((a) => a.id == _apartmentStore.createPaymentFormData.apartmentId)?.services);
 
 // Get the select menu data
-const apartments = useState("apartments");  
+const apartments = await useState("apartments");  
+console.log("🚀 ~ apartments:", apartments)
 const fetchedApartments = apartments.value.map((el) => {
   return { id: el.id, name: el.name };
 });
