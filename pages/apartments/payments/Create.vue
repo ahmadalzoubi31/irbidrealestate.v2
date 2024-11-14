@@ -1,6 +1,4 @@
 <script setup>
-import { useBuildingStore } from "#imports";
-
 // Define State
 const state = reactive({
   name: "",
@@ -21,11 +19,12 @@ const state = reactive({
 // const fillServices = computed(() => _apartmentStore.apartments?.find((a) => a.id == _apartmentStore.createPaymentFormData.apartmentId)?.services);
 
 // Get the select menu data
-const apartments = await useState("apartments");  
-console.log("🚀 ~ apartments:", apartments)
-const fetchedApartments = apartments.value.map((el) => {
-  return { id: el.id, name: el.name };
-});
+// const apartments = useState("apartments");
+// console.log("🚀 ~ apartments:", apartments.value);
+// const fetchedApartments = [];
+// const fetchedApartments = apartments.value.map((el) => {
+//   return { id: el.id, name: el.name };
+// });
 </script>
 
 <template>

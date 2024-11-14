@@ -113,10 +113,12 @@ const submitForm = async () => {
 const uploadImage = (event) => console.log(event);
 
 // Get the select menu data
-const buildings = useState("buildings");
-const fetchedBuildings = buildings.value.map((el) => {
-  return { id: el.id, name: el.name };
-});
+// const buildings = useState("buildings");
+// console.log("🚀 ~ buildings:", buildings.value);
+// const fetchedBuildings = [];
+// const fetchedBuildings = buildings.value.map((el) => {
+//   return { id: el.id, name: el.name };
+// });
 </script>
 
 <template>
