@@ -35,36 +35,36 @@ const isFurnitureOptions = [
   {
     id: 0,
     name: "لا",
-    value: false,
+    value: "لا",
   },
   {
     id: 1,
     name: "نعم",
-    value: true,
+    value: "نعم",
   },
 ];
 const isServiceIncludedOptions = [
   {
     id: 0,
     name: "لا",
-    value: false,
+    value: "لا",
   },
   {
     id: 1,
     name: "نعم",
-    value: true,
+    value: "نعم",
   },
 ];
 const renterNationalityOptions = [
   {
     id: 0,
     name: "اردني",
-    value: "jordan",
+    value: "اردني",
   },
   {
     id: 1,
     name: "غير اردني",
-    value: "other",
+    value: "غير اردني",
   },
 ];
 const rentDurationOptions = [
@@ -303,7 +303,7 @@ const fetchedBuildings = buildings.value.map((el) => {
         </div>
         <!-- renterIdentification -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="renterIdentification" v-if="state.renterNationality === 'jordan'"> الرقم الوطني </label>
+          <label for="renterIdentification" v-if="state.renterNationality == 'اردني'"> الرقم الوطني </label>
           <label for="renterIdentification" v-else> رقم جواز السفر </label>
           <UInput id="renterIdentification" name="renterIdentification" :size="'sm'" :required="false" v-model="state.renterIdentification" />
         </div>

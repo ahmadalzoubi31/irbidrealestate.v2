@@ -118,7 +118,7 @@ const expand = ref({
               </div>
             </template>
             <template #name-data="{ row }">
-              <span :class="['font-bold text-primary-500 dark:text-primary-400 underline']" @click="editSelectedRecord(row.id)">
+              <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
                 {{ row.name }}
               </span>
             </template>

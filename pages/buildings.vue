@@ -106,7 +106,7 @@ const expand = ref({
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-            <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" @update:expand="handleExpand">
+          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" @update:expand="handleExpand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>
@@ -116,7 +116,7 @@ const expand = ref({
               </div>
             </template>
             <template #name-data="{ row }">
-              <span :class="['font-bold text-primary-500 dark:text-primary-400 underline']" @click="editSelectedRecord(row.id)">
+              <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
                 {{ row.name }}
               </span>
             </template>

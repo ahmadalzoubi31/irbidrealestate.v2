@@ -2,6 +2,8 @@
 // Dependencies
 const { data: apartments, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
 const toast = useToast();
+import useGetContractStatusName from "~/composable/useGetContractStatusName";
+import { useDateFormat } from "@vueuse/core";
 
 // Define Variables
 const selected = ref([]);
@@ -85,7 +87,8 @@ const handleExpand = ({ openedRows, row }) => {
   // console.log("opened Rows:", openedRows);
   // console.log("Row Data:", row);
 };
-
+// Declare Methods
+const formatted = (r) => useDateFormat(r, "ddd YYYY-MM-DD hh:mm:ss A").value;
 const expand = ref({
   openedRows: [],
   row: null,
@@ -115,9 +118,19 @@ const expand = ref({
                 </pre>
               </div>
             </template>
-            <template #name-data="{ row }">
-              <span :class="['font-bold text-primary-500 dark:text-primary-400 underline']" @click="editSelectedRecord(row.id)">
-                {{ row.name }}
+            <template #apartmentNumber-data="{ row }">
+              <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+                {{ row.apartmentNumber }}
+              </span>
+            </template>
+            <template #rentDate-data="{ row }">
+              <span>
+                {{ formatted(row.rentDate) }}
+              </span>
+            </template>
+            <template #rentStatus-data="{ row }">
+              <span>
+                {{ useGetContractStatusName(row.rentStatus) }}
               </span>
             </template>
           </UTable>
