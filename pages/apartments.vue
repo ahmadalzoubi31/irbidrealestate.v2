@@ -1,12 +1,12 @@
 <script setup>
-// clearNuxtState("buildings");
-// clearNuxtState("apartments");
+clearNuxtState("buildings");
+clearNuxtState("apartments");
 
-// const { data: buildings } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
-// const { data: apartments } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
+const { data: buildings } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
+const { data: apartments } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
 
-// useState("buildings", async () => buildings.value);
-// useState("apartments", async () => apartments.value);
+useState("buildings", () => buildings.value);
+useState("apartments", () => apartments.value);
 </script>
 
 <template>

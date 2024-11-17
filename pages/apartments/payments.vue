@@ -8,7 +8,7 @@ const selected = ref([]);
 const columns = [
   // { key: "id", label: "#", sortable: false },
   { key: "buildingName", label: "اسم البناية", sortable: true },
-  { key: "apartmentsCount", label: "عدد الشقق", sortable: false },
+  { key: "apartmentsCount", label: "رقم الشقة", sortable: false },
   { key: "rentDate", label: "تاريخ الإيجار", sortable: false },
   { key: "rentAmount", label: "قيمة الإيجار", sortable: false },
   { key: "commissionAmount", label: "العمولة", sortable: false },
@@ -20,6 +20,7 @@ const columns = [
   { key: "depositDate", label: "تاريخ الايداع", sortable: false },
   { key: "notes", label: "ملاحظات", sortable: false },
 ];
+
 const selectedColumns = ref([...columns]);
 
 // Define Methods

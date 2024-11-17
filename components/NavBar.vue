@@ -41,13 +41,10 @@ onMounted(() => data.navigation.map((el) => (el.current = el.href === useRoute()
           <div class="hidden xl:block xl:mr-14">
             <div class="flex space-x-4">
               <NuxtLink
-                :active-class="'bg-primary-900 text-white'"
                 v-for="item in data.navigation"
-                v-show="item.policy.some((i) => i.toLowerCase() !== '')"
-                :key="item.name"
+                :active-class="'bg-primary-900 text-white'"
+                class="px-4 py-1 rounded-md text-gray-100 text-lg font-normal hover:bg-gray-700 hover:text-white"
                 :to="item.href"
-                class="px-4 py-1 ml-2 rounded-md text-gray-100 text-lg font-normal hover:bg-gray-700 hover:text-white"
-                :aria-current="item.current ? 'page' : undefined"
               >
                 {{ item.name }}
               </NuxtLink>

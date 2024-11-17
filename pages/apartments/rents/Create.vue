@@ -35,24 +35,24 @@ const isFurnitureOptions = [
   {
     id: 0,
     name: "لا",
-    value: "لا",
+    value: false,
   },
   {
     id: 1,
     name: "نعم",
-    value: "نعم",
+    value: true,
   },
 ];
 const isServiceIncludedOptions = [
   {
     id: 0,
     name: "لا",
-    value: "لا",
+    value: false,
   },
   {
     id: 1,
     name: "نعم",
-    value: "نعم",
+    value: true,
   },
 ];
 const renterNationalityOptions = [
@@ -113,12 +113,17 @@ const submitForm = async () => {
 const uploadImage = (event) => console.log(event);
 
 // Get the select menu data
-// const buildings = useState("buildings");
-// console.log("🚀 ~ buildings:", buildings.value);
-// const fetchedBuildings = [];
-// const fetchedBuildings = buildings.value.map((el) => {
-//   return { id: el.id, name: el.name };
-// });
+const buildings = useState("buildings");
+const fetchedBuildings = buildings.value.map((el) => {
+  return { id: el.id, name: el.name };
+});
+
+const fillAreaNumber = computed(() =>
+  buildings.value.find((a) => a.name == state.buildingName)?.basinName
+    ? buildings.value.find((a) => a.name == state.buildingName)?.basinName + " - " + buildings.value.find((a) => a.name == state.buildingName)?.basinNumber
+    : ""
+);
+const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinNumber);
 </script>
 
 <template>
@@ -157,12 +162,23 @@ const uploadImage = (event) => console.log(event);
         <!-- areaNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="areaNumber"> اسم الحوض ورقمه <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="areaNumber" name="areaNumber" :size="'sm'" :required="true" v-model="state.areaNumber" />
+          <UInput v-if="!isRegistered" id="areaNumber" name="areaNumber" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillAreaNumber" />
+          <UInput v-else id="areaNumber" name="areaNumber" :size="'sm'" :required="true" v-model="state.areaNumber" />
         </div>
         <!-- landingNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="landingNumber"> رقم قطعة الأرض <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="landingNumber" name="landingNumber" :size="'sm'" :required="true" v-model="state.landingNumber" />
+          <UInput
+            v-if="!isRegistered"
+            id="landingNumber"
+            name="landingNumber"
+            :size="'sm'"
+            :required="true"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="fillLandingNumber"
+          />
+          <UInput v-else id="landingNumber" name="landingNumber" :size="'sm'" :required="true" v-model="state.landingNumber" />
         </div>
         <!-- ownerName -->
         <div class="col-span-6 sm:col-span-2">
@@ -341,11 +357,6 @@ const uploadImage = (event) => console.log(event);
         <div class="col-span-6 sm:col-span-2">
           <label for="services"> الخدمات </label>
           <UInput id="services" name="services" :type="'number'" :size="'sm'" :required="false" v-model="state.services" />
-        </div>
-        <!-- contractFile -->
-        <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
-          <label for="contractFile"> صورة كشف الاثاث </label>
-          <UInput id="contractFile" name="contractFile" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>

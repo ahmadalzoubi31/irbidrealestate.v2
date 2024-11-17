@@ -28,7 +28,7 @@ function select(row) {
   selected.value.push(row);
 }
 const editSelectedRecord = async (id) => {
-  await navigateTo("/apartments/" + id + "/edit");
+  await navigateTo("/apartments/rents/" + id + "/edit");
 };
 const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;

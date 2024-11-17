@@ -1,7 +1,4 @@
 <script setup>
-// Declare Stores
-// const _buildingStore = useBuildingStore();
-
 // Validate the id
 onBeforeMount(() => {
   const paramId = parseInt(useRoute().params.id);
