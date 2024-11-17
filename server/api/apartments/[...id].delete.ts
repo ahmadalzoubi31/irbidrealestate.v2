@@ -1,7 +1,8 @@
 import prisma from "~/lib/prisma";
+import { Apartment } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
-  const id = Number(getRouterParams(event).id);
+  const id: number = Number(getRouterParams(event).id);
 
   if (isNaN(id)) {
     throw createError({
@@ -11,21 +12,25 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const payment = await prisma.payment.findUnique({
+    const apartment = await prisma.apartment.findUnique({
       where: {
         id: id,
       },
     });
 
-    if (!payment) {
+    if (!apartment) {
       throw createError({
         statusCode: 400,
-        message: "No payment found",
+        message: "No apartment found",
       });
     }
 
-    return payment;
-  } catch (error) {
+    await prisma.apartment.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error: any) {
     throw createError({
       statusCode: error.statusCode,
       message: error.message,

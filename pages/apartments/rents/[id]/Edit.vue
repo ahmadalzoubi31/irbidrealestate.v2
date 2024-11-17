@@ -19,6 +19,7 @@ const state = reactive({
   agentNumber: "",
   electricSub: "",
   waterSub: "",
+  realLocation: "",
   renterName: "",
   renterNumber: "",
   rentDuration: "",
@@ -32,8 +33,6 @@ const state = reactive({
   isServiceIncluded: false,
   insurance: 0,
   commissionAmount: 0,
-  maintenanceDiscount: 0,
-  services: 0,
 });
 const selectedApartmentId = useRoute().params.id;
 const isRegistered = ref(false);
@@ -100,6 +99,7 @@ state.agentName = apartment.value.agentName;
 state.agentNumber = apartment.value.agentNumber;
 state.electricSub = apartment.value.electricSub;
 state.waterSub = apartment.value.waterSub;
+state.realLocation = apartment.value.realLocation;
 state.renterName = apartment.value.renterName;
 state.renterNumber = apartment.value.renterNumber;
 state.rentDuration = apartment.value.rentDuration;
@@ -113,8 +113,6 @@ state.renterIdentification = apartment.value.renterIdentification;
 state.isServiceIncluded = apartment.value.isServiceIncluded;
 state.insurance = apartment.value.insurance;
 state.commissionAmount = apartment.value.commissionAmount;
-state.maintenanceDiscount = apartment.value.maintenanceDiscount;
-state.services = apartment.value.services;
 
 // Declare Methods
 const submitForm = async () => {
@@ -141,13 +139,6 @@ const submitForm = async () => {
   }
 };
 const uploadImage = (event) => console.log(event);
-
-const fillAreaNumber = computed(() =>
-  buildings.value.find((a) => a.name == state.buildingName)?.basinName
-    ? buildings.value.find((a) => a.name == state.buildingName)?.basinName + " - " + buildings.value.find((a) => a.name == state.buildingName)?.basinNumber
-    : ""
-);
-const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinNumber);
 </script>
 
 <template>
@@ -169,15 +160,20 @@ const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == s
           <label for="apartmentNumber"> رقم الشقة </label>
           <UInput id="apartmentNumber" inputClass="bg-gray-200" name="apartmentNumber" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment.apartmentNumber" />
         </div>
-        <!-- areaNumber -->
+        <!-- basinName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="areaNumber"> اسم الحوض ورقمه <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="areaNumber" inputClass="bg-gray-200" name="areaNumber" :size="'sm'" :required="false" :disabled="true" :model-value="apartment.areaNumber" />
+          <label for="basinName"> اسم الحوض </label>
+          <UInput id="basinName" name="basinName" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment.building.basinName" />
         </div>
-        <!-- landingNumber -->
+        <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="landingNumber"> رقم قطعة الأرض <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="landingNumber" inputClass="bg-gray-200" name="landingNumber" :size="'sm'" :required="false" :disabled="true" :model-value="apartment.landingNumber" />
+          <label for="basinNumber"> رقم الحوض </label>
+          <UInput id="basinNumber" name="basinNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment.building.basinNumber" />
+        </div>
+        <!-- landNumber -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="landNumber"> رقم قطعة الأرض </label>
+          <UInput id="landNumber" name="landNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment.building.landNumber" />
         </div>
         <!-- ownerName -->
         <div class="col-span-6 sm:col-span-2">
@@ -347,15 +343,31 @@ const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == s
           <label for="commissionAmount"> العمولة </label>
           <UInput id="commissionAmount" name="commissionAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.commissionAmount" />
         </div>
-        <!-- maintenanceDiscount -->
+        <!-- maintenanceAmount -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="maintenanceDiscount"> خصم الصيانة </label>
-          <UInput id="maintenanceDiscount" name="maintenanceDiscount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceDiscount" />
+          <label for="maintenanceAmount"> خصم الصيانة </label>
+          <UInput
+            id="maintenanceAmount"
+            name="maintenanceAmount"
+            :size="'sm'"
+            :required="true"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="apartment.building.maintenanceAmount"
+          />
         </div>
-        <!-- services -->
+        <!-- serviceAmount -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="services"> الخدمات </label>
-          <UInput id="services" name="services" :type="'number'" :size="'sm'" :required="false" v-model="state.services" />
+          <label for="serviceAmount"> الخدمات </label>
+          <UInput
+            id="serviceAmount"
+            name="serviceAmount"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="apartment.building.serviceAmount"
+          />
         </div>
       </div>
     </div>

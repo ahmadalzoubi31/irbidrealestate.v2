@@ -1,8 +1,9 @@
 import prisma from "~/lib/prisma";
+import { Apartment } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const id = Number(getRouterParams(event).id);
+  const body: Apartment = await readBody(event);
+  const id: number = Number(getRouterParams(event).id);
 
   if (!body) {
     var msg = "ERROR: Argument data is missing";
@@ -21,27 +22,29 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const payment = await prisma.payment.findUnique({
+    const apartment = await prisma.apartment.findUnique({
       where: {
         id: id,
       },
     });
 
-    if (!payment) {
+    if (!apartment) {
       throw createError({
         statusCode: 400,
-        message: "No payment found",
+        message: "No apartment found",
       });
     }
+
+    // @ts-ignore
     delete body.name;
 
-    await prisma.payment.update({
+    await prisma.apartment.update({
       data: body,
       where: {
         id: id,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log({ prisma_code: error.code });
 
     throw createError({

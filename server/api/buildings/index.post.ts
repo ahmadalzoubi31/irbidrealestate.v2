@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Prisma, Building } from "@prisma/client";
+import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+  const body: Building = await readBody(event);
   if (!body) {
     var msg = "ERROR: Argument data is missing";
     console.log(msg);
@@ -12,8 +12,8 @@ export default defineEventHandler(async (event) => {
     });
   }
   try {
-    await prisma.payment.create({ data: body });
-  } catch (error) {
+    await prisma.building.create({ data: body });
+  } catch (error: any) {
     console.log({ prisma_code: error.code });
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

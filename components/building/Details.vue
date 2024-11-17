@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // Define Dependencies
 import useGetStatusName from "~/composable/useGetStatusName";
 import { useDateFormat } from "@vueuse/core";
@@ -30,7 +30,7 @@ const heading = [
   "تاريخ التعديل",
 ];
 // Declare Methods
-const formatted = (r) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
+const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
 </script>
 
 

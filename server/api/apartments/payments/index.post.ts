@@ -12,8 +12,8 @@ export default defineEventHandler(async (event) => {
     });
   }
   try {
-    await prisma.building.create({ data: body });
-  } catch (error) {
+    await prisma.payment.create({ data: body });
+  } catch (error: any) {
     console.log({ prisma_code: error.code });
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

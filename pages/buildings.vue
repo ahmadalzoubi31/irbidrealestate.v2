@@ -1,10 +1,12 @@
-<script setup>
+<script setup lang="ts">
+import type { Building } from "@prisma/client";
+
 // Dependencies
-const { data: buildings, refresh, status, error } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
+const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
 const toast = useToast();
 
 // Define Variables
-const selected = ref([]);
+const selected: Ref<Building[]> = ref([]);
 const columns = [
   // { key: "id", label: "#", sortable: false },
   { key: "name", label: "اسم البناية", sortable: true },
@@ -21,19 +23,19 @@ const columns = [
 const selectedColumns = ref([...columns]);
 
 // Define Methods
-function select(row) {
+function select(row: Building) {
   selected.value.length = 0;
   selected.value.push(row);
 }
-const editSelectedRecord = async (id) => {
+const editSelectedRecord = async (id: string) => {
   await navigateTo("/buildings/" + id + "/edit");
 };
 const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;
   const response = confirm("هل انت متأكد من حذف هذا العنصر");
   if (response) {
-    const { data, refresh, status, error } = await useAsyncData("deleteBuilding", () =>
-      $fetch("/api/buildings/" + id, {
+    const { status, error } = await useAsyncData<void, any>("deleteBuilding", () =>
+      $fetch<void>("/api/buildings/" + id, {
         method: "delete",
       })
     );
@@ -63,16 +65,20 @@ const deleteSelectedRecord = async () => {
 
 // Define Filter
 const q = ref("");
-const filteredRows = computed(() => {
+const filteredRows: any = computed(() => {
   if (!q.value) {
     return buildings.value;
   }
 
-  return buildings.value.filter((el) => {
+  return buildings.value!.filter((el) => {
     // to avoid search on them
+    // @ts-ignore
     delete el.createdAt;
+    // @ts-ignore
     delete el.createdBy;
+    // @ts-ignore
     delete el.updatedAt;
+    // @ts-ignore
     delete el.updatedBy;
 
     return Object.values(el).some((value) => {
@@ -80,11 +86,6 @@ const filteredRows = computed(() => {
     });
   });
 });
-
-const handleExpand = ({ openedRows, row }) => {
-  // console.log("opened Rows:", openedRows);
-  // console.log("Row Data:", row);
-};
 
 const expand = ref({
   openedRows: [],
@@ -106,7 +107,7 @@ const expand = ref({
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" @update:expand="handleExpand">
+          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>

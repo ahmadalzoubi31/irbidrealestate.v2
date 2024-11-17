@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 const toast = useToast();
 
 // Define State
-const state = reactive({
+const state: ICreateBuilding = reactive({
   name: "",
   apartmentsCount: 0,
   storeCount: 0,
@@ -16,8 +16,8 @@ const state = reactive({
 
 // Declare Methods
 const submitForm = async () => {
-  const { data, refresh, status, error } = await useAsyncData("createBuilding", () =>
-    $fetch("/api/buildings", {
+  const { status, error } = await useAsyncData<void, any>("createBuilding", () =>
+    $fetch<void>("/api/buildings", {
       method: "post",
       body: state,
     })
@@ -35,7 +35,7 @@ const submitForm = async () => {
       title: "لقد حدث خطأ ما",
       description: error.value.data.message,
       color: "rose",
-      duration: 10000,
+      timeout: 10000,
     });
   }
 };

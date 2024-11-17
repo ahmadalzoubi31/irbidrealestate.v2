@@ -64,8 +64,6 @@ model Apartment {
   buildingName         String
   building             Building  @relation(fields: [buildingName], references: [name])
   apartmentNumber      String
-  areaNumber           String
-  landingNumber        String
   ownerName            String
   ownerNumber          String?
   agentName            String
@@ -86,8 +84,6 @@ model Apartment {
   isServiceIncluded    Boolean   @default(false)
   insurance            Int       @default(0)
   commissionAmount     Int       @default(0)
-  maintenanceDiscount  Int       @default(0)
-  services             Int       @default(0)
   status               Boolean   @default(true)
   createdBy            String?
   createdAt            DateTime  @default(now())

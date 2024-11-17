@@ -1,16 +1,19 @@
-<script setup>
+<script setup lang="ts">
+import type { Building } from "@prisma/client";
+
 // Validate the id
 onBeforeMount(() => {
-  const paramId = parseInt(useRoute().params.id);
+  const paramId: number = Number(useRoute().params.id);
   console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
   if (!isNaN(paramId)) return;
 
   // Redirect to the home page
   navigateTo("/buildings");
 });
+
 const toast = useToast();
 // Define State
-const state = reactive({
+const state: IEditBuilding = reactive({
   apartmentsCount: 0,
   storeCount: 0,
   basinName: "",
@@ -22,23 +25,22 @@ const state = reactive({
 });
 const selectedBuildingId = useRoute().params.id;
 
-const { data: building, refresh, status, error } = await useAsyncData("getOneBuilding", () => $fetch(`/api/buildings/${selectedBuildingId}`));
-// const building = _buildingStore.getBuildingById(selectedBuildingId);
+const { data: building, refresh, status, error } = await useAsyncData<Building, any>("getOneBuilding", () => $fetch<Building>(`/api/buildings/${selectedBuildingId}`));
 
 // Fill the field with data
-state.apartmentsCount = building.value.apartmentsCount;
-state.storeCount = building.value.storeCount;
-state.basinName = building.value.basinName;
-state.basinNumber = building.value.basinNumber;
-state.landNumber = building.value.landNumber;
-state.serviceAmount = building.value.serviceAmount;
-state.maintenanceAmount = building.value.maintenanceAmount;
-state.electricBill = building.value.electricBill;
+state.apartmentsCount = building.value!.apartmentsCount;
+state.storeCount = building.value!.storeCount;
+state.basinName = building.value!.basinName;
+state.basinNumber = building.value!.basinNumber;
+state.landNumber = building.value!.landNumber;
+state.serviceAmount = building.value!.serviceAmount;
+state.maintenanceAmount = building.value!.maintenanceAmount;
+state.electricBill = building.value!.electricBill ?? "";
 
 // Declare Methods
 const submitForm = async () => {
-  const { data, refresh, status, error } = await useAsyncData("editBuilding", () =>
-    $fetch("/api/buildings/" + selectedBuildingId, {
+  const { status, error } = await useAsyncData<void, any>("editBuilding", () =>
+    $fetch<void>("/api/buildings/" + selectedBuildingId, {
       method: "put",
       body: state,
     })
@@ -56,7 +58,7 @@ const submitForm = async () => {
       title: "لقد حدث خطأ ما",
       description: error.value.data.message,
       color: "rose",
-      duration: 10000,
+      timeout: 10000,
     });
   }
 };
@@ -72,7 +74,7 @@ const submitForm = async () => {
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName">اسم البناية </label>
-          <UInput id="buildingName" inputClass="bg-gray-200" name="buildingName" :size="'sm'" :required="false" :disabled="true" :modelValue="building.name" />
+          <UInput id="buildingName" inputClass="bg-gray-200" name="buildingName" :size="'sm'" :required="false" :disabled="true" :modelValue="building!.name" />
         </div>
         <!-- apartmentsCount -->
         <div class="col-span-6 sm:col-span-2">

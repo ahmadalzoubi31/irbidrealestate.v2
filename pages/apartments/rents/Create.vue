@@ -6,8 +6,9 @@ import { format } from "date-fns";
 const state = reactive({
   buildingName: "",
   apartmentNumber: "",
-  areaNumber: "",
-  landingNumber: "",
+  basinName: "",
+  basinNumber: "",
+  landNumber: "",
   ownerName: "",
   ownerNumber: "",
   agentName: "",
@@ -22,13 +23,13 @@ const state = reactive({
   rentPaymentWay: "",
   isFurniture: false,
   rentStatus: 3,
-  renterNationality: "jordan",
+  renterNationality: "اردني",
   renterIdentification: "",
   isServiceIncluded: false,
   insurance: 0,
   commissionAmount: 0,
-  maintenanceDiscount: 0,
-  services: 0,
+  maintenanceAmount: 0,
+  serviceAmount: 0,
 });
 const isRegistered = ref(false);
 const isFurnitureOptions = [
@@ -118,12 +119,11 @@ const fetchedBuildings = buildings.value.map((el) => {
   return { id: el.id, name: el.name };
 });
 
-const fillAreaNumber = computed(() =>
-  buildings.value.find((a) => a.name == state.buildingName)?.basinName
-    ? buildings.value.find((a) => a.name == state.buildingName)?.basinName + " - " + buildings.value.find((a) => a.name == state.buildingName)?.basinNumber
-    : ""
-);
-const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinNumber);
+const fillBasinName = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinName);
+const fillBasinNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinNumber);
+const fillLandNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.landNumber);
+const fillServiceAmount = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.serviceAmount);
+const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.maintenanceAmount);
 </script>
 
 <template>
@@ -132,7 +132,7 @@ const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == s
       <h3 class="text-center font-semibold text-xl mb-1">معلومات العقار</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-10 gap-x-6 gap-y-4">
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName" class="flex justify-between">
@@ -159,26 +159,23 @@ const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == s
           </label>
           <UInput id="apartmentNumber" name="apartmentNumber" :type="'text'" :size="'sm'" :required="true" v-model="state.apartmentNumber" />
         </div>
-        <!-- areaNumber -->
+        <!-- basinName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="areaNumber"> اسم الحوض ورقمه <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput v-if="!isRegistered" id="areaNumber" name="areaNumber" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillAreaNumber" />
-          <UInput v-else id="areaNumber" name="areaNumber" :size="'sm'" :required="true" v-model="state.areaNumber" />
+          <label for="basinName"> اسم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput v-if="!isRegistered" id="basinName" name="basinName" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillBasinName" />
+          <UInput v-else id="basinName" name="basinName" :size="'sm'" :required="true" v-model="state.basinName" />
         </div>
-        <!-- landingNumber -->
+        <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="landingNumber"> رقم قطعة الأرض <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput
-            v-if="!isRegistered"
-            id="landingNumber"
-            name="landingNumber"
-            :size="'sm'"
-            :required="true"
-            :disabled="true"
-            inputClass="bg-gray-200"
-            :model-value="fillLandingNumber"
-          />
-          <UInput v-else id="landingNumber" name="landingNumber" :size="'sm'" :required="true" v-model="state.landingNumber" />
+          <label for="basinNumber"> رقم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput v-if="!isRegistered" id="basinNumber" name="basinNumber" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillBasinNumber" />
+          <UInput v-else id="basinNumber" name="basinNumber" :size="'sm'" :required="true" v-model="state.basinNumber" />
+        </div>
+        <!-- landNumber -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="landNumber"> رقم قطعة الأرض <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput v-if="!isRegistered" id="landNumber" name="landNumber" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillLandNumber" />
+          <UInput v-else id="landNumber" name="landNumber" :size="'sm'" :required="true" v-model="state.landNumber" />
         </div>
         <!-- ownerName -->
         <div class="col-span-6 sm:col-span-2">
@@ -348,15 +345,35 @@ const fillLandingNumber = computed(() => buildings.value.find((a) => a.name == s
           <label for="commissionAmount"> العمولة </label>
           <UInput id="commissionAmount" name="commissionAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.commissionAmount" />
         </div>
-        <!-- maintenanceDiscount -->
+        <!-- maintenanceAmount -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="maintenanceDiscount"> خصم الصيانة </label>
-          <UInput id="maintenanceDiscount" name="maintenanceDiscount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceDiscount" />
+          <label for="maintenanceAmount"> خصم الصيانة </label>
+          <UInput
+            v-if="!isRegistered"
+            id="maintenanceAmount"
+            name="maintenanceAmount"
+            :size="'sm'"
+            :required="true"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="fillMaintenanceAmount"
+          />
+          <UInput v-else id="maintenanceAmount" name="maintenanceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceAmount" />
         </div>
-        <!-- services -->
+        <!-- serviceAmount -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="services"> الخدمات </label>
-          <UInput id="services" name="services" :type="'number'" :size="'sm'" :required="false" v-model="state.services" />
+          <label for="serviceAmount"> الخدمات </label>
+          <UInput
+            v-if="!isRegistered"
+            id="serviceAmount"
+            name="serviceAmount"
+            :size="'sm'"
+            :required="true"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="fillServiceAmount"
+          />
+          <UInput v-else id="serviceAmount" name="serviceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.serviceAmount" />
         </div>
       </div>
     </div>

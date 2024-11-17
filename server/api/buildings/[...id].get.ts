@@ -1,7 +1,7 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id = Number(getRouterParams(event).id);
+  const id: number = Number(getRouterParams(event).id);
 
   if (isNaN(id)) {
     throw createError({
@@ -24,12 +24,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    await prisma.building.delete({
-      where: {
-        id: id,
-      },
-    });
-  } catch (error) {
+    return building;
+  } catch (error: any) {
     throw createError({
       statusCode: error.statusCode,
       message: error.message,
