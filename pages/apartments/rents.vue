@@ -1,13 +1,13 @@
 <script setup lang="ts">
-// Dependencies
-const toast = useToast();
-import useGetContractStatusName from "~/composable/useGetContractStatusName";
 import { useDateFormat } from "@vueuse/core";
 import type { Apartment } from "@prisma/client";
+import useGetContractStatusName from "~/composable/useGetContractStatusName";
 
+const toast = useToast();
 // Define Variables
 const selected: Ref<Apartment[]> = ref([]);
 const apartments: Ref<Apartment[]> = useState("apartments");
+console.log("🚀 ~ apartments:", apartments);
 const columns = [
   { key: "buildingName", label: "اسم البناية", sortable: true },
   { key: "apartmentNumber", label: "رقم الشقة", sortable: false },
@@ -110,7 +110,7 @@ const expand = ref({
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
+          <UTable :rows="[]" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>

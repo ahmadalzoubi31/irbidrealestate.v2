@@ -2,6 +2,7 @@
 // Define Dependencies
 import useGetStatusName from "~/composable/useGetStatusName";
 import { useDateFormat } from "@vueuse/core";
+import useExtractKeys from "~/composable/useExtractKeys";
 
 // Declare Props
 const props = defineProps({
@@ -12,7 +13,6 @@ const props = defineProps({
 });
 // Declare Variables
 const heading = [
-  "رقم المعرف",
   "اسم البناية",
   "عدد الشقق",
   "عدد المخازن (ان وجدت)",
@@ -29,6 +29,30 @@ const heading = [
   "تم التعديل بواسطة",
   "تاريخ التعديل",
 ];
+
+// Specify the keys you want to extract
+const keysToExtract = [
+"name",
+"apartmentsCount",
+"storeCount",
+"basinName",
+"basinNumber",
+"landNumber",
+"electricBill",
+"serviceAmount",
+"maintenanceAmount",
+"registeredApartmentsCount",
+"status",
+"createdBy",
+"createdAt",
+"updatedBy",
+"updatedAt",
+];
+
+// Extract the desired keys
+const extracted = useExtractKeys(props.building, keysToExtract);
+
+
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
 </script>
@@ -36,7 +60,7 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
 
 <template>
     <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
-        <dt v-for="(entry, key, index) in props.building" class="font-medium ">
+        <dt v-for="(entry, key, index) in extracted" class="font-medium ">
           {{ heading[index] }}
         <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
           {{ formatted(entry) }}

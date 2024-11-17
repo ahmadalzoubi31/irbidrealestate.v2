@@ -47,8 +47,6 @@ const heading = [
   "تاريخ التعديل"
 ]
 
-console.log(props.apartment);
-
 // Specify the keys you want to extract
 const keysToExtract = [
 "buildingName",
@@ -88,7 +86,6 @@ const keysToExtract = [
 // Extract the desired keys
 const extracted = useExtractKeys(props.apartment, keysToExtract);
 
-console.log(extracted);
 
 // Declare Methods
 const formatted = (r) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
