@@ -1,13 +1,12 @@
-<script setup>
-const toast = useToast();
+<script setup lang="ts">
+import type { Building } from "@prisma/client";
 import { format } from "date-fns";
+const toast = useToast();
 
 // Define State
-const state = reactive({
+const state: ICreateApartment = reactive({
   buildingName: "",
   apartmentNumber: "",
-  basinName: "",
-  basinNumber: "",
   landNumber: "",
   ownerName: "",
   ownerNumber: "",
@@ -15,6 +14,7 @@ const state = reactive({
   agentNumber: "",
   electricSub: "",
   waterSub: "",
+  realLocation: "",
   renterName: "",
   renterNumber: "",
   rentDuration: "",
@@ -28,6 +28,11 @@ const state = reactive({
   isServiceIncluded: false,
   insurance: 0,
   commissionAmount: 0,
+});
+const additionalState = reactive({
+  buildingName: "",
+  basinName: "",
+  basinNumber: "",
   maintenanceAmount: 0,
   serviceAmount: 0,
 });
@@ -89,8 +94,8 @@ const rentDurationOptions = [
 // Define Computed
 // Declare Methods
 const submitForm = async () => {
-  const { data, refresh, status, error } = await useAsyncData("createApartment", () =>
-    $fetch("/api/apartments", {
+  const { status, error } = await useAsyncData<void, any>("createApartment", () =>
+    $fetch<void>("/api/apartments", {
       method: "post",
       body: state,
     })
@@ -111,10 +116,10 @@ const submitForm = async () => {
     });
   }
 };
-const uploadImage = (event) => console.log(event);
+const uploadImage = (event: any) => console.log(event);
 
 // Get the select menu data
-const buildings = useState("buildings");
+const buildings: Ref<Building[]> = useState("buildings");
 const fetchedBuildings = buildings.value.map((el) => {
   return { id: el.id, name: el.name };
 });
@@ -163,13 +168,13 @@ const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name 
         <div class="col-span-6 sm:col-span-2">
           <label for="basinName"> اسم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput v-if="!isRegistered" id="basinName" name="basinName" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillBasinName" />
-          <UInput v-else id="basinName" name="basinName" :size="'sm'" :required="true" v-model="state.basinName" />
+          <UInput v-else id="basinName" name="basinName" :size="'sm'" :required="true" v-model="additionalState.basinName" />
         </div>
         <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinNumber"> رقم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput v-if="!isRegistered" id="basinNumber" name="basinNumber" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" :model-value="fillBasinNumber" />
-          <UInput v-else id="basinNumber" name="basinNumber" :size="'sm'" :required="true" v-model="state.basinNumber" />
+          <UInput v-else id="basinNumber" name="basinNumber" :size="'sm'" :required="true" v-model="additionalState.basinNumber" />
         </div>
         <!-- landNumber -->
         <div class="col-span-6 sm:col-span-2">
@@ -228,7 +233,7 @@ const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name 
         <!-- furnitureImage -->
         <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
           <label for="furnitureImage"> صورة كشف الاثاث </label>
-          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
+          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage($event)" type="file" size="sm" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>
@@ -325,12 +330,12 @@ const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name 
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-1">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput id="renterIdentificationImage" name="renterIdentificationImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <UInput id="renterIdentificationImage" name="renterIdentificationImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="contractImage" name="contractImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <UInput id="contractImage" name="contractImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>
@@ -358,7 +363,7 @@ const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name 
             inputClass="bg-gray-200"
             :model-value="fillMaintenanceAmount"
           />
-          <UInput v-else id="maintenanceAmount" name="maintenanceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceAmount" />
+          <UInput v-else id="maintenanceAmount" name="maintenanceAmount" :type="'number'" :size="'sm'" :required="false" v-model="additionalState.maintenanceAmount" />
         </div>
         <!-- serviceAmount -->
         <div class="col-span-6 sm:col-span-2">
@@ -373,7 +378,7 @@ const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name 
             inputClass="bg-gray-200"
             :model-value="fillServiceAmount"
           />
-          <UInput v-else id="serviceAmount" name="serviceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.serviceAmount" />
+          <UInput v-else id="serviceAmount" name="serviceAmount" :type="'number'" :size="'sm'" :required="false" v-model="additionalState.serviceAmount" />
         </div>
       </div>
     </div>

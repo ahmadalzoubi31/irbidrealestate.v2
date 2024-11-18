@@ -24,7 +24,7 @@ const handleClick = (id) => {
 </script>
 
 <template>
-  <nav class="bg-gray-100 shadow z-10">
+  <nav class="bg-gray-100 shadow z-10 -mx-[30px]">
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="relative flex items-center justify-center sm:justify-between h-16">
         <div class="flex items-center justify-center sm:items-stretch sm:justify-start">

@@ -1,18 +1,21 @@
-<script setup>
+<script setup lang="ts">
+import { format } from "date-fns";
+import type { Apartment } from "@prisma/client";
+
 // Validate the id
 onBeforeMount(() => {
-  const paramId = parseInt(useRoute().params.id);
+  const paramId: number = Number(useRoute().params.id);
   console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
   if (!isNaN(paramId)) return;
 
   // Redirect to the home page
   navigateTo("/apartments/rents");
 });
+
 const toast = useToast();
-import { format } from "date-fns";
 
 // Define State
-const state = reactive({
+const state: IEditApartment = reactive({
   ownerName: "",
   ownerNumber: "",
   agentName: "",
@@ -90,34 +93,34 @@ const rentDurationOptions = [
   },
 ];
 
-const { data: apartment, refresh, status, error } = await useAsyncData("getOneApartment", () => $fetch(`/api/apartments/${selectedApartmentId}`));
+const { data: apartment } = await useAsyncData<Apartment, any>("getOneApartment", () => $fetch<Apartment>(`/api/apartments/${selectedApartmentId}`));
 
 // Fill the field with data
-state.ownerName = apartment.value.ownerName;
-state.ownerNumber = apartment.value.ownerNumber;
-state.agentName = apartment.value.agentName;
-state.agentNumber = apartment.value.agentNumber;
-state.electricSub = apartment.value.electricSub;
-state.waterSub = apartment.value.waterSub;
-state.realLocation = apartment.value.realLocation;
-state.renterName = apartment.value.renterName;
-state.renterNumber = apartment.value.renterNumber;
-state.rentDuration = apartment.value.rentDuration;
-state.rentAmount = apartment.value.rentAmount;
-state.rentDate = apartment.value.rentDate;
-state.rentPaymentWay = apartment.value.rentPaymentWay;
-state.isFurniture = apartment.value.isFurniture;
-state.rentStatus = apartment.value.rentStatus;
-state.renterNationality = apartment.value.renterNationality;
-state.renterIdentification = apartment.value.renterIdentification;
-state.isServiceIncluded = apartment.value.isServiceIncluded;
-state.insurance = apartment.value.insurance;
-state.commissionAmount = apartment.value.commissionAmount;
+state.ownerName = apartment.value!.ownerName;
+state.ownerNumber = apartment.value!.ownerNumber!;
+state.agentName = apartment.value!.agentName;
+state.agentNumber = apartment.value!.agentNumber!;
+state.electricSub = apartment.value!.electricSub!;
+state.waterSub = apartment.value!.waterSub!;
+state.realLocation = apartment.value!.realLocation!;
+state.renterName = apartment.value!.renterName;
+state.renterNumber = apartment.value!.renterNumber;
+state.rentDuration = apartment.value!.rentDuration;
+state.rentAmount = apartment.value!.rentAmount;
+state.rentDate = apartment.value!.rentDate;
+state.rentPaymentWay = apartment.value!.rentPaymentWay!;
+state.isFurniture = apartment.value!.isFurniture;
+state.rentStatus = apartment.value!.rentStatus;
+state.renterNationality = apartment.value!.renterNationality!;
+state.renterIdentification = apartment.value!.renterIdentification!;
+state.isServiceIncluded = apartment.value!.isServiceIncluded;
+state.insurance = apartment.value!.insurance;
+state.commissionAmount = apartment.value!.commissionAmount;
 
 // Declare Methods
 const submitForm = async () => {
-  const { data, refresh, status, error } = await useAsyncData("editApartment", () =>
-    $fetch("/api/apartments" + selectedApartmentId, {
+  const { status, error } = await useAsyncData<void, any>("editApartment", () =>
+    $fetch<void>("/api/apartments/" + selectedApartmentId, {
       method: "put",
       body: state,
     })
@@ -138,7 +141,7 @@ const submitForm = async () => {
     });
   }
 };
-const uploadImage = (event) => console.log(event);
+const uploadImage = (event: any) => console.log(event);
 </script>
 
 <template>
@@ -147,33 +150,33 @@ const uploadImage = (event) => console.log(event);
       <h3 class="text-center font-semibold text-xl mb-1">معلومات العقار</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-10 gap-x-6 gap-y-4">
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName" class="flex justify-between">
             <div>اسم البناية</div>
           </label>
-          <UInput id="buildingName" inputClass="bg-gray-200" name="buildingName" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment.buildingName" />
+          <UInput id="buildingName" inputClass="bg-gray-200" name="buildingName" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment!.buildingName" />
         </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentNumber"> رقم الشقة </label>
-          <UInput id="apartmentNumber" inputClass="bg-gray-200" name="apartmentNumber" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment.apartmentNumber" />
+          <UInput id="apartmentNumber" inputClass="bg-gray-200" name="apartmentNumber" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment!.apartmentNumber" />
         </div>
         <!-- basinName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinName"> اسم الحوض </label>
-          <UInput id="basinName" name="basinName" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment.building.basinName" />
+          <UInput id="basinName" name="basinName" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment!.building.basinName" />
         </div>
         <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinNumber"> رقم الحوض </label>
-          <UInput id="basinNumber" name="basinNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment.building.basinNumber" />
+          <UInput id="basinNumber" name="basinNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment!.building.basinNumber" />
         </div>
         <!-- landNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="landNumber"> رقم قطعة الأرض </label>
-          <UInput id="landNumber" name="landNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment.building.landNumber" />
+          <UInput id="landNumber" name="landNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment!.building.landNumber" />
         </div>
         <!-- ownerName -->
         <div class="col-span-6 sm:col-span-2">
@@ -226,7 +229,7 @@ const uploadImage = (event) => console.log(event);
         <!-- furnitureImage -->
         <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
           <label for="furnitureImage"> صورة كشف الاثاث </label>
-          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage()" type="file" size="sm" icon="i-heroicons-folder" />
+          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage($event)" type="file" size="sm" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>
@@ -323,12 +326,12 @@ const uploadImage = (event) => console.log(event);
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-1">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput id="renterIdentificationImage" name="renterIdentificationImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <UInput id="renterIdentificationImage" name="renterIdentificationImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="contractImage" name="contractImage" @input="uploadImage()" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <UInput id="contractImage" name="contractImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>
@@ -353,7 +356,7 @@ const uploadImage = (event) => console.log(event);
             :required="true"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment.building.maintenanceAmount"
+            :model-value="apartment!.building.maintenanceAmount"
           />
         </div>
         <!-- serviceAmount -->
@@ -366,7 +369,7 @@ const uploadImage = (event) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment.building.serviceAmount"
+            :model-value="apartment!.building.serviceAmount"
           />
         </div>
       </div>

@@ -4,10 +4,14 @@ import type { Apartment } from "@prisma/client";
 import useGetContractStatusName from "~/composable/useGetContractStatusName";
 
 const toast = useToast();
+const isBrokenModalOpen: Ref<boolean> = useState("isBrokenModalOpen", () => false);
+const isExpiredModalOpen: Ref<boolean> = useState("isExpiredModalOpen", () => false);
+const isRenewedModalOpen: Ref<boolean> = useState("isExpiredModalOpen", () => false);
+
 // Define Variables
 const selected: Ref<Apartment[]> = ref([]);
 const apartments: Ref<Apartment[]> = useState("apartments");
-console.log("🚀 ~ apartments:", apartments);
+
 const columns = [
   { key: "buildingName", label: "اسم البناية", sortable: true },
   { key: "apartmentNumber", label: "رقم الشقة", sortable: false },
@@ -20,6 +24,42 @@ const columns = [
   { key: "rentPaymentWay", label: "طريقة دفع الإيجار", sortable: false },
   { key: "rentDate", label: "تاريخ الإيجار", sortable: false },
   { key: "rentStatus", label: "حالة العقد", sortable: false },
+  {
+    key: "actions",
+  },
+];
+const items = (row: { id: string }) => [
+  [
+    {
+      label: "تعديل",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => editSelectedRecord(row.id),
+    },
+  ],
+  [
+    {
+      label: "فسخ",
+      icon: "i-heroicons-document-duplicate-20-solid",
+      click: () => (isBrokenModalOpen.value = !isBrokenModalOpen.value),
+    },
+    {
+      label: "انهاء",
+      icon: "i-heroicons-archive-box-20-solid",
+      click: () => (isExpiredModalOpen.value = !isExpiredModalOpen.value),
+    },
+    {
+      label: "تجديد",
+      icon: "i-heroicons-arrow-right-circle-20-solid",
+      click: () => (isRenewedModalOpen.value = !isRenewedModalOpen.value),
+    },
+  ],
+  [
+    {
+      label: "مسح",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => deleteSelectedRecord(),
+    },
+  ],
 ];
 const selectedColumns = ref([...columns]);
 
@@ -98,6 +138,13 @@ const expand = ref({
 
 <template>
   <div id="apartment">
+    <div id="modal">
+      <ClientOnly>
+        <ApartmentBrokenModal />
+        <ApartmentExpiredModal />
+        <ApartmentRenewedModal />
+      </ClientOnly>
+    </div>
     <div class="parentWrapper" v-if="useRoute().name === 'apartments-rents'">
       <div id="apartmentTable">
         <div id="buttonWrapper" class="my-3">
@@ -110,13 +157,13 @@ const expand = ref({
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="[]" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
+          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>
-                  <!-- {{ row }} -->
-                  <ApartmentDetails :apartment="row" />
-                </pre>
+              <!-- {{ row }} -->
+              <ApartmentDetails :apartment="row" />
+            </pre>
               </div>
             </template>
             <template #apartmentNumber-data="{ row }">
@@ -133,6 +180,11 @@ const expand = ref({
               <span>
                 {{ useGetContractStatusName(row.rentStatus) }}
               </span>
+            </template>
+            <template #actions-data="{ row }">
+              <UDropdown :items="items(row)">
+                <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+              </UDropdown>
             </template>
           </UTable>
         </div>
