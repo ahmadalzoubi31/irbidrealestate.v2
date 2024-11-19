@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
 const toast = useToast();
-import { format } from "date-fns";
+import type { Apartment } from "@prisma/client";
+import { addMonths, format } from "date-fns";
 
 // Define State
-const state = reactive({
+const state: ICreatePayment = reactive({
   apartmentId: 0,
   nextRentDate: new Date(),
   receivedPaymentDate: new Date(),
@@ -13,18 +14,51 @@ const state = reactive({
 });
 
 // Get the select menu data
-const apartments = useState("apartments");
+const apartments: Ref<Apartment[]> = useState("apartments");
 const fetchedApartments = apartments.value.map((el) => {
   return { id: el.id, name: el.apartmentNumber };
 });
 
+// Declare Methods
+const submitForm = async () => {
+  const { status, error } = await useAsyncData<void, any>("createPayment", () =>
+    $fetch<void>("/api/apartments/payments", {
+      method: "post",
+      body: state,
+    })
+  );
+
+  if (status.value === "success") {
+    refreshNuxtData("getPayments");
+    await navigateTo("/apartments/payments");
+  }
+
+  if (status.value === "error") {
+    // console.log(error.value);
+    toast.add({
+      title: "لقد حدث خطأ ما",
+      description: error.value.data.message,
+      color: "rose",
+      timeout: 10000,
+    });
+  }
+};
+
 const fillRentAmount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.rentAmount);
 const fillRentDate = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.rentDate);
 const fillCommissionAmount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.commissionAmount);
-const fillMaintenanceDiscount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.maintenanceDiscount);
-const fillServices = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.services);
+// @ts-ignore
+const fillMaintenanceDiscount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.building.maintenanceAmount);
+// @ts-ignore
+const fillServices = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.building.serviceAmount);
 
-const formattedFillRentDate = computed(() => (fillRentDate.value ? format(new Date(fillRentDate.value), "dd/MM/yyyy") : ""));
+// const calculateNextRentDate = computed(() => fillRentDate.value?.toDateString());
+const calculateNextRentDate = ref();
+watch(fillRentDate, (newVal, oldVal) => {
+  // console.log({ newVal, oldVal });
+  calculateNextRentDate.value = addMonths(newVal as Date, 1);
+  state.nextRentDate = calculateNextRentDate.value;
+});
 </script>
 
 <template>
@@ -44,24 +78,12 @@ const formattedFillRentDate = computed(() => (fillRentDate.value ? format(new Da
           <USelectMenu
             id="apartmentNumber"
             name="apartmentNumber"
-            searchable
             :autofocus="true"
             v-model="state.apartmentId"
             :options="fetchedApartments"
             value-attribute="id"
             option-attribute="name"
           />
-        </div>
-        <!-- nextRentDate -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="nextRentDate"> تاريخ الدفعة القادمة </label>
-          <UPopover :popper="{ placement: 'bottom-start' }">
-            <UInput icon="i-heroicons-calendar-days-20-solid" nam="nextRentDate" :size="'sm'" class="w-full" :model-value="format(state.nextRentDate, 'dd/MM/yyyy')" />
-
-            <template #panel="{ close }">
-              <DatePicker v-model="state.nextRentDate" is-required @close="close" />
-            </template>
-          </UPopover>
         </div>
         <!-- rentDate -->
         <div class="col-span-6 sm:col-span-2">
@@ -114,6 +136,20 @@ const formattedFillRentDate = computed(() => (fillRentDate.value ? format(new Da
         <div class="col-span-6 sm:col-span-2">
           <label for="services"> الخدمات </label>
           <UInput id="services" name="services" inputClass="bg-gray-200" :type="'text'" :size="'sm'" :required="false" :disabled="true" :model-value="fillServices" />
+        </div>
+        <!-- nextRentDate -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="nextRentDate" class="text-primary-600"> تاريخ الدفعة القادمة </label>
+          <UInput
+            id="nextRentDate"
+            name="nextRentDate"
+            inputClass="bg-gray-200"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            :model-value="calculateNextRentDate ? format(calculateNextRentDate, 'dd/MM/yyyy') : ''"
+          />
         </div>
       </div>
     </div>
@@ -175,9 +211,7 @@ const formattedFillRentDate = computed(() => (fillRentDate.value ? format(new Da
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="float-left">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton :type="'button'" to="/apartments/rents" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
-        الغاء
-      </UButton>
+      <UButton to="/apartments/payments" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"> الغاء </UButton>
     </div>
   </form>
 </template>

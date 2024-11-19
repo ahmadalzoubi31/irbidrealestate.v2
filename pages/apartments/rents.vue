@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useDateFormat } from "@vueuse/core";
 import type { Apartment } from "@prisma/client";
+import format from "date-fns/format";
 import useGetContractStatusName from "~/composable/useGetContractStatusName";
 
+const { data: apartments } = await useAsyncData<Apartment[], any>("getApartments", () => $fetch<Apartment[]>("/api/apartments"));
 const toast = useToast();
 const isBrokenModalOpen: Ref<boolean> = useState("isBrokenModalOpen", () => false);
 const isExpiredModalOpen: Ref<boolean> = useState("isExpiredModalOpen", () => false);
@@ -10,7 +11,6 @@ const isRenewedModalOpen: Ref<boolean> = useState("isExpiredModalOpen", () => fa
 
 // Define Variables
 const selected: Ref<Apartment[]> = ref([]);
-const apartments: Ref<Apartment[]> = useState("apartments");
 
 const columns = [
   { key: "buildingName", label: "اسم البناية", sortable: true },
@@ -111,7 +111,7 @@ const filteredRows: any = computed(() => {
     return apartments.value;
   }
 
-  return apartments.value.filter((el) => {
+  return apartments.value!.filter((el) => {
     // to avoid search on them
     // @ts-ignore
     delete el.createdAt;
@@ -129,7 +129,6 @@ const filteredRows: any = computed(() => {
 });
 
 // Declare Methods
-const formatted = (r: Date) => useDateFormat(r, "ddd YYYY-MM-DD hh:mm:ss A").value;
 const expand = ref({
   openedRows: [],
   row: null,
@@ -173,7 +172,7 @@ const expand = ref({
             </template>
             <template #rentDate-data="{ row }">
               <span>
-                {{ formatted(row.rentDate) }}
+                {{ format(row.rentDate, "dd/MM/yyyy") }}
               </span>
             </template>
             <template #rentStatus-data="{ row }">
@@ -182,8 +181,8 @@ const expand = ref({
               </span>
             </template>
             <template #actions-data="{ row }">
-              <UDropdown :items="items(row)">
-                <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+              <UDropdown :items="items(row)" class="align-middle">
+                <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
               </UDropdown>
             </template>
           </UTable>

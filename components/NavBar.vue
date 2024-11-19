@@ -6,7 +6,7 @@ const data = reactive({
   navigation: [
     { name: "البنايات", href: "/buildings", policy: ["user", "admin"] },
     { name: "الايجارات", href: "/apartments/rents", policy: ["user", "admin"] },
-    // { name: "الاعلانات", href: "/ads", policy: ["user", "admin"] },
+    { name: "الاعلانات", href: "/ads", policy: ["user", "admin"] },
     // { name: "المطالبات المالية", href: "/claims", policy: ["user", "admin"] },
     // { name: "الشقق المتاحة للطلبة", href: "/student-apartments", policy: ["user", "admin"] },
     // { name: "الخدمات", href: "/services", policy: ["user", "admin"] },

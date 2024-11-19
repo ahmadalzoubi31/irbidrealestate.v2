@@ -1,14 +1,11 @@
 import prisma from "~/lib/prisma";
+import { Ad } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
-    return await prisma.payment.findMany({
+    return await prisma.ad.findMany({
       include: {
-        apartment: {
-          include: {
-            building: true,
-          },
-        },
+        interestedPeople: true,
       },
     });
   } catch (error: any) {

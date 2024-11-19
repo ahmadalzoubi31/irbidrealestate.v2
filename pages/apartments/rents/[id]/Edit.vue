@@ -12,9 +12,8 @@ onBeforeMount(() => {
   navigateTo("/apartments/rents");
 });
 
-const toast = useToast();
-
 // Define State
+const toast = useToast();
 const state: IEditApartment = reactive({
   ownerName: "",
   ownerNumber: "",

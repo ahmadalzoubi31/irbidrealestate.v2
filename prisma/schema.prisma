@@ -49,7 +49,7 @@ model Building {
 //   rentStatus        Int       @default(3)
 //   contractFileName  String
 //   clearanceFileName String?
-//   apartment         Apartment @relation(fields: [apartmentId], references: [id])
+//   apartment         Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
 //   apartmentId       Int
 //   status            Boolean   @default(true)
 //   createdBy         String?
@@ -62,7 +62,7 @@ model Building {
 model Apartment {
   id                   Int       @id @default(autoincrement())
   buildingName         String
-  building             Building  @relation(fields: [buildingName], references: [name])
+  building             Building  @relation(fields: [buildingName], references: [name], onDelete: Cascade)
   apartmentNumber      String
   ownerName            String
   ownerNumber          String?
@@ -95,7 +95,7 @@ model Apartment {
 // *** Payments ***
 model Payment {
   id                  Int       @id @default(autoincrement())
-  apartment           Apartment @relation(fields: [apartmentId], references: [id])
+  apartment           Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   nextRentDate        DateTime
   receivedPaymentDate DateTime
   depositAmount       Int
@@ -112,16 +112,15 @@ model Payment {
 // *** Ads ***
 model Ad {
   id                    Int                @id @default(autoincrement())
-  Code                  String
-  number                String
-  propertyStatus        Int
+  code                  String             @unique
+  propertyStatus        String
   propertyType          Int
   propertyOwnerName     String
   propertyOwnerNumber   String             @default("###")
   propertyOwnerIdentity String
   propertyAgentName     String?
   propertyAgentNumber   String             @default("###")
-  propertyAgentIdentity String             @default(".")
+  propertyAgentIdentity String
   facebookLink          String?
   instagramLink         String?
   propertyLink          String?
@@ -149,6 +148,6 @@ model InterestedPeople {
   name   String
   number String @default("###")
 
-  ad   Ad?  @relation(fields: [adId], references: [id])
+  ad   Ad?  @relation(fields: [adId], references: [id], onDelete: Cascade)
   adId Int?
 }

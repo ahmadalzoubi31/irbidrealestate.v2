@@ -12,6 +12,6 @@ useState("apartments", () => apartments.value);
 </script>
 
 <template>
-  <Tabs />
+  <!-- <Tabs /> -->
   <NuxtPage />
 </template>
