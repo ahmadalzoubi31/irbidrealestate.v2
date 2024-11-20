@@ -27,10 +27,20 @@ const state: ICreateAd = reactive({
   notes: "",
   interestedPeople: [],
 });
-const interestedPerson = reactive({
+const interestedPerson = {
   name: "",
   number: "",
-});
+};
+const items = (row: { index: number }) => [
+  [
+    {
+      label: "مسح",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => console.log({ row: row.index }),
+    },
+  ],
+];
+
 // Declare Menu
 const propertyStatusOptions = [
   {
@@ -133,6 +143,8 @@ const submitForm = async () => {
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
   state.interestedPeople.push(interestedPerson);
+  // interestedPerson.name = "";
+  // interestedPerson.number = "";
 };
 </script>
 
@@ -279,7 +291,7 @@ const addInterestedPerson = () => {
       <h3 class="text-center font-semibold text-xl mb-1">الاشخاص المهتمين بالعقار</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4 items-center">
+      <div class="grid grid-cols-12 gap-x-6 gap-y-4 items-center">
         <!-- interestedPersonName -->
         <label for="interestedPersonName"> اسم الشخص المهتم :</label>
         <div class="col-span-6 sm:col-span-2">
@@ -293,14 +305,7 @@ const addInterestedPerson = () => {
         <UButton :type="'button'" :size="'md'" class="w-20 text-center place-content-center ml-3" @click="addInterestedPerson"> اضافة </UButton>
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable
-          class=""
-          :rows="state.interestedPeople"
-          :columns="[
-            { key: 'name', label: 'اسم الشخص' },
-            { key: 'number', label: 'رقم الشخص' },
-          ]"
-        >
+        <UTable class="" :rows="state.interestedPeople" :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]">
           <template #actions-data="{ row }">
             <UDropdown :items="items(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
