@@ -1,4 +1,4 @@
-const getContractStatusName = (s) => {
+const getContractStatusName = (s: number) => {
   if (s === 0) {
     return "منتهي";
   } else if (s === 1) {

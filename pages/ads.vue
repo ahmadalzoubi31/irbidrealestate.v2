@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Ad } from "@prisma/client";
+import useGetPropertyTypeName from "~/composable/useGetPropertyTypeName";
 
 // Dependencies
 const { data: ads } = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
 const toast = useToast();
-
+useState("ads", () => ads);
 // Define Variables
 const selected: Ref<Ad[]> = ref([]);
 const columns = [
@@ -114,9 +115,29 @@ const expand = ref({
                 </pre>
               </div>
             </template>
-            <template #name-data="{ row }">
+            <template #code-data="{ row }">
               <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
-                {{ row.name }}
+                {{ row.code }}
+              </span>
+            </template>
+            <template #propertyType-data="{ row }">
+              <span>
+                {{ useGetPropertyTypeName(row.propertyType) }}
+              </span>
+            </template>
+            <template #facebookLink-data="{ row }">
+              <span>
+                <UButton :href="row.facebookLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+              </span>
+            </template>
+            <template #instagramLink-data="{ row }">
+              <span>
+                <UButton :to="row.instagramLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+              </span>
+            </template>
+            <template #propertyLocation-data="{ row }">
+              <span>
+                {{ row.governorate + " - " + row.village }}
               </span>
             </template>
           </UTable>

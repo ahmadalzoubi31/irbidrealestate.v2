@@ -39,7 +39,7 @@ onMounted(() => data.navigation.map((el) => (el.current = el.href === useRoute()
           </div>
 
           <div class="hidden xl:block xl:mr-14">
-            <div class="flex space-x-4">
+            <div class="flex">
               <NuxtLink
                 v-for="item in data.navigation"
                 :active-class="'bg-primary-900 text-white'"

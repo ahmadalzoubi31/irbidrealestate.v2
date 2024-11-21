@@ -48,7 +48,7 @@ CREATE TABLE "Apartment" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedBy" TEXT,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Apartment_buildingName_fkey" FOREIGN KEY ("buildingName") REFERENCES "Building" ("name") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Apartment_buildingName_fkey" FOREIGN KEY ("buildingName") REFERENCES "Building" ("name") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -65,22 +65,21 @@ CREATE TABLE "Payment" (
     "updatedBy" TEXT,
     "updatedAt" DATETIME NOT NULL,
     "apartmentId" INTEGER NOT NULL,
-    CONSTRAINT "Payment_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Payment_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Ad" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "Code" TEXT NOT NULL,
-    "number" TEXT NOT NULL,
-    "propertyStatus" INTEGER NOT NULL,
+    "code" TEXT NOT NULL,
+    "propertyStatus" TEXT NOT NULL,
     "propertyType" INTEGER NOT NULL,
     "propertyOwnerName" TEXT NOT NULL,
     "propertyOwnerNumber" TEXT NOT NULL DEFAULT '###',
     "propertyOwnerIdentity" TEXT NOT NULL,
     "propertyAgentName" TEXT,
     "propertyAgentNumber" TEXT NOT NULL DEFAULT '###',
-    "propertyAgentIdentity" TEXT NOT NULL DEFAULT '.',
+    "propertyAgentIdentity" TEXT NOT NULL,
     "facebookLink" TEXT,
     "instagramLink" TEXT,
     "propertyLink" TEXT,
@@ -89,7 +88,7 @@ CREATE TABLE "Ad" (
     "village" TEXT NOT NULL,
     "basin" TEXT NOT NULL,
     "plot" TEXT NOT NULL,
-    "apartmentNumber" TEXT NOT NULL,
+    "apartmentNumber" TEXT,
     "classification" TEXT,
     "neighborhood" TEXT,
     "expectedRentAmount" TEXT,
@@ -107,8 +106,11 @@ CREATE TABLE "InterestedPeople" (
     "name" TEXT NOT NULL,
     "number" TEXT NOT NULL DEFAULT '###',
     "adId" INTEGER,
-    CONSTRAINT "InterestedPeople_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "InterestedPeople_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Building_name_key" ON "Building"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Ad_code_key" ON "Ad"("code");

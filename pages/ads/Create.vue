@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { Ad } from "@prisma/client";
+
 const toast = useToast();
 
 // Define State
 const state: ICreateAd = reactive({
   code: "",
-  propertyStatus: "",
+  propertyStatus: "متوفر",
   propertyType: 0,
   propertyOwnerName: "",
   propertyOwnerNumber: "###",
@@ -27,16 +29,15 @@ const state: ICreateAd = reactive({
   notes: "",
   interestedPeople: [],
 });
-const interestedPerson = {
-  name: "",
-  number: "",
-};
-const items = (row: { index: number }) => [
+const interestedPersonName = ref("");
+const interestedPersonNumber = ref("");
+
+const items = (row: { name: string; number: string }) => [
   [
     {
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
-      click: () => console.log({ row: row.index }),
+      click: () => (state.interestedPeople = state.interestedPeople.filter((item) => !(item.name === row.name && item.number === row.number))),
     },
   ],
 ];
@@ -62,54 +63,49 @@ const propertyStatusOptions = [
 
 const propertyTypeOptions = [
   {
-    id: 0,
-    value: "متوفر",
-  },
-
-  {
     id: 1,
     name: "شقة سكنية للبيع",
-    value: "شقة سكنية للبيع",
+    value: 1,
   },
   {
     id: 2,
     name: "شقة استثمارية للبيع",
-    value: "شقة استثمارية للبيع",
+    value: 2,
   },
   {
     id: 3,
-    name: "شقة للايجار",
-    value: "شقة للايجار",
+    name: "شقة سكنية للايجار",
+    value: 3,
   },
   {
     id: 4,
     name: "ارض للبيع",
-    value: "ارض للبيع",
+    value: 4,
   },
   {
     id: 5,
     name: "ارض للايجار",
-    value: "ارض للايجار",
+    value: 5,
   },
   {
     id: 6,
     name: "فيلا للبيع",
-    value: "فيلا للبيع",
+    value: 6,
   },
   {
     id: 7,
     name: "فيلا للايجار",
-    value: "فيلا للايجار",
+    value: 7,
   },
   {
     id: 8,
     name: "مزرعة للبيع",
-    value: "مزرعة للبيع",
+    value: 8,
   },
   {
     id: 9,
     name: "مزرعة للايجار",
-    value: "مزرعة للايجار",
+    value: 9,
   },
 ];
 
@@ -142,10 +138,65 @@ const submitForm = async () => {
 // Function to add a new interested person (with name and phone)
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
-  state.interestedPeople.push(interestedPerson);
-  // interestedPerson.name = "";
-  // interestedPerson.number = "";
+  // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
+  state.interestedPeople.push({ name: interestedPersonName.value, number: interestedPersonNumber.value });
+
+  interestedPersonName.value = "";
+  interestedPersonNumber.value = "";
 };
+
+clearNuxtState("ads");
+const ads: Ref<Ad[]> = useState("ads");
+const getLastCodePerType = computed(() => (ads.value ? ads.value.filter((el) => el.propertyType == state.propertyType).length + 1 : 1));
+
+watch(
+  () => state.propertyType,
+  (newVal, oldVal) => {
+    console.log("🚀 ~ newVal:", newVal);
+    const index: number = getLastCodePerType.value;
+
+    switch (newVal) {
+      case 1:
+        state.code = "AS" + index;
+        return "AS" + index;
+        break;
+      case 2:
+        state.code = "ASI" + index;
+        return "ASI" + index;
+        break;
+      case 3:
+        state.code = "AR" + index;
+        return "AR" + index;
+        break;
+      case 4:
+        state.code = "LS" + index;
+        return "LS" + index;
+        break;
+      case 5:
+        state.code = "LR" + index;
+        return "LR" + index;
+        break;
+      case 6:
+        state.code = "VS" + index;
+        return "VS" + index;
+        break;
+      case 7:
+        state.code = "VR" + index;
+        return "VR" + index;
+        break;
+      case 8:
+        state.code = "FS" + index;
+        return "FS" + index;
+        break;
+      case 9:
+        state.code = "FR" + index;
+        return "FR" + index;
+        break;
+      default:
+        break;
+    }
+  }
+);
 </script>
 
 <template>
@@ -157,8 +208,8 @@ const addInterestedPerson = () => {
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="code">رقم الاعلان <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="code" name="code" :size="'sm'" :autofocus="true" :required="true" v-model="state.code" />
+          <label for="code">رقم الاعلان </label>
+          <UInput id="code" name="code" :size="'sm'" :autofocus="true" :required="false" :disable="true" inputClass="bg-gray-200" v-model="state.code" />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
@@ -217,14 +268,14 @@ const addInterestedPerson = () => {
           <UInput id="propertyAgentIdentity" name="propertyAgentIdentity" :size="'sm'" :required="false" v-model="state.propertyAgentIdentity" />
         </div>
         <!-- facebookLink -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-3">
           <label for="facebookLink"> رابط الفيسبوك </label>
-          <UInput id="facebookLink" name="facebookLink" :type="'number'" :size="'sm'" :required="false" v-model="state.facebookLink" />
+          <UInput id="facebookLink" name="facebookLink" :type="'text'" :size="'sm'" :required="false" v-model="state.facebookLink" />
         </div>
         <!-- instagramLink -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-3">
           <label for="instagramLink"> رابط الانستجرام </label>
-          <UInput id="instagramLink" name="instagramLink" :type="'number'" :size="'sm'" :required="false" v-model="state.instagramLink" />
+          <UInput id="instagramLink" name="instagramLink" :type="'text'" :size="'sm'" :required="false" v-model="state.instagramLink" />
         </div>
       </div>
     </div>
@@ -260,29 +311,29 @@ const addInterestedPerson = () => {
           <UInput id="plot" name="plot" :size="'sm'" :required="true" v-model="state.plot" />
         </div>
         <!-- apartmentNumber -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-2" v-show="!state.code.includes('LS') && !state.code.includes('LR')">
           <label for="apartmentNumber"> رقم الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="apartmentNumber" name="apartmentNumber" :size="'sm'" :required="true" v-model="state.apartmentNumber" />
+          <UInput id="apartmentNumber" name="apartmentNumber" :size="'sm'" :required="!state.code.includes('LS') && !state.code.includes('LR')" v-model="state.apartmentNumber" />
         </div>
         <!-- classification -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('LS') || state.code.includes('LR')">
           <label for="classification"> تصنيف الارض <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="classification" name="classification" :size="'sm'" :required="true" v-model="state.classification" />
+          <UInput id="classification" name="classification" :size="'sm'" :required="state.code.includes('LS') || state.code.includes('LR')" v-model="state.classification" />
         </div>
         <!-- neighborhood -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="neighborhood"> الحي <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="true" v-model="state.neighborhood" />
+          <label for="neighborhood"> الحي </label>
+          <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="false" v-model="state.neighborhood" />
         </div>
         <!-- expectedRentAmount -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('ASI')">
           <label for="expectedRentAmount"> دخل الايجار المتوقع <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="expectedRentAmount" name="expectedRentAmount" :size="'sm'" :required="true" v-model="state.expectedRentAmount" />
+          <UInput id="expectedRentAmount" name="expectedRentAmount" :size="'sm'" :required="state.code.includes('ASI')" v-model="state.expectedRentAmount" />
         </div>
         <!-- notes -->
-        <div class="col-span-6 sm:col-span-4">
+        <div class="col-span-6 sm:col-span-6">
           <label for="notes"> الملاحظات </label>
-          <UInput id="notes" name="notes" :type="'number'" :size="'sm'" :required="false" v-model="state.notes" />
+          <UInput id="notes" name="notes" :type="'text'" :size="'sm'" :required="false" v-model="state.notes" />
         </div>
       </div>
     </div>
@@ -295,12 +346,12 @@ const addInterestedPerson = () => {
         <!-- interestedPersonName -->
         <label for="interestedPersonName"> اسم الشخص المهتم :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="true" v-model="interestedPerson.name" />
+          <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonName" />
         </div>
         <!-- interestedPersonNumber -->
         <label for="interestedPersonName"> رقم الشخص المهتم :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="true" v-model="interestedPerson.number" />
+          <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonNumber" />
         </div>
         <UButton :type="'button'" :size="'md'" class="w-20 text-center place-content-center ml-3" @click="addInterestedPerson"> اضافة </UButton>
       </div>
