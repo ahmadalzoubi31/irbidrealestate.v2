@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import type { Ad } from "@prisma/client";
-import useGetPropertyTypeName from "~/composable/useGetPropertyTypeName";
-
 // Dependencies
-const { data: ads } = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
-const toast = useToast();
-useState("ads", () => ads);
+import type { Ad } from "@prisma/client";
+
 // Define Variables
+// const ads: any= useState('ads');
+const { data } = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
+const ads = await useAdsState(data.value!);
+
+// const {data: ads} = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
+
+const toast = useToast();
+
+
 const selected: Ref<Ad[]> = ref([]);
 const columns = [
   { key: "code", label: "رقم الاعلان", sortable: false },
@@ -127,12 +132,14 @@ const expand = ref({
             </template>
             <template #facebookLink-data="{ row }">
               <span>
-                <UButton :href="row.facebookLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+                <UButton v-if="row.facebookLink" :href="row.facebookLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+                <span v-else>-</span>
               </span>
             </template>
             <template #instagramLink-data="{ row }">
               <span>
-                <UButton :to="row.instagramLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+                <UButton v-if="row.instagramLink" :to="row.instagramLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+                <span v-else>-</span>
               </span>
             </template>
             <template #propertyLocation-data="{ row }">

@@ -1,8 +1,7 @@
-<script setup>
+<script setup lang="ts">
 // Define Dependencies
-import useGetStatusName from "~/composable/useGetStatusName";
-import useExtractKeys from "~/composable/useExtractKeys"
 import { useDateFormat } from "@vueuse/core";
+import type { Apartment } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
@@ -84,11 +83,11 @@ const keysToExtract = [
 ];
 
 // Extract the desired keys
-const extracted = useExtractKeys(props.apartment, keysToExtract);
+const extracted: Apartment = useExtractKeys(props.apartment, keysToExtract);
 
 
 // Declare Methods
-const formatted = (r) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
+const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
 
 
 
@@ -99,10 +98,10 @@ const formatted = (r) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
         <dt v-for="(entry, key, index) in extracted" class="font-medium ">
           {{ heading[index] }}
         <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
-          {{ formatted(entry) }}
+          {{ formatted(entry as Date) }}
         </dd>
         <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
-          {{ useGetStatusName(entry) }}
+          {{ useGetStatusName(entry as boolean) }}
         </dd>
         <dd v-else class="font-normal text-primary-500">{{ entry == null ? "-" : entry }}</dd>
         </dt>

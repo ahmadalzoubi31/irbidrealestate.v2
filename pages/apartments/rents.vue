@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Apartment } from "@prisma/client";
 import format from "date-fns/format";
-import useGetContractStatusName from "~/composable/useGetContractStatusName";
 
 const { data: apartments } = await useAsyncData<Apartment[], any>("getApartments", () => $fetch<Apartment[]>("/api/apartments"));
 const toast = useToast();
