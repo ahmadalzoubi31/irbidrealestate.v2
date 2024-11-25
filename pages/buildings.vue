@@ -2,11 +2,7 @@
 // Dependencies
 import type { Building } from "@prisma/client";
 
-// Shared state for tables
-const buildingState = useBuildingState();
-// const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
-const { data } = await useFetch<Building[], any>("/api/buildings")
-buildingState.value = data.value!;
+const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings", ));
 
 const toast = useToast();
 
@@ -72,10 +68,10 @@ const deleteSelectedRecord = async () => {
 const q = ref("");
 const filteredRows: any = computed(() => {
   if (!q.value) {
-    return buildingState.value;
+    return buildings.value;
   }
 
-  return buildingState.value!.filter((el) => {
+  return buildings.value!.filter((el) => {
     // to avoid search on them
     // @ts-ignore
     delete el.createdAt;

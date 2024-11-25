@@ -106,22 +106,44 @@ declare interface ICreateAd {
   propertyOwnerName: string;
   propertyOwnerNumber: string;
   propertyOwnerIdentity: string;
-  propertyAgentName: string;
+  propertyAgentName: string | null;
   propertyAgentNumber: string;
   propertyAgentIdentity: string;
-  facebookLink: string;
-  instagramLink: string;
-  propertyLink: string;
+  facebookLink: string | null;
+  instagramLink: string | null;
   governorate: string;
   directorate: string;
   village: string;
   basin: string;
   plot: string;
-  apartmentNumber: string;
-  classification: string;
-  neighborhood: string;
-  expectedRentAmount: string;
-  notes: string;
+  apartmentNumber: string | null;
+  classification: string | null;
+  neighborhood: string | null;
+  expectedRentAmount: string | null;
+  notes: string | null;
+  interestedPeople: Array<IInterestedPeople>;
+}
+
+declare interface IEditAd {
+  propertyStatus: string;
+  propertyOwnerName: string;
+  propertyOwnerNumber: string;
+  propertyOwnerIdentity: string;
+  propertyAgentName: string | null;
+  propertyAgentNumber: string;
+  propertyAgentIdentity: string;
+  facebookLink: string | null;
+  instagramLink: string | null;
+  governorate: string;
+  directorate: string;
+  village: string;
+  basin: string;
+  plot: string;
+  apartmentNumber: string | null;
+  classification: string | null;
+  neighborhood: string | null;
+  expectedRentAmount: string | null;
+  notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
 }
 

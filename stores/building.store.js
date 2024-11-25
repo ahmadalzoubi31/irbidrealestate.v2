@@ -15,7 +15,7 @@ export const useBuildingStore = defineStore("building", {
       this.loading = true;
 
       try {
-        const { data, refresh, status, error } = await useLazyAsyncData("getBuildings", () => $fetch("/api/buildings"));
+        const { data, refresh, status, error } = await useAsyncData("getBuildings", () => $fetch("/api/buildings"));
         if (status.value === "success") {
           this.buildings = data.value;
         } else {
@@ -48,7 +48,7 @@ export const useBuildingStore = defineStore("building", {
       this.loading = true;
 
       try {
-        const { data, refresh, status, error } = await useLazyAsyncData("createBuilding", () =>
+        const { data, refresh, status, error } = await useAsyncData("createBuilding", () =>
           $fetch("/api/buildings", {
             method: "post",
             body: payload,
@@ -78,7 +78,7 @@ export const useBuildingStore = defineStore("building", {
           throw new Error("no building related to this id");
         }
 
-        const { data, refresh, status, error } = await useLazyAsyncData("editBuilding", () =>
+        const { data, refresh, status, error } = await useAsyncData("editBuilding", () =>
           $fetch("/api/buildings/" + id, {
             method: "put",
             body: payload,
@@ -107,7 +107,7 @@ export const useBuildingStore = defineStore("building", {
           throw new Error("no building related to this id");
         }
 
-        const { data, refresh, status, error } = await useLazyAsyncData("deleteBuilding", () =>
+        const { data, refresh, status, error } = await useAsyncData("deleteBuilding", () =>
           $fetch("/api/buildings/" + id, {
             method: "delete",
           })

@@ -203,6 +203,9 @@ const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A
       <dd v-else-if="key == 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">{{ useGetStatusName(entry as boolean) }}</dd>
       <dd v-else class="font-normal text-primary-500">{{ entry == null ? "-" : entry }}</dd>
     </dt>
+    <UTable class="col-span-2" :rows="ad.interestedPeople" :columns="[{ key: 'name', label: 'اسم الشخص المهتم' }, { key: 'number', label: 'رقم الشخص المهتم' }]">          
+    </UTable>
+
   </dl>
 </template>
 

@@ -15,6 +15,9 @@ export default defineEventHandler(async (event) => {
       where: {
         id: id,
       },
+      include: {
+        interestedPeople: true,
+      },
     });
 
     if (!ad) {

@@ -2,14 +2,25 @@
 // *** Dependencies ***
 import type { Ad } from "@prisma/client";
 
+// Validate the id
+onBeforeMount(() => {
+  const paramId: number = Number(useRoute().params.id);
+  console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
+  if (!isNaN(paramId)) return;
+
+  // Redirect to the home page
+  navigateTo("/ads");
+});
+
 // *** Define Variables ***
-const { data: ads } = useNuxtData<Ad[]>("getAds");
+const selectedPaymentId: string = useRoute().params.id as string;
+console.log("🚀 ~ selectedPaymentId:", selectedPaymentId);
+const { data: ad } = await useAsyncData<Ad, any>("getOneAd", () => $fetch<Ad>("/api/ads/" + selectedPaymentId));
+const toast = useToast();
 const interestedPersonName = ref("");
 const interestedPersonNumber = ref("");
-const state: ICreateAd = reactive({
-  code: "",
+const state: IEditAd = reactive({
   propertyStatus: "متوفر",
-  propertyType: 0,
   propertyOwnerName: "",
   propertyOwnerNumber: "###",
   propertyOwnerIdentity: "",
@@ -18,6 +29,7 @@ const state: ICreateAd = reactive({
   propertyAgentIdentity: "",
   facebookLink: "",
   instagramLink: "",
+  propertyLink: "",
   governorate: "",
   directorate: "",
   village: "",
@@ -30,7 +42,6 @@ const state: ICreateAd = reactive({
   notes: "",
   interestedPeople: [],
 });
-const toast = useToast();
 const items = (row: { name: string; number: string }) => [
   [
     {
@@ -59,71 +70,28 @@ const propertyStatusOptions = [
     value: "تم البيع",
   },
 ];
-const propertyTypeOptions = [
-  {
-    id: 1,
-    name: "شقة سكنية للبيع",
-    value: 1,
-  },
-  {
-    id: 2,
-    name: "شقة استثمارية للبيع",
-    value: 2,
-  },
-  {
-    id: 3,
-    name: "شقة سكنية للايجار",
-    value: 3,
-  },
-  {
-    id: 4,
-    name: "ارض للبيع",
-    value: 4,
-  },
-  {
-    id: 5,
-    name: "ارض للايجار",
-    value: 5,
-  },
-  {
-    id: 6,
-    name: "فيلا للبيع",
-    value: 6,
-  },
-  {
-    id: 7,
-    name: "فيلا للايجار",
-    value: 7,
-  },
-  {
-    id: 8,
-    name: "مزرعة للبيع",
-    value: 8,
-  },
-  {
-    id: 9,
-    name: "مزرعة للايجار",
-    value: 9,
-  },
-];
 
 // *** Declare Methods ***
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("createAd", () =>
-    $fetch<void>("/api/ads", {
-      method: "post",
+  useLoadingIndicator().start();
+  const { status, error } = await useAsyncData<void, any>("editAd", () =>
+    $fetch<void>("/api/ads/" + selectedPaymentId, {
+      method: "put",
       body: state,
     })
   );
 
   if (status.value === "success") {
     toast.remove("saving");
+    useLoadingIndicator().finish();
     refreshNuxtData("getAds");
     await navigateTo("/ads");
   }
 
   if (status.value === "error") {
     // console.log(error.value);
+    useLoadingIndicator().finish();
+    useLoadingIndicator().error.value = true;
     toast.add({
       title: "لقد حدث خطأ ما",
       description: error.value.data.message,
@@ -132,7 +100,6 @@ const submitForm = async () => {
     });
   }
 };
-// Function to add a new interested person (with name and phone)
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
   // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
@@ -142,59 +109,33 @@ const addInterestedPerson = () => {
   interestedPersonNumber.value = "";
 };
 
-// *** Computed Variables ***
-const getLastCodePerType = computed(() => (ads.value ? ads.value.filter((el) => el.propertyType == state.propertyType).length + 1 : 1));
-
-// *** Watchers ***
-watch(
-  () => state.propertyType,
-  (newVal, oldVal) => {
-    // console.log("🚀 ~ newVal:", newVal);
-    const index: number = getLastCodePerType.value;
-    // console.log("🚀 ~ index:", index)
-
-    switch (newVal) {
-      case 1:
-        state.code = "AS" + index;
-        return "AS" + index;
-        break;
-      case 2:
-        state.code = "ASI" + index;
-        return "ASI" + index;
-        break;
-      case 3:
-        state.code = "AR" + index;
-        return "AR" + index;
-        break;
-      case 4:
-        state.code = "LS" + index;
-        return "LS" + index;
-        break;
-      case 5:
-        state.code = "LR" + index;
-        return "LR" + index;
-        break;
-      case 6:
-        state.code = "VS" + index;
-        return "VS" + index;
-        break;
-      case 7:
-        state.code = "VR" + index;
-        return "VR" + index;
-        break;
-      case 8:
-        state.code = "FS" + index;
-        return "FS" + index;
-        break;
-      case 9:
-        state.code = "FR" + index;
-        return "FR" + index;
-        break;
-      default:
-        break;
-    }
-  }
-);
+// *** Validate Form Data ***
+if (ad.value === null) {
+  await navigateTo("/ads");
+} else {
+  // Fill the field with data
+  state.propertyStatus = ad.value.propertyStatus;
+  state.propertyOwnerName = ad.value.propertyOwnerName;
+  state.propertyOwnerNumber = ad.value.propertyOwnerNumber;
+  state.propertyOwnerIdentity = ad.value.propertyOwnerIdentity;
+  state.propertyAgentName = ad.value.propertyAgentName;
+  state.propertyAgentNumber = ad.value.propertyAgentNumber;
+  state.propertyAgentIdentity = ad.value.propertyAgentIdentity;
+  state.facebookLink = ad.value.facebookLink;
+  state.instagramLink = ad.value.instagramLink;
+  state.governorate = ad.value.governorate;
+  state.directorate = ad.value.directorate;
+  state.village = ad.value.village;
+  state.basin = ad.value.basin;
+  state.plot = ad.value.plot;
+  state.apartmentNumber = ad.value.apartmentNumber;
+  state.classification = ad.value.classification;
+  state.neighborhood = ad.value.neighborhood;
+  state.expectedRentAmount = ad.value.expectedRentAmount;
+  state.notes = ad.value.notes;
+  // @ts-ignore
+  state.interestedPeople = ad.value.interestedPeople;
+}
 </script>
 
 <template>
@@ -207,7 +148,7 @@ watch(
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
-          <UInput id="code" name="code" :size="'sm'" :autofocus="true" :required="false" :disable="true" inputClass="bg-gray-200" v-model="state.code" />
+          <UInput id="code" name="code" :size="'sm'" :autofocus="true" :required="false" :disable="true" inputClass="bg-gray-200" :model-value="ad!.code" />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
@@ -224,16 +165,8 @@ watch(
         </div>
         <!-- propertyType -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyType"> نوع العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <USelectMenu
-            id="propertyType"
-            name="propertyType"
-            :required="true"
-            v-model="state.propertyType"
-            :options="propertyTypeOptions"
-            value-attribute="value"
-            option-attribute="name"
-          />
+          <label for="propertyType"> نوع العقار </label>
+          <UInput id="propertyType" name="propertyType" :required="false" :disable="true" inputClass="bg-gray-200" :model-value="useGetPropertyTypeName(ad!.propertyType)" />
         </div>
         <!-- propertyOwnerName -->
         <div class="col-span-6 sm:col-span-2">
@@ -309,14 +242,14 @@ watch(
           <UInput id="plot" name="plot" :size="'sm'" :required="true" v-model="state.plot" />
         </div>
         <!-- apartmentNumber -->
-        <div class="col-span-6 sm:col-span-2" v-show="!state.code.includes('LS') && !state.code.includes('LR')">
+        <div class="col-span-6 sm:col-span-2" v-show="!ad!.code.includes('LS') && !ad!.code.includes('LR')">
           <label for="apartmentNumber"> رقم الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="apartmentNumber" name="apartmentNumber" :size="'sm'" :required="!state.code.includes('LS') && !state.code.includes('LR')" v-model="state.apartmentNumber!" />
+          <UInput id="apartmentNumber" name="apartmentNumber" :size="'sm'" :required="!ad!.code.includes('LS') && !ad!.code.includes('LR')" v-model="state.apartmentNumber!" />
         </div>
         <!-- classification -->
-        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('LS') || state.code.includes('LR')">
+        <div class="col-span-6 sm:col-span-2" v-show="ad!.code.includes('LS') || ad!.code.includes('LR')">
           <label for="classification"> تصنيف الارض <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="classification" name="classification" :size="'sm'" :required="state.code.includes('LS') || state.code.includes('LR')" v-model="state.classification!" />
+          <UInput id="classification" name="classification" :size="'sm'" :required="ad!.code.includes('LS') || ad!.code.includes('LR')" v-model="state.classification!" />
         </div>
         <!-- neighborhood -->
         <div class="col-span-6 sm:col-span-2">
@@ -324,9 +257,9 @@ watch(
           <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="false" v-model="state.neighborhood!" />
         </div>
         <!-- expectedRentAmount -->
-        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('ASI')">
+        <div class="col-span-6 sm:col-span-2" v-show="ad!.code.includes('ASI')">
           <label for="expectedRentAmount"> دخل الايجار المتوقع <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="expectedRentAmount" name="expectedRentAmount" :size="'sm'" :required="state.code.includes('ASI')" v-model="state.expectedRentAmount!" />
+          <UInput id="expectedRentAmount" name="expectedRentAmount" :size="'sm'" :required="ad!.code.includes('ASI')" v-model="state.expectedRentAmount!" />
         </div>
         <!-- notes -->
         <div class="col-span-6 sm:col-span-6">
@@ -342,13 +275,13 @@ watch(
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-12 gap-x-6 gap-y-4 items-center">
         <!-- interestedPersonName -->
-        <label for="interestedPersonName" class="col-span-6 sm:col-span-1"> اسم الشخص المهتم :</label>
-        <div class="col-span-6 sm:col-span-2">
+        <label for="interestedPersonName" class="col-span-6 lg:col-span-1"> اسم الشخص المهتم :</label>
+        <div class="col-span-6 lg:col-span-2">
           <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonName" />
         </div>
         <!-- interestedPersonNumber -->
-        <label for="interestedPersonName" class="col-span-6 sm:col-span-1"> رقم الشخص المهتم :</label>
-        <div class="col-span-6 sm:col-span-2">
+        <label for="interestedPersonName" class="col-span-6 lg:col-span-1"> رقم الشخص المهتم :</label>
+        <div class="col-span-6 lg:col-span-2">
           <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonNumber" />
         </div>
         <UButton

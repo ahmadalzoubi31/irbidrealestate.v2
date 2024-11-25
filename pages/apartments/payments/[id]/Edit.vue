@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// *** Dependencies ***
 import type { Payment } from "@prisma/client";
 import { format } from "date-fns";
 
@@ -12,26 +13,25 @@ onBeforeMount(() => {
   navigateTo("/apartments/payments");
 });
 
-// Define State
-const toast = useToast();
-const state: IEditPayment = reactive({
-  receivedPaymentDate: new Date(),
-  depositAmount: 0,
-  depositDate: new Date(),
-  notes: "",
-});
+// *** Define Variables ***
 const selectedPaymentId = useRoute().params.id;
+const { data: payment } = await useAsyncData<Payment, any>("getOnePayment", () => $fetch<Payment>(`/api/apartments/payments/${selectedPaymentId}`));
+const toast = useToast();
+const state: IEditPayment = reactive({ receivedPaymentDate: new Date(), depositAmount: 0, depositDate: new Date(), notes: "" });
 
-// Declare Methods
+// *** Declare Menus ***
+
+// *** Declare Methods ***
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("editPayment", () =>
-    $fetch<void>("/api/apartments/payments" + selectedPaymentId, {
-      method: "put",
+  const { status, error } = await useAsyncData<void, any>("createPayment", () =>
+    $fetch<void>("/api/apartments/payments", {
+      method: "post",
       body: state,
     })
   );
 
   if (status.value === "success") {
+    toast.remove("saving");
     refreshNuxtData("getPayments");
     await navigateTo("/apartments/payments");
   }
@@ -47,7 +47,31 @@ const submitForm = async () => {
   }
 };
 
-const { data: payment } = await useAsyncData<Payment, any>("getOnePayment", () => $fetch<Payment>(`/api/apartments/payments/${selectedPaymentId}`));
+// *** Validate Form Data ***
+if (payment.value === null) {
+  await navigateTo("/payments");
+} else {
+  // Fill the field with data
+  state.propertyStatus = ad.value.propertyStatus;
+  state.propertyOwnerName = ad.value.propertyOwnerName;
+  state.propertyOwnerNumber = ad.value.propertyOwnerNumber;
+  state.propertyOwnerIdentity = ad.value.propertyOwnerIdentity;
+  state.propertyAgentName = ad.value.propertyAgentName;
+  state.propertyAgentNumber = ad.value.propertyAgentNumber;
+  state.propertyAgentIdentity = ad.value.propertyAgentIdentity;
+  state.facebookLink = ad.value.facebookLink;
+  state.instagramLink = ad.value.instagramLink;
+  state.governorate = ad.value.governorate;
+  state.directorate = ad.value.directorate;
+  state.village = ad.value.village;
+  state.basin = ad.value.basin;
+  state.plot = ad.value.plot;
+  state.apartmentNumber = ad.value.apartmentNumber;
+  state.classification = ad.value.classification;
+  state.neighborhood = ad.value.neighborhood;
+  state.expectedRentAmount = ad.value.expectedRentAmount;
+  state.notes = ad.value.notes;
+}
 </script>
 
 <template>
@@ -72,7 +96,7 @@ const { data: payment } = await useAsyncData<Payment, any>("getOnePayment", () =
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.apartmentId.apartmentNumber"
+            :model-value="payment!.apartment.apartmentNumber"
           />
         </div>
         <!-- nextRentDate -->
@@ -100,7 +124,7 @@ const { data: payment } = await useAsyncData<Payment, any>("getOnePayment", () =
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="fillRentDate ? format(new Date(fillRentDate), 'dd/MM/yyyy') : ''"
+            :model-value="format(new Date(payment?.apartment.rentDate), 'dd/MM/yyyy')"
           />
         </div>
         <!-- rentAmount -->

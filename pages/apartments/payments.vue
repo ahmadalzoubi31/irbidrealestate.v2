@@ -1,7 +1,9 @@
 <script setup lang="ts">
+// Dependencies
 import type { Apartment } from "@prisma/client";
 import format from "date-fns/format";
-// Dependencies
+
+
 const { data: payments } = await useAsyncData<Apartment[], any>("getPayments", () => $fetch<Apartment[]>("/api/apartments/payments"));
 const toast = useToast();
 

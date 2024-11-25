@@ -11,8 +11,9 @@ onBeforeMount(() => {
   navigateTo("/buildings");
 });
 
-const toast = useToast();
 // Define State
+const { data: building } = await useAsyncData<Building, any>("getOneBuilding", () => $fetch<Building>(`/api/buildings/${selectedBuildingId}`));
+const toast = useToast();
 const state: IEditBuilding = reactive({
   apartmentsCount: 0,
   storeCount: 0,
@@ -24,8 +25,6 @@ const state: IEditBuilding = reactive({
   maintenanceAmount: 0,
 });
 const selectedBuildingId = useRoute().params.id;
-
-const { data: building, refresh, status, error } = await useAsyncData<Building, any>("getOneBuilding", () => $fetch<Building>(`/api/buildings/${selectedBuildingId}`));
 
 // Fill the field with data
 state.apartmentsCount = building.value!.apartmentsCount;

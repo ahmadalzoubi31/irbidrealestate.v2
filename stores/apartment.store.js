@@ -15,7 +15,7 @@ export const useApartmentStore = defineStore("apartment", {
       this.loading = true;
 
       try {
-        const { data, refresh, status, error } = await useLazyAsyncData("getApartments", () => $fetch("/api/apartments"));
+        const { data, refresh, status, error } = await useAsyncData("getApartments", () => $fetch("/api/apartments"));
         if (status.value === "success") {
           this.apartments = data.value;
         } else {
@@ -48,7 +48,7 @@ export const useApartmentStore = defineStore("apartment", {
       this.loading = true;
 
       try {
-        const { data, refresh, status, error } = await useLazyAsyncData("createApartment", () =>
+        const { data, refresh, status, error } = await useAsyncData("createApartment", () =>
           $fetch("/api/apartments", {
             method: "post",
             body: payload,
@@ -78,7 +78,7 @@ export const useApartmentStore = defineStore("apartment", {
           throw new Error("no apartment related to this id");
         }
 
-        const { data, refresh, status, error } = await useLazyAsyncData("editApartment", () =>
+        const { data, refresh, status, error } = await useAsyncData("editApartment", () =>
           $fetch("/api/apartments/" + id, {
             method: "put",
             body: payload,
@@ -107,7 +107,7 @@ export const useApartmentStore = defineStore("apartment", {
           throw new Error("no apartment related to this id");
         }
 
-        const { data, refresh, status, error } = await useLazyAsyncData("deleteApartment", () =>
+        const { data, refresh, status, error } = await useAsyncData("deleteApartment", () =>
           $fetch("/api/apartments/" + id, {
             method: "delete",
           })

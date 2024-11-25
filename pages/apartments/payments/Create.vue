@@ -14,10 +14,11 @@ const state: ICreatePayment = reactive({
 });
 
 // Get the select menu data
-const apartments: Ref<Apartment[]> = useState("apartments");
-const fetchedApartments = apartments.value.map((el) => {
+const { data: apartments } =  useNuxtData<Apartment[]>("getApartments");
+const fetchedApartments = apartments.value!.map((el) => {
   return { id: el.id, name: el.apartmentNumber };
 });
+
 
 // Declare Methods
 const submitForm = async () => {
@@ -44,9 +45,9 @@ const submitForm = async () => {
   }
 };
 
-const fillRentAmount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.rentAmount);
-const fillRentDate = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.rentDate);
-const fillCommissionAmount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.commissionAmount);
+const fillRentAmount = computed(() => apartments.value!.find((a) => a.id == state.apartmentId)?.rentAmount);
+const fillRentDate = computed(() => apartments.value!.find((a) => a.id == state.apartmentId)?.rentDate);
+const fillCommissionAmount = computed(() => apartments.value!.find((a) => a.id == state.apartmentId)?.commissionAmount);
 // @ts-ignore
 const fillMaintenanceDiscount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.building.maintenanceAmount);
 // @ts-ignore

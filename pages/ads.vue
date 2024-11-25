@@ -3,14 +3,8 @@
 import type { Ad } from "@prisma/client";
 
 // Define Variables
-// const ads: any= useState('ads');
-const { data } = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
-const ads = await useAdsState(data.value!);
-
-// const {data: ads} = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
-
+const { data: ads } = await useAsyncData<Ad[], any>("getAds", () => $fetch<Ad[]>("/api/ads"));
 const toast = useToast();
-
 
 const selected: Ref<Ad[]> = ref([]);
 const columns = [
@@ -32,12 +26,14 @@ function select(row: Ad) {
   selected.value.push(row);
 }
 const editSelectedRecord = async (id: string) => {
+  useLoadingIndicator().start();
   await navigateTo("/ads/" + id + "/edit");
 };
 const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;
   const response = confirm("هل انت متأكد من حذف هذا العنصر");
   if (response) {
+    useLoadingIndicator().start();
     const { status, error } = await useAsyncData<void, any>("deleteAd", () =>
       $fetch<void>("/api/ads/" + id, {
         method: "delete",
@@ -46,6 +42,7 @@ const deleteSelectedRecord = async () => {
 
     if (status.value === "success") {
       refreshNuxtData("getAds");
+      useLoadingIndicator().finish();
       toast.add({
         title: "نجحت العملية",
         description: "تم حذف العنصر بنجاح",
@@ -56,7 +53,7 @@ const deleteSelectedRecord = async () => {
 
     if (status.value === "error") {
       // console.log(error.value.data.message);
-
+      useLoadingIndicator().error.value = true;
       toast.add({
         title: "لقد حدث خطأ ما",
         description: error.value.data.message,
@@ -132,13 +129,27 @@ const expand = ref({
             </template>
             <template #facebookLink-data="{ row }">
               <span>
-                <UButton v-if="row.facebookLink" :href="row.facebookLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+                <UButton
+                  v-if="row.facebookLink"
+                  :href="row.facebookLink"
+                  icon="i-heroicons-link-20-solid"
+                  class="text-blue-500 h-0 align-middle items-center"
+                  variant="ghost"
+                  size="sm"
+                />
                 <span v-else>-</span>
               </span>
             </template>
             <template #instagramLink-data="{ row }">
               <span>
-                <UButton v-if="row.instagramLink" :to="row.instagramLink" icon="i-heroicons-link-20-solid" class="text-blue-500 h-0 align-middle items-center" variant="ghost" size="sm" />
+                <UButton
+                  v-if="row.instagramLink"
+                  :to="row.instagramLink"
+                  icon="i-heroicons-link-20-solid"
+                  class="text-blue-500 h-0 align-middle items-center"
+                  variant="ghost"
+                  size="sm"
+                />
                 <span v-else>-</span>
               </span>
             </template>

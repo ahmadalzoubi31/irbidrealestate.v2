@@ -119,16 +119,16 @@ const submitForm = async () => {
 const uploadImage = (event: any) => console.log(event);
 
 // Get the select menu data
-const buildings: Ref<Building[]> = useState("buildings");
-const fetchedBuildings = buildings.value.map((el) => {
+const { data: buildings } = useNuxtData<Building[]>('getBuildings')
+const fetchedBuildings = buildings.value!.map((el) => {
   return { id: el.id, name: el.name };
 });
 
-const fillBasinName = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinName);
-const fillBasinNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.basinNumber);
-const fillLandNumber = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.landNumber);
-const fillServiceAmount = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.serviceAmount);
-const fillMaintenanceAmount = computed(() => buildings.value.find((a) => a.name == state.buildingName)?.maintenanceAmount);
+const fillBasinName = computed(() => buildings.value!.find((a) => a.name == state.buildingName)?.basinName);
+const fillBasinNumber = computed(() => buildings.value!.find((a) => a.name == state.buildingName)?.basinNumber);
+const fillLandNumber = computed(() => buildings.value!.find((a) => a.name == state.buildingName)?.landNumber);
+const fillServiceAmount = computed(() => buildings.value!.find((a) => a.name == state.buildingName)?.serviceAmount);
+const fillMaintenanceAmount = computed(() => buildings.value!.find((a) => a.name == state.buildingName)?.maintenanceAmount);
 </script>
 
 <template>

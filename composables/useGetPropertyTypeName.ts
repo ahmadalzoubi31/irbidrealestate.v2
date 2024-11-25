@@ -1,4 +1,4 @@
-const getContractStatusName = (s: number) => {
+const useGetPropertyTypeName = (s: number) => {
   switch (s) {
     case 1:
       return "شقة سكنية للبيع";
@@ -31,4 +31,4 @@ const getContractStatusName = (s: number) => {
       break;
   }
 };
-export default getContractStatusName;
+export default useGetPropertyTypeName;
