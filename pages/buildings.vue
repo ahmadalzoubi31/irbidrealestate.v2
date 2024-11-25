@@ -1,8 +1,13 @@
 <script setup lang="ts">
+// Dependencies
 import type { Building } from "@prisma/client";
 
-// Dependencies
-const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
+// Shared state for tables
+const buildingState = useBuildingState();
+// const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
+const { data } = await useFetch<Building[], any>("/api/buildings")
+buildingState.value = data.value!;
+
 const toast = useToast();
 
 // Define Variables
@@ -67,10 +72,10 @@ const deleteSelectedRecord = async () => {
 const q = ref("");
 const filteredRows: any = computed(() => {
   if (!q.value) {
-    return buildings.value;
+    return buildingState.value;
   }
 
-  return buildings.value!.filter((el) => {
+  return buildingState.value!.filter((el) => {
     // to avoid search on them
     // @ts-ignore
     delete el.createdAt;

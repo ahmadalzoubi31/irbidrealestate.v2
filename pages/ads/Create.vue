@@ -2,6 +2,7 @@
 import type { Ad } from "@prisma/client";
 
 const toast = useToast();
+const ads = useState<Ad[]>("ads")
 
 // Define State
 const state: ICreateAd = reactive({
@@ -145,14 +146,14 @@ const addInterestedPerson = () => {
   interestedPersonNumber.value = "";
 };
 
-clearNuxtState("ads");
-const ads: Ref<Ad[]> = useState("ads");
+
 const getLastCodePerType = computed(() => (ads.value ? ads.value.filter((el) => el.propertyType == state.propertyType).length + 1 : 1));
+
 
 watch(
   () => state.propertyType,
   (newVal, oldVal) => {
-    console.log("🚀 ~ newVal:", newVal);
+    // console.log("🚀 ~ newVal:", newVal);
     const index: number = getLastCodePerType.value;
 
     switch (newVal) {
@@ -344,12 +345,12 @@ watch(
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-12 gap-x-6 gap-y-4 items-center">
         <!-- interestedPersonName -->
-        <label for="interestedPersonName"> اسم الشخص المهتم :</label>
+        <label for="interestedPersonName" class="col-span-6 sm:col-span-1"> اسم الشخص المهتم :</label>
         <div class="col-span-6 sm:col-span-2">
           <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonName" />
         </div>
         <!-- interestedPersonNumber -->
-        <label for="interestedPersonName"> رقم الشخص المهتم :</label>
+        <label for="interestedPersonName" class="col-span-6 sm:col-span-1"> رقم الشخص المهتم :</label>
         <div class="col-span-6 sm:col-span-2">
           <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonNumber" />
         </div>
@@ -367,7 +368,7 @@ watch(
     </div>
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
-    <div class="float-left">
+    <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
       <UButton to="/ads" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"> الغاء </UButton>
     </div>

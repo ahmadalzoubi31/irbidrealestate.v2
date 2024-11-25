@@ -1,4 +1,4 @@
-const getStatusName = (s) => {
+const getStatusName = (s: boolean) => {
   if (s) {
     return "نشط";
   } else {
