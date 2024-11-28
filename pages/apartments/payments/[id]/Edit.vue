@@ -51,26 +51,10 @@ const submitForm = async () => {
 if (payment.value === null) {
   await navigateTo("/payments");
 } else {
-  // Fill the field with data
-  state.propertyStatus = ad.value.propertyStatus;
-  state.propertyOwnerName = ad.value.propertyOwnerName;
-  state.propertyOwnerNumber = ad.value.propertyOwnerNumber;
-  state.propertyOwnerIdentity = ad.value.propertyOwnerIdentity;
-  state.propertyAgentName = ad.value.propertyAgentName;
-  state.propertyAgentNumber = ad.value.propertyAgentNumber;
-  state.propertyAgentIdentity = ad.value.propertyAgentIdentity;
-  state.facebookLink = ad.value.facebookLink;
-  state.instagramLink = ad.value.instagramLink;
-  state.governorate = ad.value.governorate;
-  state.directorate = ad.value.directorate;
-  state.village = ad.value.village;
-  state.basin = ad.value.basin;
-  state.plot = ad.value.plot;
-  state.apartmentNumber = ad.value.apartmentNumber;
-  state.classification = ad.value.classification;
-  state.neighborhood = ad.value.neighborhood;
-  state.expectedRentAmount = ad.value.expectedRentAmount;
-  state.notes = ad.value.notes;
+  receivedPaymentDate: payment.value.receivedPaymentDate;
+  depositAmount: payment.value.depositAmount;
+  depositDate: payment.value.depositDate;
+  notes: payment.value.notes;
 }
 </script>
 
@@ -225,7 +209,13 @@ if (payment.value === null) {
             <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
           <UPopover :popper="{ placement: 'bottom-start' }">
-            <UInput icon="i-heroicons-calendar-days-20-solid" nam="depositDate" :size="'sm'" class="w-full" :model-value="format(state.depositDate, 'dd/MM/yyyy')" />
+            <UInput
+              icon="i-heroicons-calendar-days-20-solid"
+              nam="depositDate"
+              :size="'sm'"
+              class="w-full"
+              :model-value="format(state.depositDate, 'dd/MM/yyyy')"
+            />
 
             <template #panel="{ close }">
               <DatePicker v-model="state.depositDate" is-required @close="close" />
@@ -243,7 +233,12 @@ if (payment.value === null) {
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton :type="'button'" to="/apartments/rents" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton
+        :type="'button'"
+        to="/apartments/rents"
+        :size="'md'"
+        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
+      >
         الغاء
       </UButton>
     </div>

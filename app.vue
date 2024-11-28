@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup langeist="ts">
 useHead({
   title: "Irbid Real Estate",
   meta: [{ name: "description", content: "My amazing site." }],
@@ -8,6 +8,7 @@ useHead({
     lang: "ar",
   },
 });
+
 </script>
 
 <template>

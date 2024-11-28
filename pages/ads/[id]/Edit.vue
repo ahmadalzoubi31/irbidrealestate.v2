@@ -14,7 +14,6 @@ onBeforeMount(() => {
 
 // *** Define Variables ***
 const selectedPaymentId: string = useRoute().params.id as string;
-console.log("🚀 ~ selectedPaymentId:", selectedPaymentId);
 const { data: ad } = await useAsyncData<Ad, any>("getOneAd", () => $fetch<Ad>("/api/ads/" + selectedPaymentId));
 const toast = useToast();
 const interestedPersonName = ref("");
@@ -103,7 +102,10 @@ const submitForm = async () => {
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
   // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
-  state.interestedPeople.push({ name: interestedPersonName.value, number: interestedPersonNumber.value });
+  state.interestedPeople.push({
+    name: interestedPersonName.value,
+    number: interestedPersonNumber.value,
+  });
 
   interestedPersonName.value = "";
   interestedPersonNumber.value = "";
@@ -148,7 +150,16 @@ if (ad.value === null) {
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
-          <UInput id="code" name="code" :size="'sm'" :autofocus="true" :required="false" :disable="true" inputClass="bg-gray-200" :model-value="ad!.code" />
+          <UInput
+            id="code"
+            name="code"
+            :size="'sm'"
+            :autofocus="true"
+            :required="false"
+            :disable="true"
+            inputClass="bg-gray-200"
+            :model-value="ad!.code"
+          />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
@@ -166,16 +177,29 @@ if (ad.value === null) {
         <!-- propertyType -->
         <div class="col-span-6 sm:col-span-2">
           <label for="propertyType"> نوع العقار </label>
-          <UInput id="propertyType" name="propertyType" :required="false" :disable="true" inputClass="bg-gray-200" :model-value="useGetPropertyTypeName(ad!.propertyType)" />
+          <UInput
+            id="propertyType"
+            name="propertyType"
+            :required="false"
+            :disable="true"
+            inputClass="bg-gray-200"
+            :model-value="useGetPropertyTypeName(ad!.propertyType)"
+          />
         </div>
         <!-- propertyOwnerName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyOwnerName"> اسم صاحب العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="propertyOwnerName">
+            اسم صاحب العقار
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
           <UInput id="propertyOwnerName" name="propertyOwnerName" :size="'sm'" :required="true" v-model="state.propertyOwnerName" />
         </div>
         <!-- propertyOwnerNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyOwnerNumber"> رقم صاحب العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="propertyOwnerNumber">
+            رقم صاحب العقار
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
           <UInput id="propertyOwnerNumber" name="propertyOwnerNumber" :size="'sm'" :required="true" v-model="state.propertyOwnerNumber" />
         </div>
         <!-- propertyOwnerIdentity -->
@@ -218,12 +242,18 @@ if (ad.value === null) {
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
         <!-- governorate -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="governorate"> المحافظة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="governorate">
+            المحافظة
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
           <UInput id="governorate" name="governorate" :size="'sm'" :autofocus="true" :required="true" v-model="state.governorate" />
         </div>
         <!-- directorate -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="directorate"> المديرية <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="directorate">
+            المديرية
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
           <UInput id="directorate" name="directorate" :size="'sm'" :autofocus="true" :required="true" v-model="state.directorate" />
         </div>
         <!-- village -->
@@ -238,18 +268,39 @@ if (ad.value === null) {
         </div>
         <!-- plot -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="plot"> رقم القطعة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="plot">
+            رقم القطعة
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
           <UInput id="plot" name="plot" :size="'sm'" :required="true" v-model="state.plot" />
         </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2" v-show="!ad!.code.includes('LS') && !ad!.code.includes('LR')">
-          <label for="apartmentNumber"> رقم الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="apartmentNumber" name="apartmentNumber" :size="'sm'" :required="!ad!.code.includes('LS') && !ad!.code.includes('LR')" v-model="state.apartmentNumber!" />
+          <label for="apartmentNumber">
+            رقم الشقة
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="apartmentNumber"
+            name="apartmentNumber"
+            :size="'sm'"
+            :required="!ad!.code.includes('LS') && !ad!.code.includes('LR')"
+            v-model="state.apartmentNumber!"
+          />
         </div>
         <!-- classification -->
         <div class="col-span-6 sm:col-span-2" v-show="ad!.code.includes('LS') || ad!.code.includes('LR')">
-          <label for="classification"> تصنيف الارض <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="classification" name="classification" :size="'sm'" :required="ad!.code.includes('LS') || ad!.code.includes('LR')" v-model="state.classification!" />
+          <label for="classification">
+            تصنيف الارض
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="classification"
+            name="classification"
+            :size="'sm'"
+            :required="ad!.code.includes('LS') || ad!.code.includes('LR')"
+            v-model="state.classification!"
+          />
         </div>
         <!-- neighborhood -->
         <div class="col-span-6 sm:col-span-2">
@@ -258,8 +309,17 @@ if (ad.value === null) {
         </div>
         <!-- expectedRentAmount -->
         <div class="col-span-6 sm:col-span-2" v-show="ad!.code.includes('ASI')">
-          <label for="expectedRentAmount"> دخل الايجار المتوقع <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="expectedRentAmount" name="expectedRentAmount" :size="'sm'" :required="ad!.code.includes('ASI')" v-model="state.expectedRentAmount!" />
+          <label for="expectedRentAmount">
+            دخل الايجار المتوقع
+            <span class="text-sm text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="expectedRentAmount"
+            name="expectedRentAmount"
+            :size="'sm'"
+            :required="ad!.code.includes('ASI')"
+            v-model="state.expectedRentAmount!"
+          />
         </div>
         <!-- notes -->
         <div class="col-span-6 sm:col-span-6">
@@ -295,7 +355,11 @@ if (ad.value === null) {
         </UButton>
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable class="" :rows="state.interestedPeople" :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]">
+        <UTable
+          class=""
+          :rows="state.interestedPeople"
+          :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]"
+        >
           <template #actions-data="{ row }">
             <UDropdown :items="items(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
@@ -308,7 +372,9 @@ if (ad.value === null) {
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton to="/ads" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"> الغاء </UButton>
+      <UButton to="/ads" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+        الغاء
+      </UButton>
     </div>
   </form>
 </template>

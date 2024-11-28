@@ -1,51 +1,44 @@
 <script setup lang="ts">
 // Dependencies
-import type { Building } from "@prisma/client";
-
+import type { Claim } from "@prisma/client";
 
 // Define Variables
-const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings", ));
+const { data: claims } = await useAsyncData<Claim[], any>("getClaims", () => $fetch<Claim[]>("/api/claims"));
 const toast = useToast();
-const selected: Ref<Building[]> = ref([]);
+const selected: Ref<Claim[]> = ref([]);
 const columns = [
   // { key: "id", label: "#", sortable: false },
-  { key: "name", label: "اسم البناية", sortable: true },
-  { key: "apartmentsCount", label: "عدد الشقق", sortable: false },
-  { key: "storeCount", label: "عدد المخازن", sortable: false },
-  { key: "basinName", label: "اسم الحوض", sortable: true },
-  { key: "basinNumber", label: "رقم الحوض", sortable: true },
-  { key: "landNumber", label: "رقم قطعة للأرض", sortable: true },
-  { key: "serviceAmount", label: "الصيانة", sortable: false },
-  { key: "maintenanceAmount", label: "الخدمات", sortable: false },
-  { key: "electricBill", label: "اشتراك الكهرباء", sortable: false },
-  { key: "registeredApartmentsCount", label: "عدد الشقق المسجلة", sortable: false },
+  { key: "apartment.apartmentNumber", label: "رقم الشقة", sortable: true },
+  { key: "claimFrom", label: "المطلوب منه", sortable: false },
+  { key: "claimDate", label: "تاريخ المطالبة", sortable: false },
+  { key: "total", label: "مجموع المبلغ", sortable: false },
+  { key: "status", label: "الحالة", sortable: true },
 ];
 const expand = ref({
   openedRows: [],
   row: null,
 });
-const selectedColumns = ref([...columns]);
 
 // Define Methods
-function select(row: Building) {
+function select(row: Claim) {
   selected.value.length = 0;
   selected.value.push(row);
 }
 const editSelectedRecord = async (id: string) => {
-  await navigateTo("/buildings/" + id + "/edit");
+  await navigateTo("/claims/" + id + "/edit");
 };
 const deleteSelectedRecord = async () => {
   const id = selected.value[0].id;
   const response = confirm("هل انت متأكد من حذف هذا العنصر");
   if (response) {
-    const { status, error } = await useAsyncData<void, any>("deleteBuilding", () =>
-      $fetch<void>("/api/buildings/" + id, {
+    const { status, error } = await useAsyncData<void, any>("deleteClaim", () =>
+      $fetch<void>("/api/claims/" + id, {
         method: "delete",
       })
     );
 
     if (status.value === "success") {
-      refreshNuxtData("getBuildings");
+      refreshNuxtData("getClaims");
       toast.add({
         title: "نجحت العملية",
         description: "تم حذف العنصر بنجاح",
@@ -71,10 +64,10 @@ const deleteSelectedRecord = async () => {
 const q = ref("");
 const filteredRows: any = computed(() => {
   if (!q.value) {
-    return buildings.value;
+    return claims.value;
   }
 
-  return buildings.value!.filter((el) => {
+  return claims.value!.filter((el) => {
     // to avoid search on them
     // @ts-ignore
     delete el.createdAt;
@@ -90,36 +83,40 @@ const filteredRows: any = computed(() => {
     });
   });
 });
-
-
+const selectedColumns = ref([...columns]);
 </script>
 
 <template>
-  <div id="building">
-    <div class="parentWrapper" v-if="useRoute().name === 'buildings'">
-      <div id="buildingTable">
+  <div id="claim">
+    <div class="parentWrapper" v-if="useRoute().name === 'claims'">
+      <div id="claimTable">
         <div id="buttonWrapper" class="my-3">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/buildings/create'" />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مطالبة" :to="'/claims/create'" />
           <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مطالبة" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
         </div>
 
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+        <div class="shadow overflow-hidden bclaim-b bclaim-gray-200 sm:rounded-[0.25rem] mb-2">
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
                 <pre>
-                  <!-- {{ row }} -->
-                  <BuildingDetails :building="row" />
+                  {{ row }}
+                  <!-- <ClaimDetails :claim="row" /> -->
                 </pre>
               </div>
             </template>
-            <template #name-data="{ row }">
+            <template #apartment.apartmentNumber-data="{ row }">
               <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
-                {{ row.name }}
+                {{ row.apartment.apartmentNumber }}
+              </span>
+            </template>
+            <template #status-data="{ row }">
+              <span>
+                {{ useGetStatusName(row.status) }}
               </span>
             </template>
           </UTable>

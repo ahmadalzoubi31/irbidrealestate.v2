@@ -105,8 +105,60 @@ CREATE TABLE "InterestedPeople" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
     "number" TEXT NOT NULL DEFAULT '###',
-    "adId" INTEGER,
+    "adId" INTEGER NOT NULL,
     CONSTRAINT "InterestedPeople_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "type" INTEGER NOT NULL,
+    "date" DATETIME NOT NULL,
+    "ownerName" TEXT NOT NULL,
+    "ownerNumber" TEXT NOT NULL,
+    "details" TEXT NOT NULL,
+    "price" REAL NOT NULL DEFAULT 0.0,
+    "firstStep" TEXT,
+    "notes" TEXT,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createdBy" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedBy" TEXT,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Claim" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "claimDate" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "claimFrom" TEXT NOT NULL,
+    "total" REAL NOT NULL DEFAULT 0.0,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createdBy" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedBy" TEXT,
+    "updatedAt" DATETIME NOT NULL,
+    "apartmentId" INTEGER NOT NULL,
+    CONSTRAINT "Claim_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Collection" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "dateTime" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "payment" REAL NOT NULL DEFAULT 0.0,
+    "notes" TEXT,
+    "claimId" INTEGER NOT NULL,
+    CONSTRAINT "Collection_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES "Claim" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Detail" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "item" TEXT NOT NULL,
+    "price" REAL NOT NULL DEFAULT 0.0,
+    "claimId" INTEGER NOT NULL,
+    CONSTRAINT "Detail_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES "Claim" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex

@@ -7,7 +7,8 @@
 //   output        = "../node_modules/.prisma/client"
 // }
 generator client {
-  provider = "prisma-client-js"
+  provider                      = "prisma-client-js"
+  interactiveTransactionTimeout = 10000 // Increase to 10 seconds
 }
 
 datasource db {
@@ -28,7 +29,7 @@ model Building {
   serviceAmount             Float       @default(0.0)
   maintenanceAmount         Float       @default(0.0)
   registeredApartmentsCount Int         @default(0)
-  Apartment                 Apartment[]
+  apartments                Apartment[]
   status                    Boolean     @default(true)
   createdBy                 String?     @default("-")
   createdAt                 DateTime    @default(now())
@@ -89,7 +90,8 @@ model Apartment {
   createdAt            DateTime  @default(now())
   updatedBy            String?
   updatedAt            DateTime  @updatedAt
-  Payment              Payment[]
+  payments             Payment[]
+  claims               Claim[]
 }
 
 // *** Payments ***
@@ -148,6 +150,60 @@ model InterestedPeople {
   name   String
   number String @default("###")
 
-  ad   Ad?  @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId Int?
+  ad   Ad  @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId Int
+}
+
+// *** Orders ***
+model Order {
+  id          Int      @id @default(autoincrement())
+  type        Int
+  date        DateTime
+  ownerName   String
+  ownerNumber String
+  details     String
+  price       Float    @default(0.0)
+  firstStep   String?
+  notes       String?
+  status      Boolean  @default(true)
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+}
+
+// *** Claims ***
+model Claim {
+  id          Int          @id @default(autoincrement())
+  claimDate   DateTime     @default(now())
+  claimFrom   String
+  collections Collection[]
+  details     Detail[]
+  total       Float        @default(0.0)
+  status      Boolean      @default(true)
+  createdBy   String?
+  createdAt   DateTime     @default(now())
+  updatedBy   String?
+  updatedAt   DateTime     @updatedAt
+  apartment   Apartment    @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId Int
+}
+
+model Collection {
+  id       Int      @id @default(autoincrement())
+  dateTime DateTime @default(now())
+  payment  Float    @default(0.0)
+  notes    String?
+
+  claim   Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId Int
+}
+
+model Detail {
+  id    Int    @id @default(autoincrement())
+  item  String
+  price Float  @default(0.0)
+
+  claim   Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId Int
 }

@@ -6,6 +6,7 @@ import type { Ad } from "@prisma/client";
 const { data: ads } = useNuxtData<Ad[]>("getAds");
 const interestedPersonName = ref("");
 const interestedPersonNumber = ref("");
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const state: ICreateAd = reactive({
   code: "",
   propertyStatus: "متوفر",
@@ -109,10 +110,11 @@ const propertyTypeOptions = [
 
 // *** Declare Methods ***
 const submitForm = async () => {
+  const body = { ...state, files: files.value };
   const { status, error } = await useAsyncData<void, any>("createAd", () =>
     $fetch<void>("/api/ads", {
       method: "post",
-      body: state,
+      body: body,
     })
   );
 
@@ -132,6 +134,7 @@ const submitForm = async () => {
     });
   }
 };
+
 // Function to add a new interested person (with name and phone)
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
@@ -207,7 +210,16 @@ watch(
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
-          <UInput id="code" name="code" :size="'sm'" :autofocus="true" :required="false" :disable="true" inputClass="bg-gray-200" v-model="state.code" />
+          <UInput
+            id="code"
+            name="code"
+            :size="'sm'"
+            :autofocus="true"
+            :required="true"
+            :disable="true"
+            inputClass="bg-gray-200"
+            v-model="state.code"
+          />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
@@ -275,6 +287,11 @@ watch(
           <label for="instagramLink"> رابط الانستجرام </label>
           <UInput id="instagramLink" name="instagramLink" :type="'text'" :size="'sm'" :required="false" v-model="state.instagramLink!" />
         </div>
+        <!-- adPhotos -->
+        <div class="col-span-6 sm:col-span-1">
+          <label for="adPhotos"> صور الاعلان </label>
+          <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
+        </div>
       </div>
     </div>
 
@@ -311,12 +328,24 @@ watch(
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2" v-show="!state.code.includes('LS') && !state.code.includes('LR')">
           <label for="apartmentNumber"> رقم الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="apartmentNumber" name="apartmentNumber" :size="'sm'" :required="!state.code.includes('LS') && !state.code.includes('LR')" v-model="state.apartmentNumber!" />
+          <UInput
+            id="apartmentNumber"
+            name="apartmentNumber"
+            :size="'sm'"
+            :required="!state.code.includes('LS') && !state.code.includes('LR')"
+            v-model="state.apartmentNumber!"
+          />
         </div>
         <!-- classification -->
         <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('LS') || state.code.includes('LR')">
           <label for="classification"> تصنيف الارض <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="classification" name="classification" :size="'sm'" :required="state.code.includes('LS') || state.code.includes('LR')" v-model="state.classification!" />
+          <UInput
+            id="classification"
+            name="classification"
+            :size="'sm'"
+            :required="state.code.includes('LS') || state.code.includes('LR')"
+            v-model="state.classification!"
+          />
         </div>
         <!-- neighborhood -->
         <div class="col-span-6 sm:col-span-2">
@@ -326,12 +355,18 @@ watch(
         <!-- expectedRentAmount -->
         <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('ASI')">
           <label for="expectedRentAmount"> دخل الايجار المتوقع <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="expectedRentAmount" name="expectedRentAmount" :size="'sm'" :required="state.code.includes('ASI')" v-model="state.expectedRentAmount!" />
+          <UInput
+            id="expectedRentAmount"
+            name="expectedRentAmount"
+            :size="'sm'"
+            :required="state.code.includes('ASI')"
+            v-model="state.expectedRentAmount!"
+          />
         </div>
         <!-- notes -->
-        <div class="col-span-6 sm:col-span-6">
+        <div class="col-span-6 sm:col-span-8">
           <label for="notes"> الملاحظات </label>
-          <UInput id="notes" name="notes" :type="'text'" :size="'sm'" :required="false" v-model="state.notes!" />
+          <UTextarea id="notes" name="notes" :type="'text'" :size="'sm'" :required="false" v-model="state.notes!" />
         </div>
       </div>
     </div>
@@ -347,9 +382,9 @@ watch(
           <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonName" />
         </div>
         <!-- interestedPersonNumber -->
-        <label for="interestedPersonName" class="col-span-6 sm:col-span-1"> رقم الشخص المهتم :</label>
+        <label for="interestedPersonNumber" class="col-span-6 sm:col-span-1"> رقم الشخص المهتم :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonNumber" />
+          <UInput id="interestedPersonNumber" name="interestedPersonNumber" :size="'sm'" :required="false" v-model="interestedPersonNumber" />
         </div>
         <UButton
           :type="'button'"
@@ -362,7 +397,11 @@ watch(
         </UButton>
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable class="" :rows="state.interestedPeople" :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]">
+        <UTable
+          class=""
+          :rows="state.interestedPeople"
+          :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]"
+        >
           <template #actions-data="{ row }">
             <UDropdown :items="items(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
@@ -375,7 +414,9 @@ watch(
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton to="/ads" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"> الغاء </UButton>
+      <UButton to="/ads" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+        الغاء
+      </UButton>
     </div>
   </form>
 </template>

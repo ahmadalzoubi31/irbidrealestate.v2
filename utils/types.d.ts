@@ -151,3 +151,45 @@ declare interface IInterestedPeople {
   name: string;
   number: string;
 }
+
+declare interface ICreateOrder {
+  type: number;
+  date: Date;
+  ownerName: string;
+  ownerNumber: string;
+  details: string;
+  price: number;
+  firstStep: string | null;
+  notes: string | null;
+}
+
+declare interface IEditOrder {
+  type: number;
+  date: Date;
+  ownerName: string;
+  ownerNumber: string;
+  details: string;
+  price: number;
+  firstStep: string | null;
+  notes: string | null;
+}
+
+declare interface ICollection {
+  dateTime: Date;
+  payment: Number;
+  notes: string | null;
+}
+
+declare interface IDetail {
+  item: string;
+  price: Number;
+}
+
+declare interface ICreateClaim {
+  apartmentId: number;
+  claimDate: Date;
+  claimFrom: string;
+  total: number;
+  collections: Array<ICollection>;
+  details: Array<IDetail>;
+}

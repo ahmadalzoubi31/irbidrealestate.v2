@@ -1,10 +1,8 @@
-import { Prisma, Ad } from "@prisma/client";
-import { useFetch } from "nuxt/app";
+import { Prisma, Claim } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const body: any = await readBody(event);
-  console.log("🚀 ~ defineEventHandler ~ body:", body);
+  const body: Claim = await readBody(event);
 
   if (!body) {
     var msg = "ERROR: Argument data is missing";
@@ -15,30 +13,24 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { files, ...adData } = body;
-
   try {
-    const res = await prisma.ad.create({
-      // @ts-ignore
-      data: { ...adData, interestedPeople: { create: body.interestedPeople } },
+    await prisma.claim.create({
+      data: {
+        ...body,
+        // @ts-ignore
+        collections: { create: body.collections },
+        // @ts-ignore
+        details: { create: body.details },
+      },
     });
-
-    if (files.length != 0 && res) {
-      await useFetch(`/api/ads/${res.id}/files`, {
-        method: "POST",
-        body: {
-          files: files.value,
-        },
-      });
-    }
   } catch (error: any) {
     console.log({ prisma_code: error.code });
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log("🚀 ~ defineEventHandler ~ error:", error);
       // The .code property can be accessed in a type-safe manner
       if (error.code === "P2002") {
-        var msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this code";
+        var msg =
+          "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
         console.log(msg);
         throw createError({
           statusCode: 400,

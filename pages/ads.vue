@@ -63,6 +63,10 @@ const deleteSelectedRecord = async () => {
     }
   }
 };
+const generateSharedLinkSelectedRecord = async () => {
+  const id = selected.value[0].id;
+  await navigateTo(`/ads/${id}/generate`);
+};
 
 // Define Filter
 const q = ref("");
@@ -100,8 +104,8 @@ const expand = ref({
       <div id="adTable">
         <div id="buttonWrapper" class="my-3">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة اعلان" :to="'/ads/create'" />
-          <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
           <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-arrow-right-on-rectangle-20-solid" label="انشاء رابط مشترك" @click="generateSharedLinkSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
