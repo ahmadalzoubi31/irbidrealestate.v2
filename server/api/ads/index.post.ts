@@ -4,7 +4,6 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event);
-  console.log("🚀 ~ defineEventHandler ~ body:", body);
 
   if (!body) {
     var msg = "ERROR: Argument data is missing";
@@ -16,6 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const { files, ...adData } = body;
+  console.log("🚀 ~ defineEventHandler ~ files:", { files, ...adData });
 
   try {
     const res = await prisma.ad.create({
@@ -23,14 +23,14 @@ export default defineEventHandler(async (event) => {
       data: { ...adData, interestedPeople: { create: body.interestedPeople } },
     });
 
-    if (files.length != 0 && res) {
-      await useFetch(`/api/ads/${res.id}/files`, {
-        method: "POST",
-        body: {
-          files: files.value,
-        },
-      });
-    }
+    // if (files.length != 0 && res) {
+    //   await useFetch(`/api/ads/${res.id}/files`, {
+    //     method: "POST",
+    //     body: {
+    //       files: files.value,
+    //     },
+    //   });
+    // }
   } catch (error: any) {
     console.log({ prisma_code: error.code });
 
