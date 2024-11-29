@@ -115,10 +115,10 @@ const expand = ref({
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
-                <pre>
+                <div class="py-8">
                   <!-- {{ row }} -->
                   <AdDetails :ad="row" />
-                </pre>
+                </div>
               </div>
             </template>
             <template #code-data="{ row }">

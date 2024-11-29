@@ -3,7 +3,6 @@
 import type { Apartment } from "@prisma/client";
 import format from "date-fns/format";
 
-
 const { data: payments } = await useAsyncData<Apartment[], any>("getPayments", () => $fetch<Apartment[]>("/api/apartments/payments"));
 const toast = useToast();
 
@@ -115,10 +114,10 @@ const expand = ref({
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
-                <pre>
+                <div class="py-8">
                   {{ row }}
                   <!-- <PaymentDetails :payment="row" /> -->
-                </pre>
+                </div>
               </div>
             </template>
             <template #receivedPaymentDate-data="{ row }">

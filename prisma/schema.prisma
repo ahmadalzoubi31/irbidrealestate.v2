@@ -10,7 +10,7 @@ generator client {
   provider                      = "prisma-client-js"
   binaryTargets                 = ["native", "darwin-arm64"]
   output                        = "../node_modules/.prisma/client"
-  interactiveTransactionTimeout = 10000 // Increase to 10 seconds
+  interactiveTransactionTimeout = 20000 // Increase to 10 seconds
 }
 
 datasource db {
@@ -139,6 +139,7 @@ model Ad {
   expectedRentAmount    String?
   notes                 String?
   interestedPeople      InterestedPeople[]
+  files                 AdFile[]
   status                Boolean            @default(true)
   createdBy             String?
   createdAt             DateTime           @default(now())
@@ -208,4 +209,16 @@ model Detail {
 
   claim   Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
   claimId Int
+}
+
+model AdFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  status    Boolean  @default(true)
+  createdBy String?
+  createdAt DateTime @default(now())
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+  Ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId      Int
 }

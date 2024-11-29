@@ -147,6 +147,11 @@ declare interface IEditAd {
   interestedPeople: Array<IInterestedPeople>;
 }
 
+declare interface ICreateAdFile {
+  name: string;
+  adId: number;
+}
+
 declare interface IInterestedPeople {
   name: string;
   number: string;

@@ -6,7 +6,7 @@ import type { Ad } from "@prisma/client";
 const { data: ads } = useNuxtData<Ad[]>("getAds");
 const interestedPersonName = ref("");
 const interestedPersonNumber = ref("");
-// const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const state: ICreateAd = reactive({
   code: "",
   propertyStatus: "متوفر",
@@ -110,11 +110,11 @@ const propertyTypeOptions = [
 
 // *** Declare Methods ***
 const submitForm = async () => {
-  // const body = { ...state, files: files.value };
+  const body = { ...state, files: files.value };
   const { status, error } = await useAsyncData<void, any>("createAd", () =>
     $fetch<void>("/api/ads", {
       method: "post",
-      body: state,
+      body: body,
     })
   );
 
@@ -290,7 +290,7 @@ watch(
         <!-- adPhotos -->
         <div class="col-span-6 sm:col-span-1">
           <label for="adPhotos"> صور الاعلان </label>
-          <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" />
+          <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
         </div>
       </div>
     </div>

@@ -2,9 +2,8 @@
 // Dependencies
 import type { Building } from "@prisma/client";
 
-
 // Define Variables
-const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings", ));
+const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
 const toast = useToast();
 const selected: Ref<Building[]> = ref([]);
 const columns = [
@@ -90,8 +89,6 @@ const filteredRows: any = computed(() => {
     });
   });
 });
-
-
 </script>
 
 <template>
@@ -111,10 +108,10 @@ const filteredRows: any = computed(() => {
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
-                <pre>
+                <div class="py-8">
                   <!-- {{ row }} -->
                   <BuildingDetails :building="row" />
-                </pre>
+                </div>
               </div>
             </template>
             <template #name-data="{ row }">

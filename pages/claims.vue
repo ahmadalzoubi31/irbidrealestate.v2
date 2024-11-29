@@ -103,10 +103,10 @@ const selectedColumns = ref([...columns]);
           <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
-                <pre>
+                <div class="py-8">
                   {{ row }}
                   <!-- <ClaimDetails :claim="row" /> -->
-                </pre>
+                </div>
               </div>
             </template>
             <template #apartment.apartmentNumber-data="{ row }">

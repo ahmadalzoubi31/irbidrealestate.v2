@@ -3,9 +3,7 @@
 import type { Order } from "@prisma/client";
 
 // Define Variables
-const { data: orders } = await useAsyncData<Order[], any>("getOrders", () =>
-  $fetch<Order[]>("/api/orders")
-);
+const { data: orders } = await useAsyncData<Order[], any>("getOrders", () => $fetch<Order[]>("/api/orders"));
 const toast = useToast();
 const selected: Ref<Order[]> = ref([]);
 const columns = [
@@ -94,47 +92,26 @@ const selectedColumns = ref([...columns]);
     <div class="parentWrapper" v-if="useRoute().name === 'orders'">
       <div id="orderTable">
         <div id="buttonWrapper" class="my-3">
-          <UButton
-            icon="i-heroicons-plus-circle-20-solid"
-            label="اضافة طلب"
-            :to="'/orders/create'"
-          />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة طلب" :to="'/orders/create'" />
           <!-- <UButton icon="i-heroicons-eye-20-solid" label="تفاصيل" @click="viewSelectedRecord" /> -->
-          <UButton
-            icon="i-heroicons-minus-circle-20-solid"
-            label="حذف طلب"
-            @click="deleteSelectedRecord"
-          />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف طلب" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
         </div>
 
-        <div
-          class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
-        >
-          <UTable
-            :rows="filteredRows"
-            :columns="selectedColumns"
-            @select="select"
-            v-model="selected"
-            v-model:expand="expand"
-          >
+        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
-                <pre>
+                <div class="py-8">
                   {{ row }}
                   <!-- <OrderDetails :order="row" /> -->
-                </pre>
+                </div>
               </div>
             </template>
             <template #type-data="{ row }">
-              <span
-                :class="[
-                  'font-bold text-blue-500 dark:text-blue-400 underline',
-                ]"
-                @click="editSelectedRecord(row.id)"
-              >
+              <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
                 {{ useGetPropertyTypeName(row.type) }}
               </span>
             </template>
