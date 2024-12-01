@@ -1,27 +1,21 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Building } from "@prisma/client";
+import type { Claim } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
-  building: {
+  claim: {
     type: Object,
     required: true,
   },
 });
 // Declare Variables
 const heading = [
-  "اسم البناية",
-  "عدد الشقق",
-  "عدد المخازن (ان وجدت)",
-  "اسم الحوض",
-  "رقم الحوض",
-  "رقم قطعة الارض",
-  "رقم اشتراك الكهرباء",
-  "قيمة الصيانة",
-  "قيمة الخدمات",
-  "عدد الشقق المسجلة",
+ "رقم الشقة",
+   "المطلوب منه",
+   "تاريخ المطالبة",
+   "مجموع المبلغ",
   "الحالة",
   "تم الانشاء بواسطة",
   "تاريخ الانشاء",
@@ -31,16 +25,10 @@ const heading = [
 
 // Specify the keys you want to extract
 const keysToExtract = [
-"name",
-"apartmentsCount",
-"storeCount",
-"basinName",
-"basinNumber",
-"landNumber",
-"electricBill",
-"serviceAmount",
-"maintenanceAmount",
-"registeredApartmentsCount",
+  "apartment.apartmentNumber",
+  "claimFrom",  
+  "claimDate",
+  "total",
 "status",
 "createdBy",
 "createdAt",
@@ -49,7 +37,7 @@ const keysToExtract = [
 ];
 
 // Extract the desired keys
-const extracted: Building = useExtractKeys(props.building, keysToExtract);
+const extracted: Claim = useExtractKeys(props.claim, keysToExtract);
 
 
 // Declare Methods
@@ -61,7 +49,7 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
     <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
         <dt v-for="(entry, key, index) in extracted" class="font-medium ">
           {{ heading[index] }}
-        <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
+        <dd v-if="key === 'createdAt' || key === 'updatedAt' || key === 'claimDate'" class="font-normal text-primary-500">
           {{ formatted(entry as Date) }}
         </dd>
         <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">

@@ -162,7 +162,7 @@ const extracted: Ad = useExtractKeys(ad.value, keys);
           <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
             <dt v-for="(entry, key, index) in extracted" class="font-medium">
               {{ heading[index] }}
-              <dd class="font-normal text-primary-500">{{ entry == null || entry == "" ? "-" : entry }}</dd>
+              <dd class="font-normal text-primary-500">{{ entry == null  || entry == "" || entry == "" ? "-" : entry }}</dd>
             </dt>
           </dl>
         </section>

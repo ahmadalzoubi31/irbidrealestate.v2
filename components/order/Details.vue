@@ -1,27 +1,25 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Building } from "@prisma/client";
+import type { Order } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
-  building: {
+  order: {
     type: Object,
     required: true,
   },
 });
 // Declare Variables
 const heading = [
-  "اسم البناية",
-  "عدد الشقق",
-  "عدد المخازن (ان وجدت)",
-  "اسم الحوض",
-  "رقم الحوض",
-  "رقم قطعة الارض",
-  "رقم اشتراك الكهرباء",
-  "قيمة الصيانة",
-  "قيمة الخدمات",
-  "عدد الشقق المسجلة",
+ "نوع الطلب",
+   "تاريخ الطلب",
+   "اسم صاحب الطلب",
+   "رقم صاحب الطلب",
+   "تفاصيل الطلب",
+   "السعر",
+   "الخطوة الاولى",
+   "الملاحظات",
   "الحالة",
   "تم الانشاء بواسطة",
   "تاريخ الانشاء",
@@ -31,25 +29,23 @@ const heading = [
 
 // Specify the keys you want to extract
 const keysToExtract = [
-"name",
-"apartmentsCount",
-"storeCount",
-"basinName",
-"basinNumber",
-"landNumber",
-"electricBill",
-"serviceAmount",
-"maintenanceAmount",
-"registeredApartmentsCount",
+  "type",   
+  "date",  
+  "ownerName",
+  "ownerNumber",
+  "details",
+  "price",
+  "firstStep",  
+  "notes",  
 "status",
 "createdBy",
 "createdAt",
 "updatedBy",
-"updatedAt",
+"updatedAt"
 ];
 
 // Extract the desired keys
-const extracted: Building = useExtractKeys(props.building, keysToExtract);
+const extracted: Order = useExtractKeys(props.order, keysToExtract);
 
 
 // Declare Methods
@@ -61,9 +57,10 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
     <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
         <dt v-for="(entry, key, index) in extracted" class="font-medium ">
           {{ heading[index] }}
-        <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
+        <dd v-if="key === 'createdAt' || key === 'updatedAt' || key === 'date'" class="font-normal text-primary-500">
           {{ formatted(entry as Date) }}
         </dd>
+        <dd v-else-if="key == 'type'" class="font-normal text-primary-500">{{ useGetPropertyTypeName(entry as number) }}</dd>
         <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
           {{ useGetStatusName(entry as boolean) }}
         </dd>

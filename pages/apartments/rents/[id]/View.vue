@@ -48,7 +48,7 @@ const editSelectedRecord = async () => {
         <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
           {{ useGetStatusName(entry) }}
         </dd>
-        <dd v-else class="font-normal text-primary-500">{{ entry == null ? "-" : entry }}</dd>
+        <dd v-else class="font-normal text-primary-500">{{ entry == null  || entry == "" ? "-" : entry }}</dd>
         </dt>
       </dl>
     </div>

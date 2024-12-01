@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Dependencies
 import type { Order } from "@prisma/client";
+import format from "date-fns/format";
 
 // Define Variables
 const { data: orders } = await useAsyncData<Order[], any>("getOrders", () => $fetch<Order[]>("/api/orders"));
@@ -105,10 +106,15 @@ const selectedColumns = ref([...columns]);
             <template #expand="{ row }">
               <div class="px-8">
                 <div class="py-8">
-                  {{ row }}
-                  <!-- <OrderDetails :order="row" /> -->
+                  <!-- {{ row }} -->
+                  <OrderDetails :order="row" />
                 </div>
               </div>
+            </template>
+            <template #date-data="{ row }">
+              <span>
+                {{ format(row.date, "dd/MM/yyyy") }}
+              </span>
             </template>
             <template #type-data="{ row }">
               <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">

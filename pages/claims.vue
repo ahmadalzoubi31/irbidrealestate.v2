@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // Dependencies
 import type { Claim } from "@prisma/client";
+import format from "date-fns/format";
 
 // Define Variables
 const { data: claims } = await useAsyncData<Claim[], any>("getClaims", () => $fetch<Claim[]>("/api/claims"));
 const toast = useToast();
 const selected: Ref<Claim[]> = ref([]);
 const columns = [
-  // { key: "id", label: "#", sortable: false },
   { key: "apartment.apartmentNumber", label: "رقم الشقة", sortable: true },
   { key: "claimFrom", label: "المطلوب منه", sortable: false },
   { key: "claimDate", label: "تاريخ المطالبة", sortable: false },
@@ -104,10 +104,15 @@ const selectedColumns = ref([...columns]);
             <template #expand="{ row }">
               <div class="px-8">
                 <div class="py-8">
-                  {{ row }}
-                  <!-- <ClaimDetails :claim="row" /> -->
+                  <!-- {{ row }} -->
+                  <ClaimDetails :claim="row" />
                 </div>
               </div>
+            </template>
+            <template #claimDate-data="{ row }">
+              <span>
+                {{ format(row.claimDate, "dd/MM/yyyy") }}
+              </span>
             </template>
             <template #apartment.apartmentNumber-data="{ row }">
               <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">

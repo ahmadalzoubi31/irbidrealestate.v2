@@ -201,10 +201,11 @@ const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A
       {{ heading[index] }}
       <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">{{ formatted(entry as Date)}}</dd>
       <dd v-else-if="key == 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">{{ useGetStatusName(entry as boolean) }}</dd>
-      <dd v-else class="font-normal text-primary-500">{{ entry == null ? "-" : entry }}</dd>
+      <dd v-else-if="key == 'propertyType'" class="font-normal text-primary-500">{{ useGetPropertyTypeName(entry as number) }}</dd>
+      <dd v-else class="font-normal text-primary-500">{{ entry == null  || entry == "" ? "-" : entry }}</dd>
     </dt>
-    <UTable v-if="ad.interestedPeople.length != 0" class="col-span-2" :rows="ad.interestedPeople" :columns="[{ key: 'name', label: 'اسم الشخص المهتم' }, { key: 'number', label: 'رقم الشخص المهتم' }]">          
-    </UTable>
+    <!-- <UTable v-if="ad.interestedPeople.length != 0" class="col-span-2" :rows="ad.interestedPeople" :columns="[{ key: 'name', label: 'اسم الشخص المهتم' }, { key: 'number', label: 'رقم الشخص المهتم' }]">          
+    </UTable> -->
     
   </dl>
 </template>

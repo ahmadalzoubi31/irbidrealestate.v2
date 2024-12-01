@@ -103,7 +103,7 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
         <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
           {{ useGetStatusName(entry as boolean) }}
         </dd>
-        <dd v-else class="font-normal text-primary-500">{{ entry == null ? "-" : entry }}</dd>
+        <dd v-else class="font-normal text-primary-500">{{ entry == null  || entry == "" ? "-" : entry }}</dd>
         </dt>
       </dl>
 </template>
