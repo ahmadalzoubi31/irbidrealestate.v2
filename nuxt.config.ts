@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     mount: process.env.mount,
     // you need to set the mount in your .env file at the root of your project
   },
+  // ssr: false,
   image: {
     // Options
   },

@@ -3,7 +3,8 @@
 import type { Building } from "@prisma/client";
 
 // Define Variables
-const { data: buildings } = await useAsyncData<Building[], any>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
+const { data: buildings, status } = await useLazyFetch("/api/buildings", { key: "getBuildings", server: false });
+// console.log("🚀 ~ buildings:", toRaw(buildings.value));
 const toast = useToast();
 const selected: Ref<Building[]> = ref([]);
 const columns = [
@@ -68,27 +69,6 @@ const deleteSelectedRecord = async () => {
 
 // Define Filter
 const q = ref("");
-const filteredRows: any = computed(() => {
-  if (!q.value) {
-    return buildings.value;
-  }
-
-  return buildings.value!.filter((el) => {
-    // to avoid search on them
-    // @ts-ignore
-    delete el.createdAt;
-    // @ts-ignore
-    delete el.createdBy;
-    // @ts-ignore
-    delete el.updatedAt;
-    // @ts-ignore
-    delete el.updatedBy;
-
-    return Object.values(el).some((value) => {
-      return String(value).toLowerCase().includes(q.value.toLowerCase());
-    });
-  });
-});
 </script>
 
 <template>
@@ -105,7 +85,7 @@ const filteredRows: any = computed(() => {
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
+          <UTable :rows="[]" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" :loading="status === 'pending'">
             <template #expand="{ row }">
               <div class="px-8">
                 <div class="py-8">
