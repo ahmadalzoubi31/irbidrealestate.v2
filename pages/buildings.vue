@@ -3,8 +3,15 @@
 import type { Building } from "@prisma/client";
 
 // Define Variables
-const { data: buildings, status } = await useLazyFetch("/api/buildings", { key: "getBuildings", server: false });
-// console.log("🚀 ~ buildings:", toRaw(buildings.value));
+const nuxtApp = useNuxtApp();
+const { data } = await useLazyFetch<Building[]>("/api/buildings", {
+  key: "getBuildings",
+  server: false,
+  getCachedData(key) {
+    return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
+  },
+});
+const buildings = data == null ? [] : toRaw(data);
 const toast = useToast();
 const selected: Ref<Building[]> = ref([]);
 const columns = [
@@ -85,7 +92,7 @@ const q = ref("");
         </div>
 
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="[]" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand" :loading="status === 'pending'">
+          <UTable :rows="[]" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
             <template #expand="{ row }">
               <div class="px-8">
                 <div class="py-8">
