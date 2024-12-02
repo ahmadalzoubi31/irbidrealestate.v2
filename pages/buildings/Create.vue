@@ -13,32 +13,59 @@ const state: ICreateBuilding = reactive({
   serviceAmount: 0,
   maintenanceAmount: 0,
 });
-const isPending = ref(true) 
 
-// Declare Methods
+// Methods
 const submitForm = async () => {
-  const { status, error  } = await useAsyncData<void, any>("createBuilding", () =>
+  // Early validation for required fields before making the API call
+  if (!state.name || !state.apartmentsCount || !state.basinName || !state.basinNumber || !state.landNumber) {
+    toast.add({
+      title: "تنبيه",
+      description: "من فضلك أكمل جميع الحقول المطلوبة.",
+      color: "rose",
+      timeout: 5000,
+    });
+    return;
+  }
+
+  const { status, error } = await useAsyncData<void, any>("createBuilding", () =>
     $fetch<void>("/api/buildings", {
-      method: "post",
+      method: "POST",
       body: state,
     })
   );
-  isPending.value = status.value === 'pending' ? true : false;
+
   if (status.value === "success") {
-    toast.remove("saving");
-    isPending.value = false;
-    refreshNuxtData("getBuildings");
+    toast.add({
+      title: "نجاح",
+      description: "تم حفظ البناية بنجاح.",
+      color: "primary",
+      timeout: 3000,
+    });
+
+    // Clear form and navigate to the buildings list
+    state.name = ""; // Reset form after successful submission
+    state.apartmentsCount = 0;
+    state.storeCount = 0;
+    state.basinName = "";
+    state.basinNumber = "";
+    state.landNumber = "";
+    state.electricBill = "";
+    state.serviceAmount = 0;
+    state.maintenanceAmount = 0;
+
+    // Refresh the buildings data
+    await refreshNuxtData("getBuildings");
+
+    // Redirect to buildings page
     await navigateTo("/buildings");
   }
 
   if (status.value === "error") {
-    // console.log(error.value);
-    isPending.value = false;
     toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value!.data.message,
+      title: "خطأ",
+      description: error?.value?.data?.message || "حدث خطأ أثناء حفظ البيانات.",
       color: "rose",
-      timeout: 10000,
+      timeout: 5000,
     });
   }
 };
@@ -102,10 +129,12 @@ const submitForm = async () => {
       </div>
     </div>
 
-    <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
+    <!-- Submit and Cancel Buttons -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3" > حفظ </UButton>
-      <UButton to="/buildings" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"> الغاء </UButton>
+      <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+      <UButton to="/buildings" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+        الغاء
+      </UButton>
     </div>
   </form>
 </template>

@@ -1,73 +1,83 @@
 <script setup lang="ts">
-// Define Dependencies
+// Import necessary dependencies
 import { useDateFormat } from "@vueuse/core";
 import type { Building } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
   building: {
-    type: Object,
+    type: Object as PropType<Building>,
     required: true,
   },
 });
-// Declare Variables
+
+// Define table headers
 const heading = [
   "اسم البناية",
   "عدد الشقق",
-  "عدد المخازن (ان وجدت)",
+  "عدد المخازن ",
   "اسم الحوض",
   "رقم الحوض",
-  "رقم قطعة الارض",
+  "رقم قطعة الأرض",
   "رقم اشتراك الكهرباء",
   "قيمة الصيانة",
   "قيمة الخدمات",
   "عدد الشقق المسجلة",
   "الحالة",
-  "تم الانشاء بواسطة",
-  "تاريخ الانشاء",
+  "تم الإنشاء بواسطة",
+  "تاريخ الإنشاء",
   "تم التعديل بواسطة",
   "تاريخ التعديل",
 ];
 
-// Specify the keys you want to extract
+// Define the keys you want to extract from the building object
 const keysToExtract = [
-"name",
-"apartmentsCount",
-"storeCount",
-"basinName",
-"basinNumber",
-"landNumber",
-"electricBill",
-"serviceAmount",
-"maintenanceAmount",
-"registeredApartmentsCount",
-"status",
-"createdBy",
-"createdAt",
-"updatedBy",
-"updatedAt",
+  "name",
+  "apartmentsCount",
+  "storeCount",
+  "basinName",
+  "basinNumber",
+  "landNumber",
+  "electricBill",
+  "serviceAmount",
+  "maintenanceAmount",
+  "registeredApartmentsCount",
+  "status",
+  "createdBy",
+  "createdAt",
+  "updatedBy",
+  "updatedAt",
 ];
 
-// Extract the desired keys
+// Extract the desired keys from the building object
 const extracted: Building = useExtractKeys(props.building, keysToExtract);
 
-
-// Declare Methods
-const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
+// Format date using the useDateFormat function
+const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 </script>
 
-
 <template>
-    <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
-        <dt v-for="(entry, key, index) in extracted" class="font-medium ">
-          {{ heading[index] }}
+  <!-- Display the extracted information in a grid layout -->
+  <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
+    <template v-for="(entry, key, index) in extracted">
+      <div>
+        <dt class="font-medium">{{ heading[index] }}</dt>
+
+        <!-- Handle formatted date fields -->
         <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
           {{ formatted(entry as Date) }}
         </dd>
-        <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
+
+        <!-- Handle status field -->
+        <dd v-else-if="key === 'status'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
           {{ useGetStatusName(entry as boolean) }}
         </dd>
-        <dd v-else class="font-normal text-primary-500">{{ entry == null  || entry == "" ? "-" : entry }}</dd>
-        </dt>
-      </dl>
+
+        <!-- Handle other fields, including null or empty values -->
+        <dd v-else class="font-normal text-primary-500">
+          {{ entry == null || entry === "" ? "-" : entry }}
+        </dd>
+      </div>
+    </template>
+  </dl>
 </template>

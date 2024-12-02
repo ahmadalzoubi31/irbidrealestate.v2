@@ -2,17 +2,18 @@ import prisma from "~/lib/prisma";
 import { Building } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
-  return new Promise<Building[]>(async (resolve, reject) => {
-    try {
-      // setTimeout(async () => {
-      resolve(await prisma.building.findMany());
+  try {
+    // Simulate delay (e.g., fetching huge data)
+    await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
 
-      // }, 15000);
-    } catch (error: any) {
-      throw createError({
-        statusCode: error.statusCode,
-        message: error.message,
-      });
-    }
-  });
+    // Fetch all buildings
+    const buildings: Building[] = await prisma.building.findMany();
+    return buildings;
+  } catch (error: any) {
+    // Handle errors gracefully
+    throw createError({
+      statusCode: error.statusCode || 500,
+      statusMessage: error.message || "An unexpected error occurred",
+    });
+  }
 });

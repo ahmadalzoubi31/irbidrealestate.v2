@@ -1,11 +1,19 @@
-import { Prisma, Apartment } from "@prisma/client";
+import { Apartment, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
+
+// Utility function for validating request data
+const validateApartmentData = (data: Apartment) => {
+  if (!data.buildingName || !data.apartmentNumber || !data.ownerName) {
+    throw new Error("Missing required fields: buildingName, apartmentNumber, and ownerName");
+  }
+  // Add more validation as needed (for example, checking rentAmount or rentDuration)
+};
 
 export default defineEventHandler(async (event) => {
   const body: Apartment = await readBody(event);
 
   if (!body) {
-    var msg = "ERROR: Argument data is missing";
+    const msg = "ERROR: Argument data is missing";
     console.log(msg);
     throw createError({
       statusCode: 400,
@@ -13,41 +21,30 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const newApartment = {
-    buildingName: body.buildingName,
-    apartmentNumber: body.apartmentNumber,
-    ownerName: body.ownerName,
-    ownerNumber: body.ownerNumber,
-    agentName: body.agentName,
-    agentNumber: body.agentNumber,
-    electricSub: body.electricSub,
-    waterSub: body.waterSub,
-    renterName: body.renterName,
-    renterNumber: body.renterNumber,
-    rentDuration: body.rentDuration,
-    rentAmount: body.rentAmount,
-    rentDate: body.rentDate,
-    rentPaymentWay: body.rentPaymentWay,
-    isFurniture: body.isFurniture,
-    rentStatus: body.rentStatus,
-    renterNationality: body.renterNationality,
-    renterIdentification: body.renterIdentification,
-    isServiceIncluded: body.isServiceIncluded,
-    insurance: body.insurance,
-    commissionAmount: body.commissionAmount,
-    realLocation: body.realLocation,
-  };
-
   try {
-    await prisma.apartment.create({ data: newApartment });
+    // Validate the incoming data
+    validateApartmentData(body);
+
+    // Create a new apartment entry
+    const newApartment: Apartment = await prisma.apartment.create({
+      data: body
+    });
+
+    // Return success response
+    return {
+      success: true,
+      message: "Apartment created successfully",
+      data: newApartment,
+    };
+
   } catch (error: any) {
     console.log({ prisma_code: error.code });
 
+    // Handle known Prisma client errors
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // The .code property can be accessed in a type-safe manner
       if (error.code === "P2002") {
-        var msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
-        console.log(msg);
+        const msg = "ERROR: Unique constraint violation, a record with this name or apartment number already exists.";
+        console.error(msg);
         throw createError({
           statusCode: 400,
           message: msg,
@@ -55,11 +52,12 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // console.log(error.message);
-
+    // Handle other errors
+    const msg = error.message || "An unexpected error occurred while creating the apartment.";
+    console.log(msg);
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: 500,
+      message: msg,
     });
   }
 });
