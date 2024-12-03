@@ -10,7 +10,7 @@ const expand = ref({ openedRows: [], row: null });
 const { columns, selectedColumns } = useBuildingTableColumns();
 
 // Fetching
-const { buildings, status, refreshBuildings } = useBuildings();
+const { buildings, status } = useBuildings();
 
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
@@ -19,7 +19,7 @@ const isLoading = computed(() => status.value !== "success" && status.value !== 
 const filteredRows = useFilteredRows<Building>(buildings, q, ["createdAt", "updatedAt"]);
 
 // Actions
-const { editBuilding, deleteBuilding } = useBuildingActions(refreshBuildings);
+const { editBuilding, deleteBuilding } = useBuildingActions();
 
 const select = (row: Building) => {
   selected.value.length = 0;
@@ -31,6 +31,8 @@ const editSelectedRecord = async (id: string) => {
 };
 
 const deleteSelectedRecord = async () => {
+  console.log({ length: !selected.value.length, id: selected.value[0].id.toFixed() });
+
   if (!selected.value.length) return;
   await deleteBuilding(selected.value[0].id.toFixed());
 };

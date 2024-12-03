@@ -1,7 +1,7 @@
 import type { Building } from "@prisma/client";
 
 // composables/useBuildingActions.ts
-export function useBuildingActions(refreshBuildings: () => void) {
+export function useBuildingActions() {
     const toast = useToast();
 
     const editBuilding = async (id: string) => {
@@ -13,6 +13,8 @@ export function useBuildingActions(refreshBuildings: () => void) {
         if (!confirmDelete) return;
 
         const { error } = await useFetch<Building>(`/api/buildings/${id}`, { method: "DELETE", key: "deleteBuilding" });
+
+        console.log("🚀 ~ deleteBuilding ~ error:", error.value)
 
         if (error.value) {
             toast.add({
@@ -30,8 +32,6 @@ export function useBuildingActions(refreshBuildings: () => void) {
             color: "primary",
             timeout: 1000,
         });
-
-        refreshBuildings();
     };
 
     return { editBuilding, deleteBuilding };

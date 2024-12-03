@@ -27,12 +27,7 @@ const submitForm = async () => {
     return;
   }
 
-  const { status, error } = await useAsyncData<void, any>("createBuilding", () =>
-    $fetch<void>("/api/buildings", {
-      method: "POST",
-      body: state,
-    })
-  );
+  const { status, error } = await useFetch("/api/buildings", { method: "POST", body: state });
 
   if (status.value === "success") {
     toast.add({
@@ -41,20 +36,6 @@ const submitForm = async () => {
       color: "primary",
       timeout: 3000,
     });
-
-    // Clear form and navigate to the buildings list
-    state.name = ""; // Reset form after successful submission
-    state.apartmentsCount = 0;
-    state.storeCount = 0;
-    state.basinName = "";
-    state.basinNumber = "";
-    state.landNumber = "";
-    state.electricBill = "";
-    state.serviceAmount = 0;
-    state.maintenanceAmount = 0;
-
-    // Refresh the buildings data
-    await refreshNuxtData("getBuildings");
 
     // Redirect to buildings page
     await navigateTo("/buildings");

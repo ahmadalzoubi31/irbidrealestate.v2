@@ -39,28 +39,6 @@ model Building {
   updatedAt                 DateTime    @updatedAt
 }
 
-// *** Rent ***
-// model Rent {
-//   id                Int       @id @default(autoincrement())
-//   renterName        String
-//   renterNumber      String    @default("###")
-//   rentDuration      String
-//   rentAmount        Float     @default(0.0)
-//   rentDate          DateTime  @default(now())
-//   rentPaymentWays   String?
-//   isFurniture       Boolean   @default(false)
-//   rentStatus        Int       @default(3)
-//   contractFileName  String
-//   clearanceFileName String?
-//   apartment         Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-//   apartmentId       Int
-//   status            Boolean   @default(true)
-//   createdBy         String?
-//   createdAt         DateTime  @default(now())
-//   updatedBy         String?
-//   updatedAt         DateTime  @updatedAt
-// }
-
 // *** Apartment ***
 model Apartment {
   id                   Int       @id @default(autoincrement())
