@@ -193,7 +193,7 @@ if (payment.value === null) {
             />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.receivedPaymentDate" is-required @close="close" />
+              <AppDatePicker v-model="state.receivedPaymentDate" is-required @close="close" />
             </template>
           </UPopover>
         </div>
@@ -218,7 +218,7 @@ if (payment.value === null) {
             />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.depositDate" is-required @close="close" />
+              <AppDatePicker v-model="state.depositDate" is-required @close="close" />
             </template>
           </UPopover>
         </div>

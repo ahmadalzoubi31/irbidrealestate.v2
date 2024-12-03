@@ -24,9 +24,11 @@ export default defineEventHandler(async (event) => {
 
     // If apartment doesn't exist, return an error
     if (!apartment) {
+      const msg = `ERROR: No apartment found with ID ${id}`;
+      console.log(msg);
       throw createError({
         statusCode: 404, // 404 is more appropriate for "Not Found"
-        message: "Apartment not found",
+        message: msg
       });
     }
 
@@ -37,8 +39,11 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // Return a success message after deletion
-    return { message: "Apartment deleted successfully" };
+    // Return success response
+    return {
+      success: true,
+      message: `Building with ID ${id} successfully deleted.`,
+    };
 
   } catch (error: any) {
     // Log error and return it

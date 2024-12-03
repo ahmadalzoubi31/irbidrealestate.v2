@@ -1,5 +1,4 @@
 import prisma from "~/lib/prisma";
-import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   const id: number = Number(getRouterParams(event).id);
@@ -41,25 +40,12 @@ export default defineEventHandler(async (event) => {
     };
 
   } catch (error: any) {
-    // Log the error
-    console.log({ prisma_code: error.code });
+    // Log error and return it
+    console.error("Error deleting building:", error.message);
 
-    // Handle Prisma specific errors
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      const msg = `ERROR: Prisma error occurred (code: ${error.code})`;
-      console.log(msg);
-      throw createError({
-        statusCode: 500,
-        message: msg,
-      });
-    }
-
-    // Handle other errors
-    const msg = error.message || "An unexpected error occurred while deleting the building.";
-    console.log(msg);
     throw createError({
-      statusCode: 500,
-      message: msg,
+      statusCode: error.statusCode || 500,  // Default to 500 if statusCode is not available
+      message: error.message || "An unexpected error occurred while deleting the apartment.",
     });
   }
 });

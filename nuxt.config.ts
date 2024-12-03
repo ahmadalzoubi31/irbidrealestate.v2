@@ -7,6 +7,17 @@ export default defineNuxtConfig({
     preference: "light",
   },
   css: ["@/assets/main.css"],
+  imports: {
+    dirs: [
+      // Scan top-level modules
+      'composables',
+      // ... or scan modules nested one level deep with a specific name and file extension
+      // 'composables/*/index.{ts,js,mjs,mts}',
+      // ... or scan all modules within given directory
+      'composables/building/**',
+      'composables/apartment/**',
+    ]
+  },
   fileStorage: {
     // enter the absolute path to the location of your storage
     // mount: '/home/$USR/development/nuxt-file-storage/server/files',

@@ -155,27 +155,67 @@ const uploadImage = (event: any) => console.log(event);
           <label for="buildingName" class="flex justify-between">
             <div>اسم البناية</div>
           </label>
-          <UInput id="buildingName" inputClass="bg-gray-200" name="buildingName" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment!.buildingName" />
+          <UInput
+            id="buildingName"
+            inputClass="bg-gray-200"
+            name="buildingName"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            :modelValue="apartment!.buildingName"
+          />
         </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentNumber"> رقم الشقة </label>
-          <UInput id="apartmentNumber" inputClass="bg-gray-200" name="apartmentNumber" :size="'sm'" :required="false" :disabled="true" :modelValue="apartment!.apartmentNumber" />
+          <UInput
+            id="apartmentNumber"
+            inputClass="bg-gray-200"
+            name="apartmentNumber"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            :modelValue="apartment!.apartmentNumber"
+          />
         </div>
         <!-- basinName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinName"> اسم الحوض </label>
-          <UInput id="basinName" name="basinName" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment!.building.basinName" />
+          <UInput
+            id="basinName"
+            name="basinName"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="apartment!.building.basinName"
+          />
         </div>
         <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinNumber"> رقم الحوض </label>
-          <UInput id="basinNumber" name="basinNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment!.building.basinNumber" />
+          <UInput
+            id="basinNumber"
+            name="basinNumber"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="apartment!.building.basinNumber"
+          />
         </div>
         <!-- landNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="landNumber"> رقم قطعة الأرض </label>
-          <UInput id="landNumber" name="landNumber" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="apartment!.building.landNumber" />
+          <UInput
+            id="landNumber"
+            name="landNumber"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :model-value="apartment!.building.landNumber"
+          />
         </div>
         <!-- ownerName -->
         <div class="col-span-6 sm:col-span-2">
@@ -247,10 +287,16 @@ const uploadImage = (event: any) => console.log(event);
         <div class="col-span-6 sm:col-span-2">
           <label for="rentDate"> تاريخ الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UPopover :popper="{ placement: 'bottom-start' }">
-            <UInput icon="i-heroicons-calendar-days-20-solid" nam="rentDate" :size="'sm'" class="w-full" :model-value="format(state.rentDate, 'dd/MM/yyyy')" />
+            <UInput
+              icon="i-heroicons-calendar-days-20-solid"
+              nam="rentDate"
+              :size="'sm'"
+              class="w-full"
+              :model-value="format(state.rentDate, 'dd/MM/yyyy')"
+            />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.rentDate" is-required @close="close" />
+              <AppDatePicker v-model="state.rentDate" is-required @close="close" />
             </template>
           </UPopover>
           <!-- <UInput id="rentDate" name="rentDate" :size="'sm'" :required="true" v-model="state.rentDate" /> -->
@@ -325,12 +371,28 @@ const uploadImage = (event: any) => console.log(event);
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-1">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput id="renterIdentificationImage" name="renterIdentificationImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <UInput
+            id="renterIdentificationImage"
+            name="renterIdentificationImage"
+            @input="uploadImage($event)"
+            type="file"
+            size="sm"
+            :required="false"
+            icon="i-heroicons-folder"
+          />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="contractImage" name="contractImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <UInput
+            id="contractImage"
+            name="contractImage"
+            @input="uploadImage($event)"
+            type="file"
+            size="sm"
+            :required="false"
+            icon="i-heroicons-folder"
+          />
         </div>
       </div>
     </div>
@@ -377,7 +439,12 @@ const uploadImage = (event: any) => console.log(event);
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton :type="'button'" to="/apartments/rents" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton
+        :type="'button'"
+        to="/apartments/rents"
+        :size="'md'"
+        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
+      >
         الغاء
       </UButton>
     </div>

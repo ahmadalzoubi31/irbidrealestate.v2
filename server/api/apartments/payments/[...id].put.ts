@@ -1,52 +1,56 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+  // Parse and validate the payment ID from the route parameters
   const id = Number(getRouterParams(event).id);
-
-  if (!body) {
-    var msg = "ERROR: Argument data is missing";
-    console.log(msg);
+  if (isNaN(id)) {
     throw createError({
       statusCode: 400,
-      message: msg,
+      message: "Invalid ID provided. Please provide a valid numeric ID.",
     });
   }
 
-  if (isNaN(id)) {
+  // Read and validate the request body
+  const body = await readBody(event);
+  if (!body || Object.keys(body).length === 0) {
     throw createError({
-      statusCode: 500,
-      message: "Invalid id",
+      statusCode: 400,
+      message: "Request body is missing or empty.",
     });
   }
 
   try {
-    const payment = await prisma.payment.findUnique({
-      where: {
-        id: id,
-      },
+    // Check if the payment exists
+    const existingPayment = await prisma.payment.findUnique({
+      where: { id },
     });
 
-    if (!payment) {
+    if (!existingPayment) {
       throw createError({
-        statusCode: 400,
-        message: "No payment found",
+        statusCode: 404,
+        message: "Payment not found with the provided ID.",
       });
     }
-    delete body.name;
 
-    await prisma.payment.update({
+    // Update the payment record
+    const updatedPayment = await prisma.payment.update({
+      where: { id },
       data: body,
-      where: {
-        id: id,
-      },
     });
-  } catch (error: any) {
-    console.log({ prisma_code: error.code });
 
+    // Return the updated payment
+    return {
+      success: true,
+      message: "Payment updated successfully.",
+      data: updatedPayment,
+    };
+  } catch (error: any) {
+    console.error("Error updating payment:", error.message);
+
+    // Handle and return errors appropriately
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: error.statusCode || 500,
+      message: error.message || "An unexpected error occurred while updating the payment.",
     });
   }
 });

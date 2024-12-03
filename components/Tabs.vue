@@ -1,24 +1,22 @@
-<script setup>
-// Declare Variables
+<script setup lang="ts">
+// Reactive Navigators State
 const navigators = reactive([
   { id: 0, name: "العقارات", href: "/apartments/rents", current: true },
   { id: 1, name: "الدفعات", href: "/apartments/payments", current: false },
 ]);
 
-// // Declare Route Composable
-// const $route = useRoute();
-
-navigators.map((el) => {
-  el.current = el.href === useRoute().fullPath ? true : false;
+// Watch Route Changes to Update `current` State
+const route = useRoute();
+watchEffect(() => {
+  navigators.forEach((el) => {
+    el.current = el.href === route.fullPath;
+  });
 });
 
-const handleClick = (id) => {
-  navigators.map((el) => {
-    if (el.id == id) {
-      el.current = true;
-    } else {
-      el.current = false;
-    }
+// Handle Click Event to Manually Update `current`
+const handleClick = (id: number) => {
+  navigators.forEach((el) => {
+    el.current = el.id === id;
   });
 };
 </script>
@@ -32,10 +30,15 @@ const handleClick = (id) => {
             <div class="flex space-x-4">
               <NuxtLink
                 v-for="item in navigators"
+                :key="item.id"
                 :to="item.href"
-                :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-base font-normal']"
+                :class="[
+                  item.current ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-700 hover:text-white',
+                  'px-3 py-2 rounded-md text-base font-normal',
+                ]"
                 @click="handleClick(item.id)"
-                >{{ item.name }}
+              >
+                {{ item.name }}
               </NuxtLink>
             </div>
           </div>

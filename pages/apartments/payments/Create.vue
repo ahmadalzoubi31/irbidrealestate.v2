@@ -14,11 +14,10 @@ const state: ICreatePayment = reactive({
 });
 
 // Get the select menu data
-const { data: apartments } =  useNuxtData<Apartment[]>("getApartments");
+const { data: apartments } = useNuxtData<Apartment[]>("getApartments");
 const fetchedApartments = apartments.value!.map((el) => {
   return { id: el.id, name: el.apartmentNumber };
 });
-
 
 // Declare Methods
 const submitForm = async () => {
@@ -103,7 +102,16 @@ watch(fillRentDate, (newVal, oldVal) => {
         <!-- rentAmount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="rentAmount"> قيمة الإيجار </label>
-          <UInput id="rentAmount" name="rentAmount" inputClass="bg-gray-200" :type="'text'" :size="'sm'" :required="false" :disabled="true" :model-value="fillRentAmount" />
+          <UInput
+            id="rentAmount"
+            name="rentAmount"
+            inputClass="bg-gray-200"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            :model-value="fillRentAmount"
+          />
         </div>
         <!-- commissionAmount -->
         <div class="col-span-6 sm:col-span-2">
@@ -136,7 +144,16 @@ watch(fillRentDate, (newVal, oldVal) => {
         <!-- services -->
         <div class="col-span-6 sm:col-span-2">
           <label for="services"> الخدمات </label>
-          <UInput id="services" name="services" inputClass="bg-gray-200" :type="'text'" :size="'sm'" :required="false" :disabled="true" :model-value="fillServices" />
+          <UInput
+            id="services"
+            name="services"
+            inputClass="bg-gray-200"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            :model-value="fillServices"
+          />
         </div>
         <!-- nextRentDate -->
         <div class="col-span-6 sm:col-span-2">
@@ -178,7 +195,7 @@ watch(fillRentDate, (newVal, oldVal) => {
             />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.receivedPaymentDate" is-required @close="close" />
+              <AppDatePicker v-model="state.receivedPaymentDate" is-required @close="close" />
             </template>
           </UPopover>
         </div>
@@ -194,10 +211,16 @@ watch(fillRentDate, (newVal, oldVal) => {
             <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
           <UPopover :popper="{ placement: 'bottom-start' }">
-            <UInput icon="i-heroicons-calendar-days-20-solid" nam="depositDate" :size="'sm'" class="w-full" :model-value="format(state.depositDate, 'dd/MM/yyyy')" />
+            <UInput
+              icon="i-heroicons-calendar-days-20-solid"
+              nam="depositDate"
+              :size="'sm'"
+              class="w-full"
+              :model-value="format(state.depositDate, 'dd/MM/yyyy')"
+            />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.depositDate" is-required @close="close" />
+              <AppDatePicker v-model="state.depositDate" is-required @close="close" />
             </template>
           </UPopover>
         </div>
@@ -212,7 +235,13 @@ watch(fillRentDate, (newVal, oldVal) => {
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton to="/apartments/payments" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"> الغاء </UButton>
+      <UButton
+        to="/apartments/payments"
+        :size="'md'"
+        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
+      >
+        الغاء
+      </UButton>
     </div>
   </form>
 </template>

@@ -1,11 +1,8 @@
-<script setup lang="ts">
-import type { Apartment, Building } from "@prisma/client";
-
-await useAsyncData<Building[]>("getBuildings", () => $fetch<Building[]>("/api/buildings"));
-await useAsyncData<Apartment[]>("getApartments", () => $fetch<Apartment[]>("/api/apartments"));
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <Tabs />
-  <NuxtPage />
+  <div id="apartments">
+    <Tabs />
+    <NuxtPage />
+  </div>
 </template>

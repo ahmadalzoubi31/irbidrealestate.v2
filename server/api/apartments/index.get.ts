@@ -1,23 +1,23 @@
-// ~/server/api/apartments/index.ts
 import prisma from "~/lib/prisma";
+import { Apartment } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
-    // Fetch apartments along with their related building data
-    const apartments = await prisma.apartment.findMany({
+    // Simulate delay (e.g., fetching huge data)
+    // await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
+
+    // Fetch all apartments
+    const apartments: Apartment[] = await prisma.apartment.findMany({
       include: {
-        building: true,  // Include related building data
+        building: true,  // Include related apartment data
       },
     });
-
-    // Return the retrieved apartments
     return apartments;
   } catch (error: any) {
-    // Handle errors by creating a structured error response
-    console.error("Error fetching apartments:", error.message);
+    // Handle errors gracefully
     throw createError({
       statusCode: error.statusCode || 500,
-      message: error.message || "An unexpected error occurred while fetching apartments.",
+      statusMessage: error.message || "An unexpected error occurred",
     });
   }
 });

@@ -163,7 +163,7 @@ if (claim.value === null) {
             />
 
             <template #panel="{ close }">
-              <DatePicker v-model="state.claimDate" is-required @close="close" />
+              <AppDatePicker v-model="state.claimDate" is-required @close="close" />
             </template>
           </UPopover>
         </div>
@@ -242,7 +242,7 @@ if (claim.value === null) {
             />
 
             <template #panel="{ close }">
-              <DatePicker v-model="collectionData.dateTime" is-required @close="close" />
+              <AppDatePicker v-model="collectionData.dateTime" is-required @close="close" />
             </template>
           </UPopover>
           <!-- <UInput id="dateTime" name="dateTime" :size="'sm'" :required="false" v-model="collectionData.dateTime" /> -->
