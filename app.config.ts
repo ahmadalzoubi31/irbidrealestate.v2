@@ -4,6 +4,13 @@ export default defineAppConfig({
     gray: "neutral",
 
     table: {
+      default: {
+        loadingState: {
+          label: 'جاري التحميل...',
+        }, emptyState: {
+          label: "لا يوجد معلومات"
+        }
+      },
       wrapper: "relative overflow-x-auto",
       divide: "divide-y divide-gray-200",
       base: "border-0",

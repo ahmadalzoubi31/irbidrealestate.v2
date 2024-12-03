@@ -4,7 +4,7 @@ import { Building } from "@prisma/client";
 export default defineEventHandler(async (event) => {
   try {
     // Simulate delay (e.g., fetching huge data)
-    // await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
+    await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
 
     // Fetch all buildings
     const buildings: Building[] = await prisma.building.findMany();
