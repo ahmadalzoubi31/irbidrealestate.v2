@@ -8,6 +8,10 @@ useHead({
     lang: "ar",
   },
 });
+
+// Initialize the state with default values
+// const redirectedPage = useState("redirectedPage", () => "");
+// const isRedirected = useState("isRedirected", () => false);
 </script>
 
 <template>

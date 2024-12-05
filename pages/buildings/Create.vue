@@ -14,6 +14,7 @@ const state: ICreateBuilding = reactive({
   maintenanceAmount: 0,
 });
 
+const { refreshBuildings } = useBuildings();
 // Methods
 const submitForm = async () => {
   // Early validation for required fields before making the API call
@@ -30,12 +31,12 @@ const submitForm = async () => {
   const { status, error } = await useFetch("/api/buildings", { method: "POST", body: state });
 
   if (status.value === "success") {
-    toast.add({
-      title: "نجاح",
-      description: "تم حفظ البناية بنجاح.",
-      color: "primary",
-      timeout: 3000,
-    });
+    // toast.add({
+    //   title: "نجاح",
+    //   description: "تم حفظ البناية بنجاح.",
+    //   color: "primary",
+    //   timeout: 3000,
+    // });
 
     // Redirect to buildings page
     await navigateTo("/buildings");
@@ -113,7 +114,11 @@ const submitForm = async () => {
     <!-- Submit and Cancel Buttons -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton to="/buildings" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton
+        @click="refreshBuildings()"
+        :size="'md'"
+        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
+      >
         الغاء
       </UButton>
     </div>
