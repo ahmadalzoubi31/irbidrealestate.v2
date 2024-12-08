@@ -24,7 +24,6 @@ declare interface IEditBuilding {
 declare interface ICreateApartment {
   buildingName: string;
   apartmentNumber: string;
-  landNumber: string;
   ownerName: string;
   ownerNumber: string;
   agentName: string;

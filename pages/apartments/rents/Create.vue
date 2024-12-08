@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import type { Building } from "@prisma/client";
+// *** Dependencies ***
 import { format } from "date-fns";
 const toast = useToast();
 
-// Define State
+// *** Define Variables ***
 const state: ICreateApartment = reactive({
   buildingName: "",
   apartmentNumber: "",
-  landNumber: "",
   ownerName: "",
   ownerNumber: "",
   agentName: "",
@@ -29,11 +28,13 @@ const state: ICreateApartment = reactive({
   insurance: 0,
   commissionAmount: 0,
 });
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const isLoading = ref(true);
 const additionalState = reactive({
   buildingName: "",
   basinName: "",
   basinNumber: "",
+  landNumber: "",
   maintenanceAmount: 0,
   serviceAmount: 0,
 });
@@ -185,7 +186,7 @@ onMounted(() => {
                 inputClass="bg-gray-200"
                 :model-value="fillLandNumber"
               />
-              <UInput v-else id="landNumber" name="landNumber" :size="'sm'" :required="true" v-model="state.landNumber" />
+              <UInput v-else id="landNumber" name="landNumber" :size="'sm'" :required="true" v-model="additionalState.landNumber" />
             </div>
             <!-- ownerName -->
             <div class="col-span-6 sm:col-span-2">
@@ -238,7 +239,7 @@ onMounted(() => {
             <!-- furnitureImage -->
             <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
               <label for="furnitureImage"> صورة كشف الاثاث </label>
-              <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage($event)" type="file" size="sm" icon="i-heroicons-folder" />
+              <UInput id="furnitureImage" name="furnitureImage" @input="handleFileInput" type="file" size="sm" icon="i-heroicons-folder" />
             </div>
           </div>
         </div>
@@ -344,7 +345,7 @@ onMounted(() => {
               <UInput
                 id="renterIdentificationImage"
                 name="renterIdentificationImage"
-                @input="uploadImage($event)"
+                @input="handleFileInput"
                 type="file"
                 size="sm"
                 :required="false"
@@ -357,7 +358,7 @@ onMounted(() => {
               <UInput
                 id="contractImage"
                 name="contractImage"
-                @input="uploadImage($event)"
+                @input="handleFileInput"
                 type="file"
                 size="sm"
                 :required="false"

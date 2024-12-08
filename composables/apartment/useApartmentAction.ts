@@ -5,7 +5,7 @@ export function useApartmentActions(refreshApartments: () => void, openModal: (t
     const toast = useToast();
 
     const editApartment = async (id: string) => {
-        await navigateTo(`/apartments/${id}/edit`);
+        await navigateTo(`/apartments/rents/${id}/edit`);
     };
 
     const deleteApartment = async (id: string) => {
@@ -28,7 +28,7 @@ export function useApartmentActions(refreshApartments: () => void, openModal: (t
             title: "نجاح",
             description: "تم حذف العنصر بنجاح",
             color: "primary",
-            timeout: 1000,
+            timeout: 2000,
         });
 
         refreshApartments();

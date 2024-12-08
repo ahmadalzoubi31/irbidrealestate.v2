@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const toast = useToast();
+const { createBuilding } = useBuildingActions();
 
 // Define State
 const state: ICreateBuilding = reactive({
@@ -14,7 +15,6 @@ const state: ICreateBuilding = reactive({
   maintenanceAmount: 0,
 });
 
-const { refreshBuildings } = useBuildings();
 // Methods
 const submitForm = async () => {
   // Early validation for required fields before making the API call
@@ -28,27 +28,10 @@ const submitForm = async () => {
     return;
   }
 
-  const { status, error } = await useFetch("/api/buildings", { method: "POST", body: state });
+  const result = await createBuilding(state);
 
-  if (status.value === "success") {
-    // toast.add({
-    //   title: "نجاح",
-    //   description: "تم حفظ البناية بنجاح.",
-    //   color: "primary",
-    //   timeout: 3000,
-    // });
-
-    // Redirect to buildings page
+  if (result === "success") {
     await navigateTo("/buildings");
-  }
-
-  if (status.value === "error") {
-    toast.add({
-      title: "خطأ",
-      description: error?.value?.data?.message || "حدث خطأ أثناء حفظ البيانات.",
-      color: "rose",
-      timeout: 5000,
-    });
   }
 };
 </script>
@@ -114,11 +97,7 @@ const submitForm = async () => {
     <!-- Submit and Cancel Buttons -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton
-        @click="refreshBuildings()"
-        :size="'md'"
-        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
-      >
+      <UButton to="/buildings" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
         الغاء
       </UButton>
     </div>
