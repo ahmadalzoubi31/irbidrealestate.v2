@@ -7,8 +7,12 @@ export default defineAppConfig({
       default: {
         loadingState: {
           label: 'جاري التحميل...',
-        }, emptyState: {
+        },
+        emptyState: {
           label: "لا يوجد معلومات"
+        },
+        progress: {
+          value: 0
         }
       },
       wrapper: "relative overflow-x-auto",

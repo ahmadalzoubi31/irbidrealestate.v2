@@ -12,7 +12,7 @@ const modalState = ref<null | string>(null);
 const { columns, selectedColumns } = useApartmentTableColumns();
 
 // Fetching
-const { apartments, status, refreshApartments } = useApartments();
+const { apartments, status } = useApartments();
 
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
@@ -21,12 +21,10 @@ const isLoading = computed(() => status.value !== "success" && status.value !== 
 const filteredRows = useFilteredRows<Apartment>(apartments, q, ["createdAt", "updatedAt"]);
 
 // Define the `openModal` function before passing it to `useApartmentActions`
-const openModal = (type: string) => {
-  modalState.value = type;
-};
+const openModal = (type: string) => (modalState.value = type);
 
 // Actions
-const { editApartment, deleteApartment, getDropdownItems } = useApartmentActions(refreshApartments, openModal);
+const { deleteApartment, getDropdownItems } = useApartmentActions();
 
 const select = (row: Apartment) => {
   selected.value.length = 0;
@@ -34,10 +32,11 @@ const select = (row: Apartment) => {
 };
 
 const editSelectedRecord = async (id: string) => {
-  await editApartment(id);
+  await navigateTo(`/buildings/${id}/edit`);
 };
 
 const deleteSelectedRecord = async () => {
+  useLoadingIndicator().start();
   if (!selected.value.length) return;
   await deleteApartment(selected.value[0].id.toFixed());
 };
@@ -81,7 +80,7 @@ const deleteSelectedRecord = async () => {
             </span>
           </template>
           <template #actions-data="{ row }">
-            <UDropdown :items="getDropdownItems(row)" class="align-middle">
+            <UDropdown :items="getDropdownItems(row, openModal)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
             </UDropdown>
           </template>

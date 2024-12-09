@@ -10,7 +10,7 @@ const expand = ref({ openedRows: [], row: null });
 const { columns, selectedColumns } = useBuildingTableColumns();
 
 // Fetching
-const { buildings, status, refreshBuildings } = useBuildings();
+const { buildings, status } = useBuildings();
 
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
@@ -19,7 +19,7 @@ const isLoading = computed(() => status.value !== "success" && status.value !== 
 const filteredRows = useFilteredRows<Building>(buildings, q, ["createdAt", "updatedAt"]);
 
 // Actions
-const { editBuilding, deleteBuilding } = useBuildingActions();
+const { deleteBuilding } = useBuildingActions();
 
 const select = (row: Building) => {
   selected.value.length = 0;
@@ -27,23 +27,18 @@ const select = (row: Building) => {
 };
 
 const editSelectedRecord = async (id: string) => {
-  await editBuilding(id);
+  await navigateTo(`/buildings/${id}/edit`);
 };
 
 const deleteSelectedRecord = async () => {
-  // Check if there is at least one selected record
+  useLoadingIndicator().start();
   if (!selected.value.length) return;
-
-  // Extract the ID of the selected record
-  const id = selected.value[0].id.toFixed();
-
-  // Call the delete action
-  await deleteBuilding(id);
+  await deleteBuilding(selected.value[0].id.toFixed());
 };
 </script>
 
 <template>
-  <div id="apartment">
+  <div id="building">
     <div v-if="useRoute().name === 'buildings'" class="parentWrapper">
       <!-- Action Buttons -->
       <div id="buttonWrapper" class="my-3">
@@ -61,7 +56,7 @@ const deleteSelectedRecord = async () => {
         <UTable :rows="filteredRows" :columns="selectedColumns" v-model="selected" v-model:expand="expand" @select="select" :loading="isLoading">
           <template #expand="{ row }">
             <div class="px-8 py-8">
-              <ApartmentDetails :apartment="row" />
+              <BuildingDetails :building="row" />
             </div>
           </template>
           <template #name-data="{ row }">

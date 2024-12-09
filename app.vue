@@ -14,7 +14,8 @@ useHead({
   <div class="h-full">
     <UNotifications />
 
-    <!-- <NuxtLoadingIndicator color="#aecc36" :height="2" errorColor="#da2c43" /> -->
+    <NuxtLoadingIndicator color="#aecc36" :height="2" errorColor="#da2c43" />
+
     <NuxtLayout>
       <!-- <div class="grid grid-cols-8 gap-4"> -->
       <NuxtPage class="col-span-8" />

@@ -1,34 +1,33 @@
 <script setup lang="ts">
-import { useRoute, navigateTo, useToast, useAsyncData, refreshNuxtData } from "#imports";
 import type { Building } from "@prisma/client";
 
+const { editBuilding } = useBuildingActions();
+const route = useRoute();
+
 // Extract route parameter
-const selectedBuildingId = useRoute().params.id as string;
-const toast = useToast();
+const selectedBuildingId = ref(route.params.id as string);
 
-// Fetch building data asynchronously
-const {
-  data: building,
-  error,
-  status,
-} = await useAsyncData<Building, any>("getOneBuilding", () => $fetch<Building>(`/api/buildings/${selectedBuildingId}`));
+// Access the shared state for buildings
+const buildings = useState<Building[]>("buildingList");
+// Find the specific building reactively
+const building = computed(() => buildings.value?.find((el) => el.id === Number(selectedBuildingId.value)));
 
-// Handle redirection if the building is not found or an error occurs
-onBeforeMount(() => {
-  if (status.value === "error" || error.value) return; // Wait for loading or error handling
-
-  if (!building.value) {
-    toast.add({
-      title: "خطأ",
-      description: "البناية المطلوبة غير موجودة.",
-      color: "rose",
-      timeout: 5000,
-    });
-    navigateTo("/buildings");
-  }
-});
+if (!buildings.value || buildings.value.length === 0) {
+  await navigateTo("/buildings");
+}
 
 // Initialize form state with default values
+interface IEditBuilding {
+  apartmentsCount: number;
+  storeCount: number;
+  basinName: string;
+  basinNumber: string;
+  landNumber: string;
+  electricBill: string;
+  serviceAmount: number;
+  maintenanceAmount: number;
+}
+
 const state = reactive<IEditBuilding>({
   apartmentsCount: 0,
   storeCount: 0,
@@ -40,50 +39,24 @@ const state = reactive<IEditBuilding>({
   maintenanceAmount: 0,
 });
 
-// Populate state with fetched building data
-if (building.value) {
-  state.apartmentsCount = building.value.apartmentsCount;
-  state.storeCount = building.value.storeCount;
-  state.basinName = building.value.basinName;
-  state.basinNumber = building.value.basinNumber;
-  state.landNumber = building.value.landNumber;
-  state.serviceAmount = building.value.serviceAmount;
-  state.maintenanceAmount = building.value.maintenanceAmount;
-  state.electricBill = building.value.electricBill ?? "";
-}
+// Reactively update the form state when `building` becomes available
+watchEffect(() => {
+  if (building.value) {
+    state.apartmentsCount = building.value.apartmentsCount;
+    state.storeCount = building.value.storeCount;
+    state.basinName = building.value.basinName;
+    state.basinNumber = building.value.basinNumber;
+    state.landNumber = building.value.landNumber;
+    state.serviceAmount = building.value.serviceAmount;
+    state.maintenanceAmount = building.value.maintenanceAmount;
+    state.electricBill = building.value.electricBill ?? "";
+  }
+});
 
 // Handle form submission
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("editBuilding", () =>
-    $fetch<void>(`/api/buildings/${selectedBuildingId}`, {
-      method: "put",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.add({
-      title: "تم التعديل بنجاح",
-      description: "تم تحديث بيانات البناية.",
-      color: "green",
-      timeout: 3000,
-    });
-
-    // Refresh the list of buildings after the update
-    await refreshNuxtData("getBuildings");
-
-    // Navigate back to the buildings list
-    await navigateTo("/buildings");
-  }
-
-  if (status.value === "error") {
-    toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message || "حدث خطأ أثناء التعديل.",
-      color: "rose",
-      timeout: 10000,
-    });
-  }
+  useLoadingIndicator().start();
+  await editBuilding(selectedBuildingId.value, state);
 };
 </script>
 

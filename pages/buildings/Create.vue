@@ -1,8 +1,9 @@
 <script setup lang="ts">
+// *** Dependencies ***
 const toast = useToast();
 const { createBuilding } = useBuildingActions();
 
-// Define State
+// *** Define Variables ***
 const state: ICreateBuilding = reactive({
   name: "",
   apartmentsCount: 0,
@@ -17,6 +18,7 @@ const state: ICreateBuilding = reactive({
 
 // Methods
 const submitForm = async () => {
+  useLoadingIndicator().start();
   // Early validation for required fields before making the API call
   if (!state.name || !state.apartmentsCount || !state.basinName || !state.basinNumber || !state.landNumber) {
     toast.add({
@@ -28,11 +30,7 @@ const submitForm = async () => {
     return;
   }
 
-  const result = await createBuilding(state);
-
-  if (result === "success") {
-    await navigateTo("/buildings");
-  }
+  await createBuilding(state);
 };
 </script>
 
