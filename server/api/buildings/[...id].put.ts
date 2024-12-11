@@ -3,8 +3,7 @@ import prisma from "~/lib/prisma";
 
 // Utility function to validate incoming data
 const validateBuildingData = (data: Building) => {
-  // Add any necessary validations here
-  // For example, ensure fields like 'basinName' are present before updating
+  // TODO: Add any additional field validation as needed
   if (!data.basinName) {
     throw new Error("Missing required field: basinName");
   }

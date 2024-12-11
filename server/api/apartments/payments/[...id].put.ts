@@ -1,25 +1,39 @@
 import prisma from "~/lib/prisma";
+import { Payment } from "@prisma/client";
+
+// Utility function to validate the request body
+const validatePaymentData = (data: Payment) => {
+  // TODO: Add any additional field validation as needed
+  if (!data.depositAmount) {
+    throw new Error("Missing required fields: depositAmount");
+  }
+};
 
 export default defineEventHandler(async (event) => {
-  // Parse and validate the payment ID from the route parameters
-  const id = Number(getRouterParams(event).id);
-  if (isNaN(id)) {
+  const body: Payment = await readBody(event);
+  const id: number = Number(getRouterParams(event).id);
+
+  // Check if body data is provided
+  if (!body) {
+    const msg = "ERROR: Argument data is missing";
+    console.log(msg);
     throw createError({
-      statusCode: 400,
-      message: "Invalid ID provided. Please provide a valid numeric ID.",
+      statusCode: 400, // Bad Request for missing data
+      message: msg,
     });
   }
 
-  // Read and validate the request body
-  const body = await readBody(event);
-  if (!body || Object.keys(body).length === 0) {
+  // Validate the provided apartment ID
+  if (isNaN(id)) {
     throw createError({
-      statusCode: 400,
-      message: "Request body is missing or empty.",
+      statusCode: 400, // Bad Request for invalid ID
+      message: "Invalid ID provided",
     });
   }
 
   try {
+    validatePaymentData(body); // Custom validation for required fields
+
     // Check if the payment exists
     const existingPayment = await prisma.payment.findUnique({
       where: { id },
@@ -38,12 +52,13 @@ export default defineEventHandler(async (event) => {
       data: body,
     });
 
-    // Return the updated payment
+    // Return a success response after updating the payment
     return {
       success: true,
-      message: "Payment updated successfully.",
-      data: updatedPayment,
+      message: "Payment updated successfully",
+      data: body,
     };
+
   } catch (error: any) {
     console.error("Error updating payment:", error.message);
 

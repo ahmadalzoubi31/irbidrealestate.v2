@@ -63,8 +63,8 @@ model Apartment {
   renterNationality    String?
   renterIdentification String?
   isServiceIncluded    Boolean   @default(false)
-  insurance            Int       @default(0)
-  commissionAmount     Int       @default(0)
+  insurance            Float     @default(0)
+  commissionAmount     Float     @default(0)
   status               Boolean   @default(true)
   createdBy            String?
   createdAt            DateTime  @default(now())
@@ -80,7 +80,7 @@ model Payment {
   apartment           Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   nextRentDate        DateTime
   receivedPaymentDate DateTime
-  depositAmount       Int
+  depositAmount       Float
   depositDate         DateTime
   notes               String?
   status              Boolean   @default(true)

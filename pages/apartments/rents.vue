@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Dependencies
 import type { Apartment } from "@prisma/client";
 import format from "date-fns/format";
 
@@ -44,7 +45,7 @@ const deleteSelectedRecord = async () => {
 
 <template>
   <div id="apartment">
-    <div v-if="useRoute().name === 'apartments-rents'" class="parentWrapper">
+    <div class="parentWrapper" v-if="useRoute().name === 'apartments-rents'">
       <!-- Action Buttons -->
       <div id="buttonWrapper" class="my-3">
         <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة ايجار" :to="'/apartments/rents/create'" />

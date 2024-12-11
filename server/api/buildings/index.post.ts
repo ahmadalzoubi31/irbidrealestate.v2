@@ -3,10 +3,10 @@ import prisma from "~/lib/prisma";
 
 // Utility function for validating request data
 const validateBuildingData = (data: Building) => {
+  // TODO: Add any additional field validation as needed
   if (!data.name || !data.basinName) {
     throw new Error("Missing required fields: name and basinName");
   }
-  // Add more validation logic as needed
 };
 
 export default defineEventHandler(async (event) => {

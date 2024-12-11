@@ -130,7 +130,7 @@ const uploadImage = (event: any) => console.log(event);
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :modelValue="apartment!.buildingName"
+            :modelValue="apartment?.buildingName"
           />
         </div>
         <!-- apartmentNumber -->
@@ -143,7 +143,7 @@ const uploadImage = (event: any) => console.log(event);
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :modelValue="apartment!.apartmentNumber"
+            :modelValue="apartment?.apartmentNumber"
           />
         </div>
         <!-- basinName -->
@@ -156,7 +156,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment!.building.basinName"
+            :model-value="apartment?.building.basinName"
           />
         </div>
         <!-- basinNumber -->
@@ -169,7 +169,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment!.building.basinNumber"
+            :model-value="apartment?.building.basinNumber"
           />
         </div>
         <!-- landNumber -->
@@ -182,7 +182,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment!.building.landNumber"
+            :model-value="apartment?.building.landNumber"
           />
         </div>
         <!-- ownerName -->
@@ -385,7 +385,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="true"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment!.building.maintenanceAmount"
+            :model-value="apartment?.building.maintenanceAmount"
           />
         </div>
         <!-- serviceAmount -->
@@ -398,7 +398,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment!.building.serviceAmount"
+            :model-value="apartment?.building.serviceAmount"
           />
         </div>
       </div>

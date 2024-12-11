@@ -2,8 +2,10 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  // Parse and validate the payment ID from the route parameters
-  const id = Number(getRouterParams(event).id);
+  // Extract ID from route parameters
+  const id: number = Number(getRouterParams(event).id);
+
+  // Validate ID
   if (isNaN(id)) {
     throw createError({
       statusCode: 400,

@@ -4,7 +4,7 @@ import { Apartment } from "@prisma/client";
 export default defineEventHandler(async (event) => {
   try {
     // Simulate delay (e.g., fetching huge data)
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
+    // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all apartments
     const apartments: Apartment[] = await prisma.apartment.findMany({
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     // Handle errors gracefully
     throw createError({
       statusCode: error.statusCode || 500,
-      statusMessage: error.message || "An unexpected error occurred",
+      statusMessage: error.message || "An unexpected error occurred while fetching apartments.",
     });
   }
 });

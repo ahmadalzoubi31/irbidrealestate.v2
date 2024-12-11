@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Prisma, Payment } from "@prisma/client";
+import prisma from "~/lib/prisma";
 
 // Utility function to validate the incoming payment data
 const validatePaymentData = (data: any) => {
@@ -27,12 +27,16 @@ export default defineEventHandler(async (event) => {
     validatePaymentData(body);
 
     // Create a new payment entry
-    await prisma.payment.create({ data: body });
+    const newPayment: Payment = await prisma.payment.create({ data: body });
 
-    // Return a success response after creating the payment
-    return { message: "Payment created successfully" };
+    // Return success response
+    return {
+      success: true,
+      message: "Payment created successfully",
+      data: newPayment,
+    };
   } catch (error: any) {
-    console.error("Error creating payment:", error.message);
+    console.log({ prisma_code: error.code });
 
     // Handle known Prisma errors (e.g., unique constraint violations)
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -46,10 +50,12 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Handle any other errors (e.g., validation errors)
+    // Handle other errors
+    const msg = error.message || "An unexpected error occurred while creating the payment.";
+    console.log(msg);
     throw createError({
-      statusCode: error.statusCode || 500, // Default to 500 for unknown errors
-      message: error.message || "An unexpected error occurred while creating the payment.",
+      statusCode: 500,
+      message: msg,
     });
   }
 });

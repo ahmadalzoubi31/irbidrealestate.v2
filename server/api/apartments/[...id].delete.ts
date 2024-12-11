@@ -1,6 +1,5 @@
 // ~/server/api/apartments/[id]/delete.ts
 import prisma from "~/lib/prisma";
-import { Apartment } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
@@ -10,16 +9,14 @@ export default defineEventHandler(async (event) => {
   if (isNaN(id)) {
     throw createError({
       statusCode: 400, // Changed to 400 for client-side error
-      message: "Invalid ID provided",
+      message: "Invalid ID provided. Please provide a valid numeric ID.",
     });
   }
 
   try {
     // Fetch apartment by ID to ensure it exists before deletion
     const apartment = await prisma.apartment.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
 
     // If apartment doesn't exist, return an error
@@ -34,9 +31,7 @@ export default defineEventHandler(async (event) => {
 
     // Proceed with deleting the apartment
     await prisma.apartment.delete({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
 
     // Return success response

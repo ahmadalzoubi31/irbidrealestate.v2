@@ -41,8 +41,8 @@ CREATE TABLE "Apartment" (
     "renterNationality" TEXT,
     "renterIdentification" TEXT,
     "isServiceIncluded" BOOLEAN NOT NULL DEFAULT false,
-    "insurance" INTEGER NOT NULL DEFAULT 0,
-    "commissionAmount" INTEGER NOT NULL DEFAULT 0,
+    "insurance" REAL NOT NULL DEFAULT 0,
+    "commissionAmount" REAL NOT NULL DEFAULT 0,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createdBy" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +56,7 @@ CREATE TABLE "Payment" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nextRentDate" DATETIME NOT NULL,
     "receivedPaymentDate" DATETIME NOT NULL,
-    "depositAmount" INTEGER NOT NULL,
+    "depositAmount" REAL NOT NULL,
     "depositDate" DATETIME NOT NULL,
     "notes" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT true,
@@ -159,6 +159,19 @@ CREATE TABLE "Detail" (
     "price" REAL NOT NULL DEFAULT 0.0,
     "claimId" INTEGER NOT NULL,
     CONSTRAINT "Detail_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES "Claim" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "AdFile" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createdBy" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedBy" TEXT,
+    "updatedAt" DATETIME NOT NULL,
+    "adId" INTEGER NOT NULL,
+    CONSTRAINT "AdFile_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex

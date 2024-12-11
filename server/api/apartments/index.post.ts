@@ -3,10 +3,10 @@ import prisma from "~/lib/prisma";
 
 // Utility function for validating request data
 const validateApartmentData = (data: Apartment) => {
+  // TODO: Add more validation as needed (for example, checking rentAmount or rentDuration)
   if (!data.buildingName || !data.apartmentNumber || !data.ownerName) {
     throw new Error("Missing required fields: buildingName, apartmentNumber, and ownerName");
   }
-  // Add more validation as needed (for example, checking rentAmount or rentDuration)
 };
 
 export default defineEventHandler(async (event) => {
@@ -26,9 +26,7 @@ export default defineEventHandler(async (event) => {
     validateApartmentData(body);
 
     // Create a new apartment entry
-    const newApartment: Apartment = await prisma.apartment.create({
-      data: body
-    });
+    const newApartment: Apartment = await prisma.apartment.create({ data: body });
 
     // Return success response
     return {
@@ -53,11 +51,9 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred while creating the apartment.";
-    console.log(msg);
     throw createError({
       statusCode: 500,
-      message: msg,
+      message: error.message || "An unexpected error occurred while creating the apartment."
     });
   }
 });
