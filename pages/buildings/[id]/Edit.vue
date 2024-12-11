@@ -16,18 +16,6 @@ if (!buildings.value || buildings.value.length === 0) {
   await navigateTo("/buildings");
 }
 
-// Initialize form state with default values
-interface IEditBuilding {
-  apartmentsCount: number;
-  storeCount: number;
-  basinName: string;
-  basinNumber: string;
-  landNumber: string;
-  electricBill: string;
-  serviceAmount: number;
-  maintenanceAmount: number;
-}
-
 const state = reactive<IEditBuilding>({
   apartmentsCount: 0,
   storeCount: 0,

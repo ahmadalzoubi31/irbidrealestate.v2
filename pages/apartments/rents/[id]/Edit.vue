@@ -2,18 +2,21 @@
 import { format } from "date-fns";
 import type { Apartment } from "@prisma/client";
 
-// Validate the id
-onBeforeMount(() => {
-  const paramId: number = Number(useRoute().params.id);
-  console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
-  if (!isNaN(paramId)) return;
+const { editApartment } = useApartmentActions();
+const route = useRoute();
 
-  // Redirect to the home page
-  navigateTo("/apartments/rents");
-});
+// Extract route parameter
+const selectedApartmentId = ref(route.params.id as string);
 
-// Define State
-const toast = useToast();
+// Access the shared state for apartments
+const apartments = useState<Apartment[]>("apartmentList");
+// Find the specific apartment reactively
+const apartment: any = computed(() => apartments.value?.find((el) => el.id === Number(selectedApartmentId.value)));
+
+if (!apartments.value || apartments.value.length === 0) {
+  await navigateTo("/apartments/rents");
+}
+
 const state: IEditApartment = reactive({
   ownerName: "",
   ownerNumber: "",
@@ -36,8 +39,6 @@ const state: IEditApartment = reactive({
   insurance: 0,
   commissionAmount: 0,
 });
-const selectedApartmentId = useRoute().params.id;
-const isRegistered = ref(false);
 const isFurnitureOptions = [
   {
     id: 0,
@@ -74,71 +75,38 @@ const renterNationalityOptions = [
     value: "غير اردني",
   },
 ];
-const rentDurationOptions = [
-  {
-    id: 0,
-    name: "سنة",
-    value: "سنة",
-  },
-  {
-    id: 1,
-    name: "سنتان",
-    value: "سنتان",
-  },
-  {
-    id: 2,
-    name: "3 سنين",
-    value: "3 سنين",
-  },
-];
+// Removed unused rentDurationOptions
 
-const { data: apartment } = await useAsyncData<Apartment, any>("getOneApartment", () => $fetch<Apartment>(`/api/apartments/${selectedApartmentId}`));
+// Reactively update the form state when `building` becomes available
+watchEffect(() => {
+  if (apartment.value) {
+    state.ownerName = apartment.value.ownerName;
+    state.ownerNumber = apartment.value.ownerNumber!;
+    state.agentName = apartment.value.agentName;
+    state.agentNumber = apartment.value.agentNumber!;
+    state.electricSub = apartment.value.electricSub!;
+    state.waterSub = apartment.value.waterSub!;
+    state.realLocation = apartment.value.realLocation!;
+    state.renterName = apartment.value.renterName;
+    state.renterNumber = apartment.value.renterNumber;
+    state.rentDuration = apartment.value.rentDuration;
+    state.rentAmount = apartment.value.rentAmount;
+    state.rentDate = apartment.value.rentDate;
+    state.rentPaymentWay = apartment.value.rentPaymentWay!;
+    state.isFurniture = apartment.value.isFurniture;
+    state.rentStatus = apartment.value.rentStatus;
+    state.renterNationality = apartment.value.renterNationality!;
+    state.renterIdentification = apartment.value.renterIdentification!;
+    state.isServiceIncluded = apartment.value.isServiceIncluded;
+    state.insurance = apartment.value.insurance;
+    state.commissionAmount = apartment.value.commissionAmount;
+  }
+});
 
-// Fill the field with data
-state.ownerName = apartment.value!.ownerName;
-state.ownerNumber = apartment.value!.ownerNumber!;
-state.agentName = apartment.value!.agentName;
-state.agentNumber = apartment.value!.agentNumber!;
-state.electricSub = apartment.value!.electricSub!;
-state.waterSub = apartment.value!.waterSub!;
-state.realLocation = apartment.value!.realLocation!;
-state.renterName = apartment.value!.renterName;
-state.renterNumber = apartment.value!.renterNumber;
-state.rentDuration = apartment.value!.rentDuration;
-state.rentAmount = apartment.value!.rentAmount;
-state.rentDate = apartment.value!.rentDate;
-state.rentPaymentWay = apartment.value!.rentPaymentWay!;
-state.isFurniture = apartment.value!.isFurniture;
-state.rentStatus = apartment.value!.rentStatus;
-state.renterNationality = apartment.value!.renterNationality!;
-state.renterIdentification = apartment.value!.renterIdentification!;
-state.isServiceIncluded = apartment.value!.isServiceIncluded;
-state.insurance = apartment.value!.insurance;
-state.commissionAmount = apartment.value!.commissionAmount;
-
-// Declare Methods
+// Handle form submission
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("editApartment", () =>
-    $fetch<void>("/api/apartments/" + selectedApartmentId, {
-      method: "put",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    refreshNuxtData("getApartments");
-    await navigateTo("/apartments/rents");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
-    toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
-    });
-  }
+  useLoadingIndicator().start();
+  await editApartment(selectedApartmentId.value, state);
 };
 const uploadImage = (event: any) => console.log(event);
 </script>

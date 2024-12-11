@@ -2,13 +2,11 @@ import type { Apartment } from "@prisma/client";
 
 // composables/useApartments.ts
 export function useApartments() {
+    useLoadingIndicator().start();
     const nuxtApp = useNuxtApp();
     const toast = useToast();
 
-    const {
-        data: apartments,
-        status
-    } = useFetch<Apartment[]>("/api/apartments", {
+    const { data: apartments, status } = useFetch<Apartment[]>("/api/apartments", {
         key: "getApartments",
         server: false,
         lazy: true,
@@ -17,7 +15,6 @@ export function useApartments() {
 
     if (status.value === "error") {
         toast.add({
-            title: "خطأ",
             description: "حدث خطأ اثناء جلب البنايات",
             color: "rose",
             timeout: 10000,

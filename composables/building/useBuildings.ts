@@ -15,7 +15,6 @@ export function useBuildings() {
 
     if (status.value === "error") {
         toast.add({
-            title: "خطأ",
             description: "حدث خطأ اثناء جلب البنايات",
             color: "rose",
             timeout: 10000,

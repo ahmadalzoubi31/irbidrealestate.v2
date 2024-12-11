@@ -32,7 +32,7 @@ const select = (row: Apartment) => {
 };
 
 const editSelectedRecord = async (id: string) => {
-  await navigateTo(`/buildings/${id}/edit`);
+  await navigateTo(`/apartments/rents/${id}/edit`);
 };
 
 const deleteSelectedRecord = async () => {

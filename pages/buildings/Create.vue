@@ -16,15 +16,14 @@ const state: ICreateBuilding = reactive({
   maintenanceAmount: 0,
 });
 
-// Methods
+// *** Define Methods ***
 const submitForm = async () => {
   useLoadingIndicator().start();
   // Early validation for required fields before making the API call
   if (!state.name || !state.apartmentsCount || !state.basinName || !state.basinNumber || !state.landNumber) {
     toast.add({
-      title: "تنبيه",
       description: "من فضلك أكمل جميع الحقول المطلوبة.",
-      color: "rose",
+      color: "yellow",
       timeout: 5000,
     });
     return;

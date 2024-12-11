@@ -13,7 +13,6 @@ export function useBuildingActions() {
 
         if (status.value === 'error') {
             toast.add({
-                title: "خطأ",
                 description: error.value!.message || "البناية المطلوبة غير موجودة.",
                 color: "rose",
                 timeout: 10000,
@@ -31,7 +30,6 @@ export function useBuildingActions() {
             await navigateTo("/buildings");
 
             toast.add({
-                title: "نجحت العملية",
                 description: "تم انشاء البناية بنجاح",
                 color: "primary",
                 timeout: 5000,
@@ -39,7 +37,6 @@ export function useBuildingActions() {
 
         } catch (error: any) {
             toast.add({
-                title: "خطأ",
                 description: error.message || "حدث خطأ أثناء الحفظ",
                 color: "rose",
                 timeout: 10000,
@@ -55,7 +52,6 @@ export function useBuildingActions() {
             await navigateTo("/buildings");
 
             toast.add({
-                title: "نجحت العملية",
                 description: "تم تعديل البناية بنجاح",
                 color: "primary",
                 timeout: 5000,
@@ -63,7 +59,6 @@ export function useBuildingActions() {
 
         } catch (error: any) {
             toast.add({
-                title: "خطأ",
                 description: error.message || "حدث خطأ أثناء التعديل",
                 color: "rose",
                 timeout: 10000,
@@ -80,14 +75,12 @@ export function useBuildingActions() {
             await $fetch("/api/buildings/" + id, { method: "DELETE", key: "deleteBuilding" });
             await refreshNuxtData("getBuildings");
             toast.add({
-                title: "نجحت العملية",
                 description: "تم حذف البناية بنجاح",
                 color: "primary",
                 timeout: 5000,
             });
         } catch (error: any) {
             toast.add({
-                title: "خطأ",
                 description: error.message || "حدث خطأ أثناء الحذف",
                 color: "rose",
                 timeout: 10000,

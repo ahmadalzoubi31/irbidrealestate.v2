@@ -13,12 +13,11 @@ export function useApartmentActions() {
 
         if (status.value === 'error') {
             toast.add({
-                title: "خطأ",
-                description: error.value!.message || "الايجار المطلوبة غير موجودة.",
+                description: error.value!.message || "الايجار المطلوب غير موجود.",
                 color: "rose",
                 timeout: 10000,
             });
-            navigateTo("/apartments");
+            navigateTo("/apartments/rents");
         }
 
         return { data: data.value, status: status.value }
@@ -28,10 +27,9 @@ export function useApartmentActions() {
         try {
             await $fetch("/api/apartments", { method: "POST", body: payload });
             await refreshNuxtData("getApartments");
-            await navigateTo("/apartments");
+            await navigateTo("/apartments/rents");
 
             toast.add({
-                title: "نجحت العملية",
                 description: "تم انشاء الايجار بنجاح",
                 color: "primary",
                 timeout: 5000,
@@ -39,7 +37,6 @@ export function useApartmentActions() {
 
         } catch (error: any) {
             toast.add({
-                title: "خطأ",
                 description: error.message || "حدث خطأ أثناء الحفظ",
                 color: "rose",
                 timeout: 10000,
@@ -52,10 +49,9 @@ export function useApartmentActions() {
         try {
             await $fetch("/api/apartments/" + id, { method: "PUT", body: payload });
             await refreshNuxtData("getApartments");
-            await navigateTo("/apartments");
+            await navigateTo("/apartments/rents");
 
             toast.add({
-                title: "نجحت العملية",
                 description: "تم تعديل الايجار بنجاح",
                 color: "primary",
                 timeout: 5000,
@@ -63,7 +59,6 @@ export function useApartmentActions() {
 
         } catch (error: any) {
             toast.add({
-                title: "خطأ",
                 description: error.message || "حدث خطأ أثناء التعديل",
                 color: "rose",
                 timeout: 10000,
@@ -80,14 +75,12 @@ export function useApartmentActions() {
             await $fetch("/api/apartments/" + id, { method: "DELETE", key: "deleteApartment" });
             await refreshNuxtData("getApartments");
             toast.add({
-                title: "نجحت العملية",
                 description: "تم حذف الايجار بنجاح",
                 color: "primary",
                 timeout: 5000,
             });
         } catch (error: any) {
             toast.add({
-                title: "خطأ",
                 description: error.message || "حدث خطأ أثناء الحذف",
                 color: "rose",
                 timeout: 10000,
@@ -96,13 +89,12 @@ export function useApartmentActions() {
             useLoadingIndicator().finish()
         }
     };
-
     const getDropdownItems = (row: { id: string }, openModal: (type: string) => void) => [
         [
             {
                 label: "تعديل",
                 icon: "i-heroicons-pencil-square-20-solid",
-                click: () => navigateTo(`/buildings/${row.id}/edit`)
+                click: () => navigateTo(`/apartments/rents/${row.id}/edit`)
             },
         ],
         [
@@ -119,5 +111,5 @@ export function useApartmentActions() {
         ],
     ];
 
-    return { createApartment, editApartment, deleteApartment, getDropdownItems };
+    return { createApartment, editApartment, deleteApartment, getOneApartment, getDropdownItems };
 }

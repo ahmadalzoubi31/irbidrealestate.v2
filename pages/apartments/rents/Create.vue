@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Building } from "@prisma/client";
 import { format } from "date-fns";
 const toast = useToast();
 const { createApartment } = useApartmentActions();
@@ -58,16 +57,14 @@ const rentDurationOptions = [
   { id: 2, name: "3 سنين", value: "3 سنين" },
 ];
 
-// Define Computed
-// Declare Methods
+// *** Define Methods ***
 const submitForm = async () => {
   useLoadingIndicator().start();
   // Early validation for required fields before making the API call
   if (!state.buildingName || !state.apartmentNumber || !state.ownerName) {
     toast.add({
-      title: "تنبيه",
       description: "من فضلك أكمل جميع الحقول المطلوبة.",
-      color: "rose",
+      color: "yellow",
       timeout: 5000,
     });
     return;
@@ -79,19 +76,19 @@ const submitForm = async () => {
 const uploadImage = (event: any) => console.log(event);
 
 // Get the select menu data
-const { buildings } = useBuildings();
-const fetchedBuildings = computed(() =>
-  buildings.value?.map((el) => {
-    useLoadingIndicator().finish();
+const { buildings: availableBuildings } = useBuildings();
+const computedBuildings = computed(() =>
+  availableBuildings.value?.map((el) => {
     return { id: el.id, name: el.name };
   })
 );
+
 // Filling data
-const fillBasinName = computed(() => buildings.value?.find((a) => a.name == state.buildingName)?.basinName);
-const fillBasinNumber = computed(() => buildings.value?.find((a) => a.name == state.buildingName)?.basinNumber);
-const fillLandNumber = computed(() => buildings.value?.find((a) => a.name == state.buildingName)?.landNumber);
-const fillServiceAmount = computed(() => buildings.value?.find((a) => a.name == state.buildingName)?.serviceAmount);
-const fillMaintenanceAmount = computed(() => buildings.value?.find((a) => a.name == state.buildingName)?.maintenanceAmount);
+const fillBasinName = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.basinName);
+const fillBasinNumber = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.basinNumber);
+const fillLandNumber = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.landNumber);
+const fillServiceAmount = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.serviceAmount);
+const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.maintenanceAmount);
 </script>
 
 <template>
@@ -111,9 +108,9 @@ const fillMaintenanceAmount = computed(() => buildings.value?.find((a) => a.name
             v-if="!isRegistered"
             id="buildingName"
             name="buildingName"
+            v-model="state.buildingName" 
             :autofocus="true"
-            v-model="state.buildingName"
-            :options="fetchedBuildings"
+            :options="computedBuildings"
             value-attribute="name"
             option-attribute="name"
           />
