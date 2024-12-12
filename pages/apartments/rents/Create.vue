@@ -59,7 +59,6 @@ const rentDurationOptions = [
 
 // *** Define Methods ***
 const submitForm = async () => {
-  useLoadingIndicator().start();
   // Early validation for required fields before making the API call
   if (!state.buildingName || !state.apartmentNumber || !state.ownerName) {
     toast.add({
@@ -69,7 +68,7 @@ const submitForm = async () => {
     });
     return;
   }
-
+  useLoadingIndicator().start();
   await createApartment(state);
 };
 
@@ -108,7 +107,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
             v-if="!isRegistered"
             id="buildingName"
             name="buildingName"
-            v-model="state.buildingName" 
+            v-model="state.buildingName"
             :autofocus="true"
             :options="computedBuildings"
             value-attribute="name"

@@ -18,24 +18,24 @@ const { payments, status } = usePayments();
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
 
 // Filtering
-const filteredRows = useFilteredRows<Apartment>(apartments, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<Payment>(payments, q, ["createdAt", "updatedAt"]);
 
 // Actions
-const { deleteApartment, getDropdownItems } = useApartmentActions();
+const { deletePayment } = usePaymentActions();
 
-const select = (row: Apartment) => {
+const select = (row: Payment) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
 
 const editSelectedRecord = async (id: string) => {
-  await navigateTo(`/apartments/rents/${id}/edit`);
+  await navigateTo(`/apartments/payments/${id}/edit`);
 };
 
 const deleteSelectedRecord = async () => {
   useLoadingIndicator().start();
   if (!selected.value.length) return;
-  await deleteApartment(selected.value[0].id.toFixed());
+  await deletePayment(selected.value[0].id.toFixed());
 };
 </script>
 
@@ -45,8 +45,8 @@ const deleteSelectedRecord = async () => {
       <div id="paymentTable">
         <!-- Action Buttons -->
         <div id="buttonWrapper" class="my-3">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة ايجار" :to="'/apartments/rents/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف ايجار" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة دفعة" :to="'/apartments/payments/create'" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف دفعة" @click="deleteSelectedRecord" />
         </div>
         <div id="filterWrapper" class="my-3">
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
@@ -58,10 +58,15 @@ const deleteSelectedRecord = async () => {
             <template #expand="{ row }">
               <div class="px-8">
                 <div class="py-8">
-                  {{ row }}
-                  <!-- <PaymentDetails :payment="row" /> -->
+                  <!-- {{ row }} -->
+                  <PaymentDetails :payment="row" />
                 </div>
               </div>
+            </template>
+            <template #id-data="{ row }">
+              <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+                {{ row.id }}
+              </span>
             </template>
             <template #receivedPaymentDate-data="{ row }">
               <span>

@@ -144,11 +144,18 @@ declare interface IEditAd {
   expectedRentAmount: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
+  files: Array<any>;
 }
 
 declare interface ICreateAdFile {
   name: string;
   adId: number;
+}
+
+declare interface IEditAdFile {
+  name: string;
+  adId: number;
+  status: boolean;
 }
 
 declare interface IInterestedPeople {

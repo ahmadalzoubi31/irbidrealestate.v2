@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const { files, ...adData } = body;
-
+  debugger;
   try {
     await prisma.$transaction(async (tx) => {
       const createOperation = await tx.ad.create({ data: { ...adData, interestedPeople: { create: adData.interestedPeople } } });
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
         const name = await storeFileLocally(
           file, // the file object
           16, // you can add a name for the file or length of Unique ID that will be automatically generated!
-          "/ads" // the folder the file will be stored in
+          `/ads/${createOperation.id}/` // the folder the file will be stored in
         );
 
         uniqueNameForFiles.push({ name: name, adId: createOperation.id });

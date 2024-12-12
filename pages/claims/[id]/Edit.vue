@@ -6,7 +6,7 @@ import { format } from "date-fns";
 // Validate the id
 onBeforeMount(() => {
   const paramId: number = Number(useRoute().params.id);
-  console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
+  // console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
   if (!isNaN(paramId)) return;
 
   // Redirect to the home page

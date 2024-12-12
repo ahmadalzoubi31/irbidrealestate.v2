@@ -1,23 +1,23 @@
 <script setup lang="ts">
-// *** Dependencies ***
 import type { Ad } from "@prisma/client";
 
-// Validate the id
-onBeforeMount(() => {
-  const paramId: number = Number(useRoute().params.id);
-  console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
-  if (!isNaN(paramId)) return;
+const { editAd } = useAdActions();
+const route = useRoute();
 
-  // Redirect to the home page
-  navigateTo("/ads");
-});
+// Extract route parameter
+const selectedAdId = ref(route.params.id as string);
 
-// *** Define Variables ***
-const selectedPaymentId: string = useRoute().params.id as string;
-const { data: ad } = await useAsyncData<Ad, any>("getOneAd", () => $fetch<Ad>("/api/ads/" + selectedPaymentId));
-const toast = useToast();
+// Access the shared state for ads
+const ads = useState<Ad[]>("adList");
+// Find the specific ad reactively
+const ad = computed(() => ads.value?.find((el) => el.id === Number(selectedAdId.value)));
+
+if (!ads.value || ads.value.length === 0) {
+  await navigateTo("/ads");
+}
 const interestedPersonName = ref("");
 const interestedPersonNumber = ref("");
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const state: IEditAd = reactive({
   propertyStatus: "متوفر",
   propertyOwnerName: "",
@@ -40,6 +40,7 @@ const state: IEditAd = reactive({
   expectedRentAmount: "",
   notes: "",
   interestedPeople: [],
+  files: [],
 });
 const items = (row: { name: string; number: string }) => [
   [
@@ -70,34 +71,25 @@ const propertyStatusOptions = [
   },
 ];
 
-// *** Declare Methods ***
+// Handle form submission
 const submitForm = async () => {
   useLoadingIndicator().start();
-  const { status, error } = await useAsyncData<void, any>("editAd", () =>
-    $fetch<void>("/api/ads/" + selectedPaymentId, {
-      method: "put",
-      body: state,
-    })
-  );
+  const fileList = state.files.concat(files.value);
 
-  if (status.value === "success") {
-    toast.remove("saving");
-    useLoadingIndicator().finish();
-    refreshNuxtData("getAds");
-    await navigateTo("/ads");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
-    useLoadingIndicator().finish();
-    useLoadingIndicator().error.value = true;
-    toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
-    });
-  }
+  const payload = {
+    ...state,
+    files: fileList,
+  };
+  await editAd(selectedAdId.value, payload);
+};
+const openFile = (fileName: string) => {
+  window.open(`/upload/images/ads/${ad.value?.id}/${fileName}`, "_blank");
+};
+const toggleFileDeletion = (index: any) => {
+  state.files[index].status = !state.files[index].status;
+};
+const removeFile = (index: number) => {
+  files.value.splice(index, 1);
 };
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
@@ -111,40 +103,43 @@ const addInterestedPerson = () => {
   interestedPersonNumber.value = "";
 };
 
-// *** Validate Form Data ***
-if (ad.value === null) {
-  await navigateTo("/ads");
-} else {
-  // Fill the field with data
-  state.propertyStatus = ad.value.propertyStatus;
-  state.propertyOwnerName = ad.value.propertyOwnerName;
-  state.propertyOwnerNumber = ad.value.propertyOwnerNumber;
-  state.propertyOwnerIdentity = ad.value.propertyOwnerIdentity;
-  state.propertyAgentName = ad.value.propertyAgentName;
-  state.propertyAgentNumber = ad.value.propertyAgentNumber;
-  state.propertyAgentIdentity = ad.value.propertyAgentIdentity;
-  state.facebookLink = ad.value.facebookLink;
-  state.instagramLink = ad.value.instagramLink;
-  state.governorate = ad.value.governorate;
-  state.directorate = ad.value.directorate;
-  state.village = ad.value.village;
-  state.basin = ad.value.basin;
-  state.plot = ad.value.plot;
-  state.apartmentNumber = ad.value.apartmentNumber;
-  state.classification = ad.value.classification;
-  state.neighborhood = ad.value.neighborhood;
-  state.expectedRentAmount = ad.value.expectedRentAmount;
-  state.notes = ad.value.notes;
-  // @ts-ignore
-  state.interestedPeople = ad.value.interestedPeople;
-}
+// Reactively update the form state when `ad` becomes available
+watchEffect(() => {
+  if (ad.value) {
+    state.propertyStatus = ad.value.propertyStatus;
+    state.propertyOwnerName = ad.value.propertyOwnerName;
+    state.propertyOwnerNumber = ad.value.propertyOwnerNumber;
+    state.propertyOwnerIdentity = ad.value.propertyOwnerIdentity;
+    state.propertyAgentName = ad.value.propertyAgentName;
+    state.propertyAgentNumber = ad.value.propertyAgentNumber;
+    state.propertyAgentIdentity = ad.value.propertyAgentIdentity;
+    state.facebookLink = ad.value.facebookLink;
+    state.instagramLink = ad.value.instagramLink;
+    state.governorate = ad.value.governorate;
+    state.directorate = ad.value.directorate;
+    state.village = ad.value.village;
+    state.basin = ad.value.basin;
+    state.plot = ad.value.plot;
+    state.apartmentNumber = ad.value.apartmentNumber;
+    state.classification = ad.value.classification;
+    state.neighborhood = ad.value.neighborhood;
+    state.expectedRentAmount = ad.value.expectedRentAmount;
+    state.notes = ad.value.notes;
+    // @ts-ignore
+    state.interestedPeople = ad.value.interestedPeople;
+    // @ts-ignore
+    state.files = ad.value.files;
+  }
+});
 </script>
 
 <template>
   <form @submit.prevent="submitForm()" class="relative mt-6 flex-1 px-4 sm:px-6">
+    <!-- Form Header -->
     <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
+    <!-- Form Fields -->
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- code -->
@@ -158,7 +153,7 @@ if (ad.value === null) {
             :required="false"
             :disable="true"
             inputClass="bg-gray-200"
-            :model-value="ad!.code"
+            :model-value="ad?.code"
           />
         </div>
         <!-- propertyStatus -->
@@ -183,7 +178,7 @@ if (ad.value === null) {
             :required="false"
             :disable="true"
             inputClass="bg-gray-200"
-            :model-value="useGetPropertyTypeName(ad!.propertyType)"
+            :model-value="useGetPropertyTypeName(ad?.propertyType || 0)"
           />
         </div>
         <!-- propertyOwnerName -->
@@ -232,6 +227,55 @@ if (ad.value === null) {
           <label for="instagramLink"> رابط الانستجرام </label>
           <UInput id="instagramLink" name="instagramLink" :type="'text'" :size="'sm'" :required="false" v-model="state.instagramLink!" />
         </div>
+        <!-- adPhotos -->
+        <div class="col-span-6 sm:col-span-1">
+          <label for="adPhotos"> صور الاعلان </label>
+          <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
+        </div>
+        <div class="col-span-6 sm:col-span-6 flex">
+          <div v-for="(el, index) in state.files" class="relative inline-block">
+            <NuxtImg
+              :class="el.status ? 'opacity-100' : 'opacity-25'"
+              :src="`/upload/images/ads/${ad?.id}/${el.name}`"
+              alt="file"
+              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+              preload
+              @click="openFile(el.name)"
+            />
+            <UButton
+              v-if="el.status"
+              icon="i-heroicons-minus-20-solid"
+              @click="toggleFileDeletion(index)"
+              class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+            <UButton
+              v-else
+              icon="i-heroicons-plus-20-solid"
+              @click="toggleFileDeletion(index)"
+              class="absolute top-0 left-0 bg-primary-500 hover:bg-primary-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+          </div>
+          <div v-for="(el, index) in files" class="relative inline-block">
+            <NuxtImg
+              :src="el.content?.toString()"
+              alt="file"
+              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+              preload
+              @click="openFile(el.name)"
+            />
+            <UButton
+              icon="i-heroicons-minus-20-solid"
+              @click="removeFile(index)"
+              class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -275,7 +319,7 @@ if (ad.value === null) {
           <UInput id="plot" name="plot" :size="'sm'" :required="true" v-model="state.plot" />
         </div>
         <!-- apartmentNumber -->
-        <div class="col-span-6 sm:col-span-2" v-show="!ad!.code.includes('LS') && !ad!.code.includes('LR')">
+        <div class="col-span-6 sm:col-span-2" v-show="!ad?.code.includes('LS') && !ad?.code.includes('LR')">
           <label for="apartmentNumber">
             رقم الشقة
             <span class="text-sm text-primary-500">(اجباري)</span></label
@@ -284,12 +328,12 @@ if (ad.value === null) {
             id="apartmentNumber"
             name="apartmentNumber"
             :size="'sm'"
-            :required="!ad!.code.includes('LS') && !ad!.code.includes('LR')"
+            :required="!ad?.code.includes('LS') && !ad?.code.includes('LR')"
             v-model="state.apartmentNumber!"
           />
         </div>
         <!-- classification -->
-        <div class="col-span-6 sm:col-span-2" v-show="ad!.code.includes('LS') || ad!.code.includes('LR')">
+        <div class="col-span-6 sm:col-span-2" v-show="ad?.code.includes('LS') || ad?.code.includes('LR')">
           <label for="classification">
             تصنيف الارض
             <span class="text-sm text-primary-500">(اجباري)</span></label
@@ -298,7 +342,7 @@ if (ad.value === null) {
             id="classification"
             name="classification"
             :size="'sm'"
-            :required="ad!.code.includes('LS') || ad!.code.includes('LR')"
+            :required="ad?.code.includes('LS') || ad?.code.includes('LR')"
             v-model="state.classification!"
           />
         </div>
@@ -308,7 +352,7 @@ if (ad.value === null) {
           <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="false" v-model="state.neighborhood!" />
         </div>
         <!-- expectedRentAmount -->
-        <div class="col-span-6 sm:col-span-2" v-show="ad!.code.includes('ASI')">
+        <div class="col-span-6 sm:col-span-2" v-show="ad?.code.includes('ASI')">
           <label for="expectedRentAmount">
             دخل الايجار المتوقع
             <span class="text-sm text-primary-500">(اجباري)</span></label
@@ -317,7 +361,7 @@ if (ad.value === null) {
             id="expectedRentAmount"
             name="expectedRentAmount"
             :size="'sm'"
-            :required="ad!.code.includes('ASI')"
+            :required="ad?.code.includes('ASI')"
             v-model="state.expectedRentAmount!"
           />
         </div>
@@ -369,7 +413,7 @@ if (ad.value === null) {
       </div>
     </div>
 
-    <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
+    <!-- Form Action Buttons -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
       <UButton to="/ads" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">

@@ -1,39 +1,51 @@
 import prisma from "~/lib/prisma";
-import { Ad } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   const id: number = Number(getRouterParams(event).id);
 
+  // Validate the ID
   if (isNaN(id)) {
+    const msg = "ERROR: Invalid ID";
+    console.log(msg);
     throw createError({
-      statusCode: 500,
-      message: "Invalid id",
+      statusCode: 400,
+      message: msg,
     });
   }
 
   try {
+    // Check if the ad exists
     const ad = await prisma.ad.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
 
     if (!ad) {
+      const msg = `ERROR: No ad found with ID ${id}`;
+      console.log(msg);
       throw createError({
-        statusCode: 400,
-        message: "No ad found",
+        statusCode: 404,
+        message: msg,
       });
     }
 
+    // Delete the ad
     await prisma.ad.delete({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
+
+    // Return success response
+    return {
+      success: true,
+      message: `Ad with ID ${id} successfully deleted.`,
+    };
+
   } catch (error: any) {
+    // Log error and return it
+    console.error("Error deleting ad:", error.message);
+
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: error.statusCode || 500,  // Default to 500 if statusCode is not available
+      message: error.message || "An unexpected error occurred while deleting the ad.",
     });
   }
 });

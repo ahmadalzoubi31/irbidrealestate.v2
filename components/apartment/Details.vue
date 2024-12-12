@@ -6,7 +6,7 @@ import type { Apartment } from "@prisma/client";
 // Declare Props
 const props = defineProps({
   apartment: {
-    type: Object,
+    type: Object as PropType<Apartment>,
     required: true,
   },
 });

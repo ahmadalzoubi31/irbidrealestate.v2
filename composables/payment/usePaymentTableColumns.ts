@@ -1,7 +1,7 @@
 // composables/useTableColumns.ts
-export function useApartmentTableColumns() {
+export function usePaymentTableColumns() {
     const columns = [
-        // { key: "id", label: "#", sortable: false },
+        { key: "id", label: "رقم الدفعة", sortable: false },
         { key: "apartment.buildingName", label: "اسم البناية", sortable: true },
         { key: "apartment.apartmentNumber", label: "رقم الشقة", sortable: false },
         { key: "apartment.rentDate", label: "تاريخ الإيجار", sortable: false },

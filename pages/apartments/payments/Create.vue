@@ -1,9 +1,10 @@
 <script setup lang="ts">
-const toast = useToast();
-import type { Apartment } from "@prisma/client";
+// *** Dependencies ***
 import { addMonths, format } from "date-fns";
+const toast = useToast();
+const { createPayment } = usePaymentActions();
 
-// Define State
+// *** Define Variables ***
 const state: ICreatePayment = reactive({
   apartmentId: 0,
   nextRentDate: new Date(),
@@ -12,50 +13,44 @@ const state: ICreatePayment = reactive({
   depositDate: new Date(),
   notes: "",
 });
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 
-// Get the select menu data
-const { data: apartments } = useNuxtData<Apartment[]>("getApartments");
-const fetchedApartments = apartments.value!.map((el) => {
-  return { id: el.id, name: el.apartmentNumber };
-});
-
-// Declare Methods
+// *** Define Methods ***
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("createPayment", () =>
-    $fetch<void>("/api/apartments/payments", {
-      method: "post",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    refreshNuxtData("getPayments");
-    await navigateTo("/apartments/payments");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
+  // Early validation for required fields before making the API call
+  if (!state.depositAmount || !state.depositDate || !state.nextRentDate || !state.receivedPaymentDate) {
     toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
+      description: "من فضلك أكمل جميع الحقول المطلوبة.",
+      color: "yellow",
+      timeout: 5000,
     });
+    return;
   }
+  useLoadingIndicator().start();
+  await createPayment(state);
 };
 
-const fillRentAmount = computed(() => apartments.value!.find((a) => a.id == state.apartmentId)?.rentAmount);
-const fillRentDate = computed(() => apartments.value!.find((a) => a.id == state.apartmentId)?.rentDate);
-const fillCommissionAmount = computed(() => apartments.value!.find((a) => a.id == state.apartmentId)?.commissionAmount);
+const uploadImage = (event: any) => console.log(event);
+
+// Get the select menu data
+const { apartments: availableApartments } = useApartments();
+const computedApartments = computed(() =>
+  availableApartments.value?.map((el) => {
+    return { id: el.id, name: el.apartmentNumber };
+  })
+);
+
+const fillRentAmount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.rentAmount);
+const fillRentDate = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.rentDate);
+const fillCommissionAmount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.commissionAmount);
 // @ts-ignore
-const fillMaintenanceDiscount = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.building.maintenanceAmount);
+const fillMaintenanceDiscount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.building.maintenanceAmount);
 // @ts-ignore
-const fillServices = computed(() => apartments.value.find((a) => a.id == state.apartmentId)?.building.serviceAmount);
+const fillServices = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.building.serviceAmount);
 
 // const calculateNextRentDate = computed(() => fillRentDate.value?.toDateString());
 const calculateNextRentDate = ref();
 watch(fillRentDate, (newVal, oldVal) => {
-  // console.log({ newVal, oldVal });
   calculateNextRentDate.value = addMonths(newVal as Date, 1);
   state.nextRentDate = calculateNextRentDate.value;
 });
@@ -78,9 +73,9 @@ watch(fillRentDate, (newVal, oldVal) => {
           <USelectMenu
             id="apartmentNumber"
             name="apartmentNumber"
-            :autofocus="true"
             v-model="state.apartmentId"
-            :options="fetchedApartments"
+            :autofocus="true"
+            :options="computedApartments"
             value-attribute="id"
             option-attribute="name"
           />
