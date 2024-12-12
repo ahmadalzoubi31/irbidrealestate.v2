@@ -75,9 +75,8 @@ const renterNationalityOptions = [
     value: "غير اردني",
   },
 ];
-// Removed unused rentDurationOptions
 
-// Reactively update the form state when `building` becomes available
+// Reactively update the form state when `apartment` becomes available
 watchEffect(() => {
   if (apartment.value) {
     state.ownerName = apartment.value.ownerName;

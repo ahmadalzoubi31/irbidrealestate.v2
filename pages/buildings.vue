@@ -39,7 +39,7 @@ const deleteSelectedRecord = async () => {
 
 <template>
   <div id="building">
-    <div v-if="useRoute().name === 'buildings'" class="parentWrapper">
+    <div class="parentWrapper" v-if="useRoute().name === 'buildings'">
       <!-- Action Buttons -->
       <div id="buttonWrapper" class="my-3">
         <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/buildings/create'" />

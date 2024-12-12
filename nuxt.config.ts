@@ -4,7 +4,7 @@ import { NuxtLoadingIndicator } from "#build/components";
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image"],
+  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image", "@nuxt/eslint"],
   colorMode: {
     preference: "light",
   },
@@ -18,6 +18,8 @@ export default defineNuxtConfig({
       // ... or scan all modules within given directory
       'composables/building/**',
       'composables/apartment/**',
+      'composables/payment/**',
+      'composables/ad/**',
     ]
   },
   fileStorage: {

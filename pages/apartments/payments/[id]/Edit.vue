@@ -1,61 +1,39 @@
 <script setup lang="ts">
-// *** Dependencies ***
-import type { Payment } from "@prisma/client";
 import { format } from "date-fns";
+import type { Payment } from "@prisma/client";
 
-// Validate the id
-onBeforeMount(() => {
-  const paramId: number = Number(useRoute().params.id);
-  console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
-  if (!isNaN(paramId)) return;
+const { editPayment } = usePaymentActions();
+const route = useRoute();
 
-  // Redirect to the home page
-  navigateTo("/apartments/payments");
-});
+// Extract route parameter
+const selectedPaymentId = ref(route.params.id as string);
 
-// *** Define Variables ***
-const selectedPaymentId = useRoute().params.id;
-const { data: payment } = await useAsyncData<Payment, any>("getOnePayment", () => $fetch<Payment>(`/api/apartments/payments/${selectedPaymentId}`));
-const toast = useToast();
+// Access the shared state for payments
+const payments = useState<Payment[]>("paymentList");
+// Find the specific payment reactively
+const payment: any = computed(() => payments.value?.find((el) => el.id === Number(selectedPaymentId.value)));
+
+if (!payments.value || payments.value.length === 0) {
+  await navigateTo("/apartments/payments");
+}
+
 const state: IEditPayment = reactive({ receivedPaymentDate: new Date(), depositAmount: 0, depositDate: new Date(), notes: "" });
 
-// *** Declare Menus ***
+// Reactively update the form state when `payment` becomes available
+watchEffect(() => {
+  if (payment.value) {
+    state.receivedPaymentDate = payment.value.receivedPaymentDate!;
+    state.depositAmount = payment.value.depositAmount;
+    state.depositDate = payment.value.depositDate!;
+    state.notes = payment.value.notes!;
+  }
+});
 
-// *** Declare Methods ***
+// Handle form submission
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("createPayment", () =>
-    $fetch<void>("/api/apartments/payments", {
-      method: "post",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.remove("saving");
-    refreshNuxtData("getPayments");
-    await navigateTo("/apartments/payments");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
-    toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
-    });
-  }
+  useLoadingIndicator().start();
+  await editPayment(selectedPaymentId.value, state);
 };
-
-// *** Validate Form Data ***
-if (payment.value === null) {
-  await navigateTo("/payments");
-} else {
-  receivedPaymentDate: payment.value.receivedPaymentDate;
-  depositAmount: payment.value.depositAmount;
-  depositDate: payment.value.depositDate;
-  notes: payment.value.notes;
-}
 </script>
 
 <template>
@@ -235,7 +213,7 @@ if (payment.value === null) {
       <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
       <UButton
         :type="'button'"
-        to="/apartments/rents"
+        to="/apartments/payments"
         :size="'md'"
         class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
       >

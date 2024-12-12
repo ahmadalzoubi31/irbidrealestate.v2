@@ -1,9 +1,11 @@
 <script setup lang="ts">
-// *** Dependencies ***
 import type { Ad } from "@prisma/client";
 
+// *** Dependencies ***
+const toast = useToast();
+const { createAd } = useAdActions();
+
 // *** Define Variables ***
-const { data: ads } = useNuxtData<Ad[]>("getAds");
 const interestedPersonName = ref("");
 const interestedPersonNumber = ref("");
 const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
@@ -31,7 +33,6 @@ const state: ICreateAd = reactive({
   notes: "",
   interestedPeople: [],
 });
-const toast = useToast();
 const items = (row: { name: string; number: string }) => [
   [
     {
@@ -108,33 +109,25 @@ const propertyTypeOptions = [
   },
 ];
 
-// *** Declare Methods ***
+// *** Define Methods ***
 const submitForm = async () => {
-  const body = { ...state, files: files.value };
-  const { status, error } = await useAsyncData<void, any>("createAd", () =>
-    $fetch<void>("/api/ads", {
-      method: "post",
-      body: body,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.remove("saving");
-    refreshNuxtData("getAds");
-    await navigateTo("/ads");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
+  // Early validation for required fields before making the API call
+  if (!state.code) {
     toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
+      description: "من فضلك أكمل جميع الحقول المطلوبة.",
+      color: "yellow",
+      timeout: 5000,
     });
+    return;
   }
-};
 
+  useLoadingIndicator().start();
+  const payload = {
+    ...state,
+    files: files.value,
+  };
+  await createAd(payload);
+};
 // Function to add a new interested person (with name and phone)
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
@@ -146,6 +139,11 @@ const addInterestedPerson = () => {
 };
 
 // *** Computed Variables ***
+// Get the data
+const ads = useState<Ad[]>("adList");
+if (!ads.value || ads.value.length === 0) {
+  await navigateTo("/ads");
+}
 const getLastCodePerType = computed(() => (ads.value ? ads.value.filter((el) => el.propertyType == state.propertyType).length + 1 : 1));
 
 // *** Watchers ***

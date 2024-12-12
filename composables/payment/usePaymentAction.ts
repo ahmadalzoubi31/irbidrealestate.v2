@@ -5,7 +5,7 @@ export function usePaymentActions() {
     const toast = useToast();
 
     const getOnePayment = async (id: string) => {
-        const { data, status, error } = await useFetch<Payment>("/api/payments/" + id, {
+        const { data, status, error } = await useFetch<Payment>("/api/apartments/payments/" + id, {
             key: "getPaymentById",
             server: false,
             lazy: true
@@ -17,7 +17,7 @@ export function usePaymentActions() {
                 color: "rose",
                 timeout: 10000,
             });
-            navigateTo("/payments/rents");
+            navigateTo("/apartments/payments");
         }
 
         return { data: data.value, status: status.value }
@@ -25,9 +25,9 @@ export function usePaymentActions() {
     }
     const createPayment = async (payload: ICreatePayment) => {
         try {
-            await $fetch("/api/payments", { method: "POST", body: payload });
+            await $fetch("/api/apartments/payments", { method: "POST", body: payload });
             await refreshNuxtData("getPayments");
-            await navigateTo("/payments/rents");
+            await navigateTo("/apartments/payments");
 
             toast.add({
                 description: "تم انشاء الدفعة بنجاح",
@@ -47,9 +47,9 @@ export function usePaymentActions() {
     }
     const editPayment = async (id: string, payload: IEditPayment) => {
         try {
-            await $fetch("/api/payments/" + id, { method: "PUT", body: payload });
+            await $fetch("/api/apartments/payments/" + id, { method: "PUT", body: payload });
             await refreshNuxtData("getPayments");
-            await navigateTo("/payments/rents");
+            await navigateTo("/apartments/payments");
 
             toast.add({
                 description: "تم تعديل الدفعة بنجاح",
@@ -72,7 +72,7 @@ export function usePaymentActions() {
         if (!confirmDelete) return;
 
         try {
-            await $fetch("/api/payments/" + id, { method: "DELETE", key: "deletePayment" });
+            await $fetch("/api/apartments/payments/" + id, { method: "DELETE", key: "deletePayment" });
             await refreshNuxtData("getPayments");
             toast.add({
                 description: "تم حذف الدفعة بنجاح",

@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const name = await storeFileLocally(
       file, // the file object
       16, // you can add a name for the file or length of Unique ID that will be automatically generated!
-      "/ads" // the folder the file will be stored in
+      `/ads/${id}/` // the folder the file will be stored in
     );
 
     uniqueNameForFiles.push({ name: name, adId: id });

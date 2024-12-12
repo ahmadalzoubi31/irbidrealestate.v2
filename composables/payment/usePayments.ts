@@ -6,7 +6,7 @@ export function usePayments() {
     const nuxtApp = useNuxtApp();
     const toast = useToast();
 
-    const { data: payments, status } = useFetch<Payment[]>("/api/payments", {
+    const { data: payments, status } = useFetch<Payment[]>("/api/apartments/payments", {
         key: "getPayments",
         server: false,
         lazy: true,
