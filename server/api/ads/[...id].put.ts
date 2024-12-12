@@ -77,14 +77,14 @@ export default defineEventHandler(async (event) => {
     // Fetch existing related records
     const existingFiles = await tx.adFile.findMany({ where: { adId: id } });
 
-    debugger;
-
     const uniqueNameForFiles: Array<IEditAdFile> = [];
     for (const file of files) {
-      if (existingFiles.includes(file) && file.status === true) {
-        // If the file already exists, skip it
+      const existingFile = existingFiles.find((existingFile) => existingFile.name === file.name);
+
+      if (existingFile && file.status === true) {
+        // If the file already exists and status is true, skip it
         continue;
-      } else if (existingFiles.includes(file) && file.status === false) {
+      } else if (existingFile && file.status === false) {
         uniqueNameForFiles.push({ name: file.name, adId: id, status: false });
       } else {
         const name = await storeFileLocally(
@@ -95,14 +95,7 @@ export default defineEventHandler(async (event) => {
 
         uniqueNameForFiles.push({ name: name, adId: id, status: true });
       }
-
     }
-
-
-
-
-
-
 
     const uploadOperations = await tx.adFile.createMany({ data: uniqueNameForFiles });
     // Execute deletions, updates, and creations
