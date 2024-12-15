@@ -5,24 +5,17 @@ definePageMeta({
   layout: "generate",
 });
 
-// *** Navigation and Validation ***
-onBeforeMount(() => {
-  const paramId: number = Number(useRoute().params.id);
-  if (isNaN(paramId)) {
-    console.warn("Invalid ID:", paramId);
-    navigateTo("/ads");
-  }
-});
 
 // *** Fetch Data ***
-const selectedPaymentId = useRoute().params.id as string;
-const { data: ad } = await useFetch<Ad>(`/api/ads/${selectedPaymentId}`);
+const selectedAdId = useRoute().params.id as string;
+const { getOneAd } = useAdActions();
+const { data: ad } = await getOneAd(selectedAdId);
 
 // *** Computed Properties ***
 // @ts-ignore.
-const imageList = computed(() => ad.value?.files.filter((el: { name: string | string[] }) => !el.name.includes("mp4")) || []);
+const imageList = computed(() => ad?.files.filter((el: { name: string | string[] }) => !el.name.includes("mp4")) || []);
 // @ts-ignore.
-const videoList = computed(() => ad.value?.files.filter((el: { name: string | string[] }) => el.name.includes("mp4")) || []);
+const videoList = computed(() => ad?.files.filter((el: { name: string | string[] }) => el.name.includes("mp4")) || []);
 
 // *** Config Generator ***
 const getConfig = (code: string) => {
@@ -79,9 +72,9 @@ const getConfig = (code: string) => {
 };
 
 // *** Dynamic Config ***
-const { heading, keys } = computed(() => getConfig(ad.value?.code || "")).value;
+const { heading, keys } = computed(() => getConfig(ad?.code || "")).value;
 
-const extracted = computed(() => (ad.value ? useExtractKeys(ad.value, keys) : {}));
+const extracted = computed(() => (ad ? useExtractKeys(ad, keys) : {}));
 </script>
 
 <template>
@@ -108,21 +101,23 @@ const extracted = computed(() => (ad.value ? useExtractKeys(ad.value, keys) : {}
 
       <section class="rounded-lg p-6 mb-4">
         <h2 class="text-2xl font-bold text-primary-800 mb-4">معرض الصور</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <NuxtImg
-            v-for="file in imageList"
-            :key="file.name"
-            :src="`/upload/images/ads/${file.name}`"
-            class="rounded-lg shadow-md h-[300px] w-[300px]"
-          />
-        </div>
+          <Slider :files="imageList" :adId="selectedAdId" />
+<!--        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">-->
+<!--          <NuxtImg-->
+<!--            v-for="file in imageList"-->
+<!--            :key="file.name"-->
+<!--            :src="`/upload/files/ads/${selectedAdId}/${file.name}`"-->
+<!--            class="rounded-lg shadow-md h-[300px] w-[300px]"-->
+<!--          />-->
+
+<!--        </div>-->
       </section>
 
       <section class="rounded-lg p-6 mb-4">
         <h2 class="text-2xl font-bold text-primary-800 mb-4">معرض الفيديو</h2>
         <div>
-          <video v-for="file in videoList" :key="file.name" width="1200" height="600" controls class="rounded-lg shadow-md">
-            <source :src="`/upload/images/ads/${file.name}`" type="video/mp4" />
+          <video v-for="file in videoList" :key="file.name" width="1200" height="200" controls class="rounded-lg shadow-md mb-4">
+            <source :src="`/upload/files/ads/${selectedAdId}/${file.name}`" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>

@@ -1,18 +1,25 @@
 import prisma from "~/lib/prisma";
+import { Claim } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
-    return await prisma.claim.findMany({
+    // Simulate delay (e.g., fetching huge data)
+    // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
+
+    // Fetch all claims
+    const claims: Claim[] = await prisma.claim.findMany({
       include: {
         apartment: true,
         collections: true,
         details: true,
       },
     });
+    return claims;
   } catch (error: any) {
+    // Handle errors gracefully
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: error.statusCode || 500,
+      statusMessage: error.message || "An unexpected error occurred",
     });
   }
 });

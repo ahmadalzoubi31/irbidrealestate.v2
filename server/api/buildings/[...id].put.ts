@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
 
     // Exclude the 'name' field as per the original code
     // @ts-ignore
-    delete body.name;
+    // delete body.name;
 
     // Perform the update
     const updatedBuilding = await prisma.building.update({

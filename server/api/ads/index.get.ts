@@ -10,8 +10,13 @@ export default defineEventHandler(async (event) => {
     const ads: Ad[] = await prisma.ad.findMany({
       include: {
         interestedPeople: true,
-        files: true
+        files: {
+          where: {
+            status: true,
+          }
+        }
       },
+
     });
     return ads;
   } catch (error: any) {

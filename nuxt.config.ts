@@ -4,7 +4,7 @@ import { NuxtLoadingIndicator } from "#build/components";
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image", "@nuxt/eslint"],
+  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image", "@nuxt/eslint", "nuxt-swiper"],
   colorMode: {
     preference: "light",
   },
@@ -20,6 +20,8 @@ export default defineNuxtConfig({
       'composables/apartment/**',
       'composables/payment/**',
       'composables/ad/**',
+      'composables/claim/**',
+      'composables/order/**',
     ]
   },
   fileStorage: {
@@ -27,7 +29,7 @@ export default defineNuxtConfig({
     // mount: '/home/$USR/development/nuxt-file-storage/server/files',
 
     // {OR} use environment variables (recommended)
-    mount: process.env.mount,
+    mount: process.env.MOUNT,
     // you need to set the mount in your .env file at the root of your project
   },
   // ssr: false,

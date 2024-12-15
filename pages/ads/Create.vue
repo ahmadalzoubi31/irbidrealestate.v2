@@ -128,6 +128,9 @@ const submitForm = async () => {
   };
   await createAd(payload);
 };
+const removeFile = (index: number) => {
+  files.value.splice(index, 1);
+};
 // Function to add a new interested person (with name and phone)
 const addInterestedPerson = () => {
   // Push a new empty person object to the array
@@ -141,7 +144,7 @@ const addInterestedPerson = () => {
 // *** Computed Variables ***
 // Get the data
 const ads = useState<Ad[]>("adList");
-if (!ads.value || ads.value.length === 0) {
+if (!ads.value) {
   await navigateTo("/ads");
 }
 const getLastCodePerType = computed(() => (ads.value ? ads.value.filter((el) => el.propertyType == state.propertyType).length + 1 : 1));
@@ -289,6 +292,23 @@ watch(
         <div class="col-span-6 sm:col-span-1">
           <label for="adPhotos"> صور الاعلان </label>
           <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
+        </div>
+        <div class="col-span-6 sm:col-span-6 flex">
+          <div v-for="(el, index) in files" class="relative inline-block">
+            <NuxtImg
+                :src="el.content?.toString()"
+                alt="file"
+                class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+                preload
+            />
+            <UButton
+                icon="i-heroicons-minus-20-solid"
+                @click="removeFile(index)"
+                class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+          </div>
         </div>
       </div>
     </div>

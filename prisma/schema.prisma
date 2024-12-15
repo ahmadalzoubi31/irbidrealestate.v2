@@ -65,6 +65,7 @@ model Apartment {
   isServiceIncluded    Boolean   @default(false)
   insurance            Float     @default(0)
   commissionAmount     Float     @default(0)
+  files                AppFile[]
   status               Boolean   @default(true)
   createdBy            String?
   createdAt            DateTime  @default(now())
@@ -117,7 +118,7 @@ model Ad {
   expectedRentAmount    String?
   notes                 String?
   interestedPeople      InterestedPeople[]
-  files                 AdFile[]
+  files                 AppFile[]
   status                Boolean            @default(true)
   createdBy             String?
   createdAt             DateTime           @default(now())
@@ -189,14 +190,34 @@ model Detail {
   claimId Int
 }
 
-model AdFile {
-  id        Int      @id @default(autoincrement())
-  name      String
-  status    Boolean  @default(true)
-  createdBy String?
-  createdAt DateTime @default(now())
-  updatedBy String?
-  updatedAt DateTime @updatedAt
-  Ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId      Int
+// model AdFile {
+//   id        Int      @id @default(autoincrement())
+//   name      String
+//   status    Boolean  @default(true)
+//   createdBy String?
+//   createdAt DateTime @default(now())
+//   updatedBy String?
+//   updatedAt DateTime @updatedAt
+//   Ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
+//   adId      Int
+// }
+
+model AppFile {
+  id          Int      @id @default(autoincrement())
+  name        String
+  path        String
+  type        String
+  size        String
+  url         String
+  relatedId   String
+  relatedType String
+  status      Boolean  @default(true)
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+
+  Ad Ad[]
+
+  Apartment Apartment[]
 }

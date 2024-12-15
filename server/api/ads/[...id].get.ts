@@ -17,6 +17,14 @@ export default defineEventHandler(async (event) => {
     // Fetch the ad by ID
     const ad = await prisma.ad.findUnique({
       where: { id },
+      include: {
+        interestedPeople: true,
+        files: {
+          where: {
+            status: true,
+          }
+        }
+      },
     });
 
     if (!ad) {

@@ -15,6 +15,9 @@ const ad = computed(() => ads.value?.find((el) => el.id === Number(selectedAdId.
 if (!ads.value || ads.value.length === 0) {
   await navigateTo("/ads");
 }
+
+const isModalOpen = ref(false);
+const selectedImage = ref("");
 const interestedPersonName = ref("");
 const interestedPersonNumber = ref("");
 const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
@@ -76,14 +79,26 @@ const submitForm = async () => {
   useLoadingIndicator().start();
   const fileList = state.files.concat(files.value);
 
+
   const payload = {
     ...state,
     files: fileList,
   };
   await editAd(selectedAdId.value, payload);
 };
-const openFile = (fileName: string) => {
-  window.open(`/upload/images/ads/${ad.value?.id}/${fileName}`, "_blank");
+const openFile = (fileName: string, isNew: boolean) => {
+  if(isNew) {
+    selectedImage.value = fileName;
+  } else
+  {
+    selectedImage.value = `/upload/files/ads/${ad.value?.id}/${fileName}`;
+  }
+  isModalOpen.value = true;
+
+};
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedImage.value = "";
 };
 const toggleFileDeletion = (index: any) => {
   state.files[index].status = !state.files[index].status;
@@ -146,39 +161,39 @@ watchEffect(() => {
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
           <UInput
-            id="code"
-            name="code"
-            :size="'sm'"
-            :autofocus="true"
-            :required="false"
-            :disable="true"
-            inputClass="bg-gray-200"
-            :model-value="ad?.code"
+              id="code"
+              name="code"
+              :size="'sm'"
+              :autofocus="true"
+              :required="false"
+              :disable="true"
+              inputClass="bg-gray-200"
+              :model-value="ad?.code"
           />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
           <label for="propertyStatus">حالة العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
           <USelectMenu
-            id="propertyStatus"
-            name="propertyStatus"
-            :required="true"
-            v-model="state.propertyStatus"
-            :options="propertyStatusOptions"
-            value-attribute="value"
-            option-attribute="name"
+              id="propertyStatus"
+              name="propertyStatus"
+              :required="true"
+              v-model="state.propertyStatus"
+              :options="propertyStatusOptions"
+              value-attribute="value"
+              option-attribute="name"
           />
         </div>
         <!-- propertyType -->
         <div class="col-span-6 sm:col-span-2">
           <label for="propertyType"> نوع العقار </label>
           <UInput
-            id="propertyType"
-            name="propertyType"
-            :required="false"
-            :disable="true"
-            inputClass="bg-gray-200"
-            :model-value="useGetPropertyTypeName(ad?.propertyType || 0)"
+              id="propertyType"
+              name="propertyType"
+              :required="false"
+              :disable="true"
+              inputClass="bg-gray-200"
+              :model-value="useGetPropertyTypeName(ad?.propertyType || 0)"
           />
         </div>
         <!-- propertyOwnerName -->
@@ -232,50 +247,148 @@ watchEffect(() => {
           <label for="adPhotos"> صور الاعلان </label>
           <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
         </div>
+
+        <!-- Image/Video Grid -->
         <div class="col-span-6 sm:col-span-6 flex">
-          <div v-for="(el, index) in state.files" class="relative inline-block">
-            <NuxtImg
-              :class="el.status ? 'opacity-100' : 'opacity-25'"
-              :src="`/upload/images/ads/${ad?.id}/${el.name}`"
-              alt="file"
-              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
-              preload
-              @click="openFile(el.name)"
-            />
-            <UButton
-              v-if="el.status"
-              icon="i-heroicons-minus-20-solid"
-              @click="toggleFileDeletion(index)"
-              class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-              style="transform: translate(-40%, -40%)"
-            >
-            </UButton>
-            <UButton
-              v-else
-              icon="i-heroicons-plus-20-solid"
-              @click="toggleFileDeletion(index)"
-              class="absolute top-0 left-0 bg-primary-500 hover:bg-primary-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-              style="transform: translate(-40%, -40%)"
-            >
-            </UButton>
+          <!-- For existing files -->
+          <div
+              v-for="(el, index) in state.files"
+              :key="index"
+              class="relative inline-block"
+          >
+            <template v-if="el.name.endsWith('.mp4')">
+              <!-- Render video thumbnail (optional) -->
+              <video
+                  :class="el.status ? 'opacity-100' : 'opacity-25'"
+                  :src="`/upload/files/ads/${ad?.id}/${el.name}`"
+                  class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg mr-3"
+                  preload="metadata"
+                  @click="openFile(el.name, false)"
+              />
+              <div class="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 rounded-lg mr-3"  @click="openFile(el.name, false)"
+              >
+                <icon name="i-heroicons-play-circle-20-solid" class="text-white text-5xl cursor-pointer"></icon>
+              </div>
+              <UButton
+                  v-if="el.status"
+                  icon="i-heroicons-minus-20-solid"
+                  @click="toggleFileDeletion(index)"
+                  class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                  style="transform: translate(-40%, -40%)"
+              />
+
+              <UButton
+                  v-else
+                  icon="i-heroicons-plus-20-solid"
+                  @click="toggleFileDeletion(index)"
+                  class="absolute top-0 left-0 bg-primary-500 hover:bg-primary-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                  style="transform: translate(-40%, -40%)"
+              />
+            </template>
+            <template v-else>
+              <!-- Render image -->
+              <NuxtImg
+                  :class="el.status ? 'opacity-100' : 'opacity-25'"
+                  :src="`/upload/files/ads/${ad?.id}/${el.name}`"
+                  alt="file"
+                  class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+                  preload
+                  placeholder
+                  @click="openFile(el.name, false)"
+              />
+              <UButton
+                  v-if="el.status"
+                  icon="i-heroicons-minus-20-solid"
+                  @click="toggleFileDeletion(index)"
+                  class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                  style="transform: translate(-40%, -40%)"
+              />
+
+              <UButton
+                  v-else
+                  icon="i-heroicons-plus-20-solid"
+                  @click="toggleFileDeletion(index)"
+                  class="absolute top-0 left-0 bg-primary-500 hover:bg-primary-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                  style="transform: translate(-40%, -40%)"
+              />
+            </template>
           </div>
-          <div v-for="(el, index) in files" class="relative inline-block">
-            <NuxtImg
-              :src="el.content?.toString()"
-              alt="file"
-              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
-              preload
-              @click="openFile(el.name)"
-            />
-            <UButton
-              icon="i-heroicons-minus-20-solid"
-              @click="removeFile(index)"
-              class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-              style="transform: translate(-40%, -40%)"
-            >
-            </UButton>
+
+          <!-- For new files -->
+          <div
+              v-for="(el, index) in files"
+              :key="index + 'new'"
+              class="relative inline-block"
+          >
+            <template v-if="el.content?.toString().startsWith('data:video/mp4;base64,')">
+              <!-- Render video thumbnail (optional) -->
+              <video
+                  :src="el.content?.toString()"
+                  class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg mr-3"
+                  preload="metadata"
+                  @click="openFile(el.content!.toString(), true)"
+              />
+              <div class="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 rounded-lg mr-3"  @click="openFile(el.content!.toString(), true)"
+              >
+                <icon name="i-heroicons-play-circle-20-solid" class="text-white text-5xl cursor-pointer"></icon>
+              </div>
+              <UButton
+                  icon="i-heroicons-minus-20-solid"
+                  @click="removeFile(index)"
+                  class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                  style="transform: translate(-40%, -40%)"
+              />
+            </template>
+            <template v-else>
+              <!-- Render image -->
+              <NuxtImg
+                  :src="el.content?.toString()"
+                  alt="file"
+                  class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+                  preload
+                  @click="openFile(el.content!.toString(), true)"
+              />
+              <UButton
+                  icon="i-heroicons-minus-20-solid"
+                  @click="removeFile(index)"
+                  class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+                  style="transform: translate(-40%, -40%)"
+              />
+
+            </template>
           </div>
         </div>
+
+        <!-- Modal with Transition -->
+        <transition name="fade">
+          <div
+              v-if="isModalOpen"
+              class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          >
+            <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
+              <!-- Conditionally Render Image or Video -->
+              <template v-if="selectedImage.endsWith('.mp4') || selectedImage.startsWith('data:video/mp4;base64,')">
+                <video
+                    :src="selectedImage"
+                    controls
+                    autoplay
+                    class="max-h-full max-w-full rounded-lg"
+                />
+              </template>
+              <template v-else>
+                <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />
+              </template>
+
+              <!-- Close Button -->
+              <UButton
+                  type="button"
+                  icon="i-heroicons-x-circle-20-solid"
+                  @click="closeModal"
+                  class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              />
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
 
@@ -325,11 +438,11 @@ watchEffect(() => {
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
           <UInput
-            id="apartmentNumber"
-            name="apartmentNumber"
-            :size="'sm'"
-            :required="!ad?.code.includes('LS') && !ad?.code.includes('LR')"
-            v-model="state.apartmentNumber!"
+              id="apartmentNumber"
+              name="apartmentNumber"
+              :size="'sm'"
+              :required="!ad?.code.includes('LS') && !ad?.code.includes('LR')"
+              v-model="state.apartmentNumber!"
           />
         </div>
         <!-- classification -->
@@ -339,11 +452,11 @@ watchEffect(() => {
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
           <UInput
-            id="classification"
-            name="classification"
-            :size="'sm'"
-            :required="ad?.code.includes('LS') || ad?.code.includes('LR')"
-            v-model="state.classification!"
+              id="classification"
+              name="classification"
+              :size="'sm'"
+              :required="ad?.code.includes('LS') || ad?.code.includes('LR')"
+              v-model="state.classification!"
           />
         </div>
         <!-- neighborhood -->
@@ -358,11 +471,11 @@ watchEffect(() => {
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
           <UInput
-            id="expectedRentAmount"
-            name="expectedRentAmount"
-            :size="'sm'"
-            :required="ad?.code.includes('ASI')"
-            v-model="state.expectedRentAmount!"
+              id="expectedRentAmount"
+              name="expectedRentAmount"
+              :size="'sm'"
+              :required="ad?.code.includes('ASI')"
+              v-model="state.expectedRentAmount!"
           />
         </div>
         <!-- notes -->
@@ -389,20 +502,20 @@ watchEffect(() => {
           <UInput id="interestedPersonName" name="interestedPersonName" :size="'sm'" :required="false" v-model="interestedPersonNumber" />
         </div>
         <UButton
-          :type="'button'"
-          :size="'md'"
-          class="w-20 text-center place-content-center ml-3"
-          @click="addInterestedPerson"
-          :disabled="interestedPersonName === '' || interestedPersonNumber === ''"
+            :type="'button'"
+            :size="'md'"
+            class="w-20 text-center place-content-center ml-3"
+            @click="addInterestedPerson"
+            :disabled="interestedPersonName === '' || interestedPersonNumber === ''"
         >
           اضافة
         </UButton>
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
         <UTable
-          class=""
-          :rows="state.interestedPeople"
-          :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]"
+            class=""
+            :rows="state.interestedPeople"
+            :columns="[{ key: 'name', label: 'اسم الشخص' }, { key: 'number', label: 'رقم الشخص' }, { key: 'actions' }]"
         >
           <template #actions-data="{ row }">
             <UDropdown :items="items(row)" class="align-middle">
@@ -422,3 +535,17 @@ watchEffect(() => {
     </div>
   </form>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+}
+</style>

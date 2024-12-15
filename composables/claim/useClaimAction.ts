@@ -1,35 +1,36 @@
-import type { Ad } from "@prisma/client";
+import type { Claim } from "@prisma/client";
 
-// composables/useAdActions.ts
-export function useAdActions() {
+// composables/useClaimActions.ts
+export function useClaimActions() {
     const toast = useToast();
 
-    const getOneAd = async (id: string) => {
-        const { data, status, error } = await useFetch<Ad>("/api/ads/" + id, {
-            key: "getAdById",
-            server: true
+    const getOneClaim = async (id: string) => {
+        const { data, status, error } = await useFetch<Claim>("/api/claims/" + id, {
+            key: "getClaimById",
+            server: false,
+            lazy: true
         });
 
         if (status.value === 'error') {
             toast.add({
-                description: error.value!.message || "الاعلان المطلوب غير موجود.",
+                description: error.value!.message || "المطالبة المطلوبة غير موجودة.",
                 color: "rose",
                 timeout: 10000,
             });
-            navigateTo("/ads");
+            navigateTo("/claims");
         }
 
         return { data: data.value, status: status.value }
 
     }
-    const createAd = async (payload: ICreateAd) => {
+    const createClaim = async (payload: ICreateClaim) => {
         try {
-            await $fetch("/api/ads", { method: "POST", body: payload });
-            await refreshNuxtData("getAds");
-            await navigateTo("/ads");
+            await $fetch("/api/claims", { method: "POST", body: payload });
+            await refreshNuxtData("getClaims");
+            await navigateTo("/claims");
 
             toast.add({
-                description: "تم انشاء الاعلان بنجاح",
+                description: "تم انشاء المطالبة بنجاح",
                 color: "primary",
                 timeout: 5000,
             });
@@ -44,21 +45,21 @@ export function useAdActions() {
             useLoadingIndicator().finish()
         }
     }
-    const editAd = async (id: string, payload: IEditAd) => {
+    const editClaim = async (id: string, payload: ICreateClaim) => {
         try {
-            await $fetch("/api/ads/" + id, { method: "PUT", body: payload });
-            await refreshNuxtData("getAds");
-            await navigateTo("/ads");
+            await $fetch("/api/claims/" + id, { method: "PUT", body: payload });
+            await refreshNuxtData("getClaims");
+            await navigateTo("/claims");
 
             toast.add({
-                description: "تم تعديل الاعلان بنجاح",
+                description: "تم تعديل المطالبة بنجاح",
                 color: "primary",
                 timeout: 5000,
             });
 
         } catch (error: any) {
             toast.add({
-                description: error || "حدث خطأ أثناء التعديل",
+                description: error.message || "حدث خطأ أثناء التعديل",
                 color: "rose",
                 timeout: 10000,
             })
@@ -66,15 +67,15 @@ export function useAdActions() {
             useLoadingIndicator().finish()
         }
     }
-    const deleteAd = async (id: string) => {
+    const deleteClaim = async (id: string) => {
         const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
         if (!confirmDelete) return;
 
         try {
-            await $fetch("/api/ads/" + id, { method: "DELETE", key: "deleteAd" });
-            await refreshNuxtData("getAds");
+            await $fetch("/api/claims/" + id, { method: "DELETE", key: "deleteClaim" });
+            await refreshNuxtData("getClaims");
             toast.add({
-                description: "تم حذف الاعلان بنجاح",
+                description: "تم حذف المطالبة بنجاح",
                 color: "primary",
                 timeout: 5000,
             });
@@ -89,5 +90,5 @@ export function useAdActions() {
         }
     };
 
-    return { createAd, editAd, deleteAd, getOneAd };
+    return { createClaim, editClaim, deleteClaim, getOneClaim };
 }

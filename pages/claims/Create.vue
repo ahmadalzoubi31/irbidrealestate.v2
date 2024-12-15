@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Apartment, Claim } from "@prisma/client";
-import { format } from "date-fns";
+import format from "date-fns/format";
+const toast = useToast();
+const { createClaim } = useClaimActions();
 
 // *** Define Variables ***
 const state: ICreateClaim = reactive({
@@ -12,7 +13,6 @@ const state: ICreateClaim = reactive({
   collections: [],
   details: [],
 });
-const toast = useToast();
 const collectionData = reactive({
   dateTime: new Date(),
   payment: 0,
@@ -44,54 +44,41 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
   ],
 ];
 
-// Get the select menu data
-await useAsyncData<Apartment[]>("getApartments", () => $fetch<Apartment[]>("/api/apartments"));
-const { data: apartments } = useNuxtData<Apartment[]>("getApartments");
-const fetchedApartments = apartments.value!.map((el) => {
-  return { id: el.id, name: el.apartmentNumber };
-});
-
-// *** Declare Methods ***
+// *** Define Methods ***
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("createClaim", () =>
-    $fetch<void>("/api/claims", {
-      method: "post",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.remove("saving");
-    refreshNuxtData("getClaims");
-    await navigateTo("/claims");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
+  // TODO: Early validation for required fields before making the API call
+  if (!state.claimFrom) {
     toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
+      description: "من فضلك أكمل جميع الحقول المطلوبة.",
+      color: "yellow",
+      timeout: 5000,
     });
+    return;
   }
+  useLoadingIndicator().start();
+  await createClaim(state);
 };
 const addCollectionData = () => {
-  // Push a new empty person object to the array
-  // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
   state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
 
-  detailData.item = "";
-  detailData.price = 0;
+  collectionData.dateTime = new Date();
+  collectionData.payment = 0;
+  collectionData.notes = "";
 };
 const addDetailData = () => {
-  // Push a new empty person object to the array
-  // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
   state.details.push({ item: detailData.item, price: detailData.price });
 
   detailData.item = "";
   detailData.price = 0;
 };
+
+// Get the select menu data
+const { apartments: availableApartments } = useApartments();
+const computedApartments = computed(() =>
+    availableApartments.value?.map((el) => {
+      return { id: el.id, name: el.apartmentNumber };
+    })
+);
 </script>
 
 <template>
@@ -112,7 +99,7 @@ const addDetailData = () => {
             name="apartmentId"
             :required="true"
             v-model="state.apartmentId"
-            :options="fetchedApartments"
+            :options="computedApartments"
             value-attribute="id"
             option-attribute="name"
           />
@@ -232,7 +219,7 @@ const addDetailData = () => {
           :size="'md'"
           class="w-20 text-center place-content-center ml-3"
           @click="addCollectionData"
-          :disabled="collectionData.dateTime === '' || collectionData.payment === 0"
+          :disabled="!collectionData.dateTime || collectionData.payment === 0"
         >
           اضافة
         </UButton>

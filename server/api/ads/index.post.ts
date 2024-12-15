@@ -1,6 +1,11 @@
 import { Prisma, Ad } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
+interface ICreateAdFile {
+  name: string;
+  adId: number; // Update type if `adId` is a string or other type in your schema
+}
+
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event);
 
@@ -34,8 +39,8 @@ export default defineEventHandler(async (event) => {
         // const { binaryString, ext } = parseDataUrl(file.content);
       }
 
-      const uploadOperations = await tx.adFile.createMany({ data: uniqueNameForFiles });
-      await Promise.all([createOperation, uploadOperations]);
+      // const uploadOperations = await tx.adFile.createMany({ data: uniqueNameForFiles });
+      await Promise.all([createOperation]);
     });
 
     // const { files } = await readBody<{ files: ServerFile[] }>(event);

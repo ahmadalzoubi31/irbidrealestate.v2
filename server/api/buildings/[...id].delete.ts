@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: error.statusCode || 500,  // Default to 500 if statusCode is not available
-      message: error.message || "An unexpected error occurred while deleting the ad.",
+      message: error.message || "An unexpected error occurred while deleting the building.",
     });
   }
 });

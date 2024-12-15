@@ -1,12 +1,13 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Claim } from "@prisma/client";
+import type { Claim }
+  from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
   claim: {
-    type: Object,
+    type: Object  as PropType<Claim>,
     required: true,
   },
 });
@@ -47,15 +48,25 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
 
 <template>
     <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
-        <dt v-for="(entry, key, index) in extracted" class="font-medium ">
-          {{ heading[index] }}
-        <dd v-if="key === 'createdAt' || key === 'updatedAt' || key === 'claimDate'" class="font-normal text-primary-500">
-          {{ formatted(entry as Date) }}
-        </dd>
-        <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
-          {{ useGetStatusName(entry as boolean) }}
-        </dd>
-        <dd v-else class="font-normal text-primary-500">{{ entry == null  || entry == "" ? "-" : entry }}</dd>
-        </dt>
+      <template v-for="(entry, key, index) in extracted">
+        <div>
+          <dt class="font-medium">{{ heading[index] }}</dt>
+
+          <!-- Handle formatted date fields -->
+          <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
+            {{ formatted(entry as Date) }}
+          </dd>
+
+          <!-- Handle status field -->
+          <dd v-else-if="key === 'status'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
+            {{ useGetStatusName(entry as boolean) }}
+          </dd>
+
+          <!-- Handle other fields, including null or empty values -->
+          <dd v-else class="font-normal text-primary-500">
+            {{ entry == null || entry === "" ? "-" : entry }}
+          </dd>
+        </div>
+      </template>
       </dl>
 </template>

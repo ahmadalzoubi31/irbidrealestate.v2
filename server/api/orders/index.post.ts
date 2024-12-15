@@ -1,25 +1,48 @@
 import { Prisma, Order } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
+// Utility function for validating request data
+const validateOrderData = (data: Order) => {
+  // TODO: Add any additional field validation as needed
+  if (!data.date) {
+    throw new Error("Missing required fields: date");
+  }
+};
+
 export default defineEventHandler(async (event) => {
   const body: Order = await readBody(event);
+
   if (!body) {
-    var msg = "ERROR: Argument data is missing";
+    const msg = "ERROR: Argument data is missing";
     console.log(msg);
     throw createError({
       statusCode: 400,
       message: msg,
     });
   }
+
   try {
-    await prisma.order.create({ data: body });
+    // Validate the incoming data
+    validateOrderData(body);
+
+    // Create a new order entry
+    const newOrder: Order = await prisma.order.create({
+      data: body,
+    });
+
+    // Return success response
+    return {
+      success: true,
+      message: "Order created successfully",
+      data: newOrder,
+    };
   } catch (error: any) {
     console.log({ prisma_code: error.code });
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // The .code property can be accessed in a type-safe manner
+      // Handle unique constraint violation error (e.g., name already exists)
       if (error.code === "P2002") {
-        var msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
+        const msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
         console.log(msg);
         throw createError({
           statusCode: 400,
@@ -28,9 +51,12 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // Handle other errors
+    const msg = error.message || "An unexpected error occurred while creating the order.";
+    console.log(msg);
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: 500,
+      message: msg,
     });
   }
 });

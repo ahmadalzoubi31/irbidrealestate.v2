@@ -36,7 +36,9 @@ const deleteSelectedRecord = async () => {
 };
 const generateSharedLinkSelectedRecord = async () => {
   const id = selected.value[0].id;
-  await navigateTo(`/ads/${id}/generate`);
+  await navigateTo(`/ads/${id}/generate`, {
+    replace: true,
+  });
 };
 </script>
 
@@ -63,11 +65,6 @@ const generateSharedLinkSelectedRecord = async () => {
               <!-- {{ row }} -->
               <AdDetails :ad="row" />
             </div>
-          </template>
-          <template #name-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
-              {{ row.name }}
-            </span>
           </template>
           <template #code-data="{ row }">
             <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">

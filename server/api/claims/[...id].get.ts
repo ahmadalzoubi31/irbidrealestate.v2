@@ -3,36 +3,44 @@ import prisma from "~/lib/prisma";
 export default defineEventHandler(async (event) => {
   const id: number = Number(getRouterParams(event).id);
 
+  // Validate ID
   if (isNaN(id)) {
+    const msg = "ERROR: Invalid ID format";
+    console.log(msg);
     throw createError({
-      statusCode: 500,
-      message: "Invalid id",
+      statusCode: 400,
+      message: msg,
     });
   }
 
   try {
+    // Fetch the claim by ID
     const claim = await prisma.claim.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
       include: {
+        apartment: true,
         collections: true,
         details: true,
       },
     });
 
     if (!claim) {
+      const msg = `ERROR: No claim found with ID ${id}`;
+      console.log(msg);
       throw createError({
-        statusCode: 400,
-        message: "No claim found",
+        statusCode: 404,
+        message: msg,
       });
     }
 
     return claim;
   } catch (error: any) {
+    console.log("Error fetching claim:", error);
+
+    // Handle errors gracefully and log error details
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: error.statusCode || 500,
+      message: error.message || "An unexpected error occurred while fetching the claim",
     });
   }
 });

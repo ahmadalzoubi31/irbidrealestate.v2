@@ -1,22 +1,23 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Apartment, Claim } from "@prisma/client";
+import type {Apartment, Claim} from "@prisma/client";
 import { format } from "date-fns";
 
-// Validate the id
-onBeforeMount(() => {
-  const paramId: number = Number(useRoute().params.id);
-  // console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
-  if (!isNaN(paramId)) return;
+const { editClaim } = useClaimActions();
+const route = useRoute();
 
-  // Redirect to the home page
-  navigateTo("/ads");
-});
+// Extract route parameter
+const selectedClaimId = ref(route.params.id as string);
 
-// *** Define Variables ***
-const selectedClaimId: string = useRoute().params.id as string;
-const { data: claim } = await useAsyncData<Claim, any>("getOneAd", () => $fetch<Claim>("/api/claims/" + selectedClaimId));
-const toast = useToast();
+// Access the shared state for claims
+const claims = useState<Claim[]>("claimList");
+// Find the specific claim reactively
+const claim = computed(() => claims.value?.find((el) => el.id === Number(selectedClaimId.value)));
+
+if (!claims.value || claims.value.length === 0) {
+  await navigateTo("/claims");
+}
+
 const collectionData = reactive({
   dateTime: new Date(),
   payment: 0,
@@ -56,72 +57,46 @@ const state: ICreateClaim = reactive({
   details: [],
 });
 
-// Get the select menu data
-await useAsyncData<Apartment[]>("getApartments", () => $fetch<Apartment[]>("/api/apartments"));
-const { data: apartments } = useNuxtData<Apartment[]>("getApartments");
-const fetchedApartments = apartments.value!.map((el) => {
-  return { id: el.id, name: el.apartmentNumber };
-});
-
-// *** Declare Methods ***
+// Handle form submission
 const submitForm = async () => {
   useLoadingIndicator().start();
-  const { status, error } = await useAsyncData<void, any>("editClaim", () =>
-    $fetch<void>("/api/claims/" + selectedClaimId, {
-      method: "put",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.remove("saving");
-    useLoadingIndicator().finish();
-    refreshNuxtData("getClaims");
-    await navigateTo("/claims");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
-    useLoadingIndicator().finish();
-    toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
-    });
-  }
+  await editClaim(selectedClaimId.value, state);
 };
 const addCollectionData = () => {
-  // Push a new empty person object to the array
-  // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
-  state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
+ state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
 
   detailData.item = "";
   detailData.price = 0;
 };
 const addDetailData = () => {
-  // Push a new empty person object to the array
-  // console.log({ interestedPersonName: interestedPersonName.value, interestedPersonNumber: interestedPersonNumber.value });
-  state.details.push({ item: detailData.item, price: detailData.price });
+   state.details.push({ item: detailData.item, price: detailData.price });
 
   detailData.item = "";
   detailData.price = 0;
 };
 
-// *** Validate Form Data ***
-if (claim.value === null) {
-  await navigateTo("/claims");
-} else {
-  // Fill the field with data
-  state.apartmentId = claim.value.apartmentId;
-  state.claimDate = claim.value.claimDate;
-  state.claimFrom = claim.value.claimFrom;
-  state.total = claim.value.total;
-  // @ts-ignore
-  state.collections = claim.value.collections;
-  // @ts-ignore
-  state.details = claim.value.details;
-}
+
+// Reactively update the form state when `building` becomes available
+watchEffect(() => {
+  if (claim.value) {
+    state.apartmentId = claim.value.apartmentId;
+    state.claimDate = claim.value.claimDate;
+    state.claimFrom = claim.value.claimFrom;
+    state.total = claim.value.total;
+    // @ts-ignore
+    state.collections = claim.value.collections;
+    // @ts-ignore
+    state.details = claim.value.details;
+  }
+});
+
+// Get the select menu data
+const { apartments: availableApartments } = useApartments();
+const computedApartments = computed(() =>
+    availableApartments.value?.map((el) => {
+      return { id: el.id, name: el.apartmentNumber };
+    })
+);
 </script>
 
 <template>
@@ -142,7 +117,7 @@ if (claim.value === null) {
             name="apartmentId"
             :required="true"
             v-model="state.apartmentId"
-            :options="fetchedApartments"
+            :options="computedApartments"
             value-attribute="id"
             option-attribute="name"
           />
@@ -262,7 +237,7 @@ if (claim.value === null) {
           :size="'md'"
           class="w-20 text-center place-content-center ml-3"
           @click="addCollectionData"
-          :disabled="collectionData.dateTime === '' || collectionData.payment === 0"
+          :disabled="!collectionData.dateTime || collectionData.payment === 0"
         >
           اضافة
         </UButton>

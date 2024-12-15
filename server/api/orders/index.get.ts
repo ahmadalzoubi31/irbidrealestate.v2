@@ -1,12 +1,19 @@
 import prisma from "~/lib/prisma";
+import { Order } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
-    return await prisma.order.findMany();
+    // Simulate delay (e.g., fetching huge data)
+    // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
+
+    // Fetch all orders
+    const orders: Order[] = await prisma.order.findMany();
+    return orders;
   } catch (error: any) {
+    // Handle errors gracefully
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: error.statusCode || 500,
+      statusMessage: error.message || "An unexpected error occurred",
     });
   }
 });

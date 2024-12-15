@@ -1,6 +1,14 @@
 import { Claim, Collection, Detail } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
+// Utility function to validate incoming data
+const validateClaimData = (data: Claim) => {
+  // TODO: Add any additional field validation as needed
+  if (!data.claimDate) {
+    throw new Error("Missing required field: claimDate");
+  }
+};
+
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event); // Use any because `body` contains nested objects
   const id: number = Number(getRouterParams(event).id);
@@ -15,13 +23,18 @@ export default defineEventHandler(async (event) => {
   }
 
   if (isNaN(id)) {
+    const msg = "ERROR: Invalid ID";
+    console.log(msg);
     throw createError({
-      statusCode: 500,
-      message: "Invalid id",
+      statusCode: 400,
+      message: msg,
     });
   }
 
   try {
+    // Validate the incoming data
+    validateClaimData(body);
+
     // Separate `collections, details` from the main body
     const { collections, details, ...claimData } = body;
     // Validate claim existence
@@ -31,9 +44,11 @@ export default defineEventHandler(async (event) => {
     });
 
     if (!claim) {
+      const msg = "ERROR: No claim found with the given ID";
+      console.log(msg);
       throw createError({
-        statusCode: 400,
-        message: "No claim found",
+        statusCode: 404,
+        message: msg,
       });
     }
 
