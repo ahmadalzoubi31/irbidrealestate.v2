@@ -1,4 +1,4 @@
-import {Ad, Prisma} from "@prisma/client";
+import { Ad, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 // Utility function for validating request data
@@ -21,12 +21,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-<<<<<<< HEAD
-=======
-  const { files, ...adData } = body;
-  debugger;
-
->>>>>>> 8c19e3cae2913b23ba931663686bab1dee9352c0
   try {
     // Validate the incoming data
     validateAdData(body);
