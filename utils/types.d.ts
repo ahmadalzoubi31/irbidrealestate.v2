@@ -1,6 +1,3 @@
-import Ads from "~/pages/ads.vue";
-import type {Ad, Apartment} from "@prisma/client";
-
 declare interface ICreateBuilding {
   name: string;
   apartmentsCount: number;
@@ -124,6 +121,7 @@ declare interface ICreateAd {
   expectedRentAmount: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
+  files: Array<ICreateFile>;
 }
 
 declare interface IEditAd {
@@ -158,6 +156,9 @@ declare interface ICreateFile {
   url: string;
   relatedId: string;
   relatedType: string;
+  adId: number | null;
+  paymentId: number | null;
+  apartmentId: number | null;
 }
 
 

@@ -1,6 +1,5 @@
-import {ServerFile} from "nuxt-file-storage";
 import prisma from "~/lib/prisma"
-import {join} from "path";
+import { join } from "path";
 
 
 export default defineEventHandler(async (event) => {
@@ -13,6 +12,7 @@ export default defineEventHandler(async (event) => {
     const relatedType = queryList?.relatedType || '';
     const relatedId = queryList?.relatedId || '';
 
+    # Loop through the files and store them in the local storage
     for (const file of body) {
         const name = await storeFileLocally(
             file, // the file object
@@ -37,6 +37,9 @@ export default defineEventHandler(async (event) => {
             url: fileUrl,
             relatedId: relatedId,
             relatedType: relatedType,
+            adId: Number(relatedId),
+            apartmentId: null,
+            paymentId: null,
         };
 
         fileList.push(fileInfoToPush);
@@ -44,10 +47,9 @@ export default defineEventHandler(async (event) => {
         // Parses a data URL and returns an object with the binary data and the file extension.
         // const { binaryString, ext } = parseDataUrl(file.content);
     }
-
+    debugger;
     try {
-        await prisma.appFile.createMany({data: fileList});
-        await prisma.appFile.updateMany({where: {relatedId}, data: {ad: {connect: [{id: 1}]}}})
+        await prisma.appFile.createMany({ data: fileList });
     } catch (error: any) {
         throw createError({
             statusCode: error.statusCode,

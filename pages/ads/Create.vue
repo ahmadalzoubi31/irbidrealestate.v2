@@ -32,6 +32,7 @@ const state: ICreateAd = reactive({
   expectedRentAmount: "",
   notes: "",
   interestedPeople: [],
+  files: []
 });
 const items = (row: { name: string; number: string }) => [
   [

@@ -1,10 +1,8 @@
-import { NuxtLoadingIndicator } from "#build/components";
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image", "@nuxt/eslint", "nuxt-swiper"],
+  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image", "nuxt-swiper"],
   colorMode: {
     preference: "light",
   },

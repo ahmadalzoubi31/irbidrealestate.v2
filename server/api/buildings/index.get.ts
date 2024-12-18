@@ -1,7 +1,7 @@
 import prisma from "~/lib/prisma";
-import { Building } from "@prisma/client";
+import type { Building } from "@prisma/client";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   try {
     // Simulate delay (e.g., fetching huge data)
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay

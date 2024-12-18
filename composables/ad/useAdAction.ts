@@ -23,8 +23,14 @@ export function useAdActions() {
 
     }
     const createAd = async (payload: ICreateAd) => {
+
+        const {files, ...adData} = payload;
+
         try {
-            await $fetch("/api/ads", { method: "POST", body: payload });
+            const response = await $fetch("/api/ads", { method: "POST", body: adData });
+            if (response) {
+                await $fetch("/api/files", { method: "POST", body: files})
+            }
             await refreshNuxtData("getAds");
             await navigateTo("/ads");
 
