@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
 
   const { files, ...adData } = body;
   debugger;
+
   try {
     await prisma.$transaction(async (tx) => {
       const createOperation = await tx.ad.create({ data: { ...adData, interestedPeople: { create: adData.interestedPeople } } });
