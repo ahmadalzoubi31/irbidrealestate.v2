@@ -25,9 +25,17 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateAdData(body);
 
+    const { interestedPeople, ...adData } = body;
+    // Relate the claim with the related records
+    const data = {
+      ...adData,
+      // @ts-ignore
+      interestedPeople: { create: interestedPeople },
+    }
+
     // Create a new ad entry
     const newAd: Ad = await prisma.ad.create({
-      data: body,
+      data: data,
     });
 
     // Return success response
