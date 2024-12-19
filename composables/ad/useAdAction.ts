@@ -1,8 +1,23 @@
 import type { Ad } from "@prisma/client";
 
-// composables/useAdActions.ts
 export function useAdActions() {
     const toast = useToast();
+
+    const handleError = (error: any, defaultMessage: string) => {
+        toast.add({
+            description: error.message || defaultMessage,
+            color: "rose",
+            timeout: 10000,
+        });
+    };
+
+    const handleSuccess = (message: string) => {
+        toast.add({
+            description: message,
+            color: "primary",
+            timeout: 5000,
+        });
+    };
 
     const getOneAd = async (id: string) => {
         const { data, status, error } = await useFetch<Ad>("/api/ads/" + id, {
@@ -11,61 +26,44 @@ export function useAdActions() {
         });
 
         if (status.value === 'error') {
-            toast.add({
-                description: error.value!.message || "الاعلان المطلوب غير موجود.",
-                color: "rose",
-                timeout: 10000,
-            });
+            handleError(error.value, "الاعلان المطلوب غير موجود.");
             navigateTo("/ads");
         }
 
-        return { data: data.value, status: status.value }
+        return { data: data.value, status: status.value };
+    };
 
-    }
     const createAd = async (payload: ICreateAd) => {
+        const { files, ...adData } = payload;
+
         try {
-            await $fetch("/api/ads", { method: "POST", body: payload });
+            const response = await $fetch("/api/ads", { method: "POST", body: adData });
+            if (response) {
+                await $fetch("/api/files", { method: "POST", body: files });
+            }
             await refreshNuxtData("getAds");
             await navigateTo("/ads");
-
-            toast.add({
-                description: "تم انشاء الاعلان بنجاح",
-                color: "primary",
-                timeout: 5000,
-            });
-
+            handleSuccess("تم انشاء الاعلان بنجاح");
         } catch (error: any) {
-            toast.add({
-                description: error.message || "حدث خطأ أثناء الحفظ",
-                color: "rose",
-                timeout: 10000,
-            })
+            handleError(error, "حدث خطأ أثناء الحفظ");
         } finally {
-            useLoadingIndicator().finish()
+            useLoadingIndicator().finish();
         }
-    }
+    };
+
     const editAd = async (id: string, payload: IEditAd) => {
         try {
             await $fetch("/api/ads/" + id, { method: "PUT", body: payload });
             await refreshNuxtData("getAds");
             await navigateTo("/ads");
-
-            toast.add({
-                description: "تم تعديل الاعلان بنجاح",
-                color: "primary",
-                timeout: 5000,
-            });
-
+            handleSuccess("تم تعديل الاعلان بنجاح");
         } catch (error: any) {
-            toast.add({
-                description: error || "حدث خطأ أثناء التعديل",
-                color: "rose",
-                timeout: 10000,
-            })
+            handleError(error, "حدث خطأ أثناء التعديل");
         } finally {
-            useLoadingIndicator().finish()
+            useLoadingIndicator().finish();
         }
-    }
+    };
+
     const deleteAd = async (id: string) => {
         const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
         if (!confirmDelete) return;
@@ -73,19 +71,11 @@ export function useAdActions() {
         try {
             await $fetch("/api/ads/" + id, { method: "DELETE", key: "deleteAd" });
             await refreshNuxtData("getAds");
-            toast.add({
-                description: "تم حذف الاعلان بنجاح",
-                color: "primary",
-                timeout: 5000,
-            });
+            handleSuccess("تم حذف الاعلان بنجاح");
         } catch (error: any) {
-            toast.add({
-                description: error.message || "حدث خطأ أثناء الحذف",
-                color: "rose",
-                timeout: 10000,
-            });
+            handleError(error, "حدث خطأ أثناء الحذف");
         } finally {
-            useLoadingIndicator().finish()
+            useLoadingIndicator().finish();
         }
     };
 

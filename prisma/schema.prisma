@@ -84,6 +84,7 @@ model Payment {
   depositAmount       Float
   depositDate         DateTime
   notes               String?
+  files               AppFile[]
   status              Boolean   @default(true)
   createdBy           String?
   createdAt           DateTime  @default(now())
@@ -217,7 +218,10 @@ model AppFile {
   updatedBy   String?
   updatedAt   DateTime @updatedAt
 
-  Ad Ad[]
-
-  Apartment Apartment[]
+  payment     Payment?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  paymentId   Int?
+  apartment   Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId Int?
+  ad          Ad?        @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId        Int?
 }

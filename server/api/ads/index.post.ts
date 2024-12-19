@@ -1,16 +1,19 @@
-import { Prisma, Ad } from "@prisma/client";
+import { Ad, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
-interface ICreateAdFile {
-  name: string;
-  adId: number; // Update type if `adId` is a string or other type in your schema
-}
+// Utility function for validating request data
+const validateAdData = (data: Ad) => {
+  // TODO: Add any additional field validation as needed
+  if (!data.apartmentNumber || !data.basin) {
+    throw new Error("Missing required fields: apartmentNumber and basin");
+  }
+};
 
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event);
 
   if (!body) {
-    var msg = "ERROR: Argument data is missing";
+    const msg = "ERROR: Argument data is missing";
     console.log(msg);
     throw createError({
       statusCode: 400,
@@ -18,51 +21,36 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { files, ...adData } = body;
-  debugger;
-
   try {
-    await prisma.$transaction(async (tx) => {
-      const createOperation = await tx.ad.create({ data: { ...adData, interestedPeople: { create: adData.interestedPeople } } });
+    // Validate the incoming data
+    validateAdData(body);
 
-      const uniqueNameForFiles: Array<ICreateAdFile> = [];
+    const { interestedPeople, ...adData } = body;
+    // Relate the claim with the related records
+    const data = {
+      ...adData,
+      // @ts-ignore
+      interestedPeople: { create: interestedPeople },
+    }
 
-      for (const file of files) {
-        const name = await storeFileLocally(
-          file, // the file object
-          16, // you can add a name for the file or length of Unique ID that will be automatically generated!
-          `/ads/${createOperation.id}/` // the folder the file will be stored in
-        );
-
-        uniqueNameForFiles.push({ name: name, adId: createOperation.id });
-
-        // Parses a data URL and returns an object with the binary data and the file extension.
-        // const { binaryString, ext } = parseDataUrl(file.content);
-      }
-
-      // const uploadOperations = await tx.adFile.createMany({ data: uniqueNameForFiles });
-      await Promise.all([createOperation]);
+    // Create a new ad entry
+    const newAd: Ad = await prisma.ad.create({
+      data: data,
     });
 
-    // const { files } = await readBody<{ files: ServerFile[] }>(event);
-    // const id: number = Number(getRouterParams(event).id);
-
-    // try {
-
-    // } catch (error: any) {
-    //   throw createError({
-    //     statusCode: error.statusCode,
-    //     message: error.message,
-    //   });
-    // }
+    // Return success response
+    return {
+      success: true,
+      message: "Ad created successfully",
+      data: newAd,
+    };
   } catch (error: any) {
     console.log({ prisma_code: error.code });
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log("🚀 ~ defineEventHandler ~ error:", error);
-      // The .code property can be accessed in a type-safe manner
+      // Handle unique constraint violation error (e.g., name already exists)
       if (error.code === "P2002") {
-        var msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this code";
+        const msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
         console.log(msg);
         throw createError({
           statusCode: 400,
@@ -71,9 +59,12 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // Handle other errors
+    const msg = error.message || "An unexpected error occurred while creating the ad.";
+    console.log(msg);
     throw createError({
-      statusCode: error.statusCode,
-      message: error.message,
+      statusCode: 500,
+      message: msg
     });
   }
 });

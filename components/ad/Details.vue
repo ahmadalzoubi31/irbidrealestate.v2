@@ -212,8 +212,7 @@ const closeModal = () => {
         {{ heading[index] }}
       </dt>
       <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">{{
-          formatted(entry as
-              Date)
+          formatted(entry as Date)
         }}
       </dd>
       <dd v-else-if="key == 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">{{
@@ -221,8 +220,7 @@ const closeModal = () => {
         }}
       </dd>
       <dd v-else-if="key == 'propertyType'" class="font-normal text-primary-500">{{
-          useGetPropertyTypeName(entry as
-              number)
+          useGetPropertyTypeName(entry as number)
         }}
       </dd>
       <dd v-else class="font-normal text-primary-500">{{ entry == null || entry == "" ? "-" : entry }}</dd>
@@ -240,13 +238,6 @@ const closeModal = () => {
         ملفات الاعلان
       </dt>
       <dd class="font-normal text-primary-500">
-        <!--      <div v-for="(file, index) in ad.files" :key="file.name" class="relative inline-block">-->
-        <!--        <NuxtImg :class="file.status ? 'opacity-100' : 'opacity-25'" :key="file.name"-->
-        <!--          :src="`/upload/files/ads/${ad.id}/${file.name}`" alt="file"-->
-        <!--          class="relative rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer ml-3" preload-->
-        <!--          @click="openFile(file.name)" />-->
-        <!--      </div>-->
-
         <div
             v-for="(el, index) in ad.files"
             :key="index"
@@ -266,7 +257,6 @@ const closeModal = () => {
             >
               <icon name="i-heroicons-play-circle-20-solid" class="text-white text-5xl cursor-pointer"></icon>
             </div>
-            ]
           </template>
           <template v-else>
             <!-- Render image -->

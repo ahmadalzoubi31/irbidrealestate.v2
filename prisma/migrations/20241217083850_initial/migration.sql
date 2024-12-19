@@ -169,27 +169,19 @@ CREATE TABLE "AppFile" (
     "type" TEXT NOT NULL,
     "size" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "relatedId" TEXT NOT NULL,
+    "relatedType" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createdBy" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedBy" TEXT,
-    "updatedAt" DATETIME NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_ApartmentToAppFile" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-    CONSTRAINT "_ApartmentToAppFile_A_fkey" FOREIGN KEY ("A") REFERENCES "Apartment" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "_ApartmentToAppFile_B_fkey" FOREIGN KEY ("B") REFERENCES "AppFile" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "_AdToAppFile" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-    CONSTRAINT "_AdToAppFile_A_fkey" FOREIGN KEY ("A") REFERENCES "Ad" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "_AdToAppFile_B_fkey" FOREIGN KEY ("B") REFERENCES "AppFile" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "updatedAt" DATETIME NOT NULL,
+    "paymentId" INTEGER,
+    "apartmentId" INTEGER,
+    "adId" INTEGER,
+    CONSTRAINT "AppFile_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "AppFile_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "AppFile_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -197,15 +189,3 @@ CREATE UNIQUE INDEX "Building_name_key" ON "Building"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Ad_code_key" ON "Ad"("code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_ApartmentToAppFile_AB_unique" ON "_ApartmentToAppFile"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_ApartmentToAppFile_B_index" ON "_ApartmentToAppFile"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_AdToAppFile_AB_unique" ON "_AdToAppFile"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_AdToAppFile_B_index" ON "_AdToAppFile"("B");

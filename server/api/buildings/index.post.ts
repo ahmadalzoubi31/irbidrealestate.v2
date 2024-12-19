@@ -1,4 +1,5 @@
-import { Prisma, Building } from "@prisma/client";
+import type { Building } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 // Utility function for validating request data
