@@ -1,6 +1,7 @@
 // composables/useTableColumns.ts
 export function useClaimTableColumns() {
     const columns = [
+        {key: 'select', class: 'w-2'},
         { key: "id", label: "رقم المطالبة", sortable: false },
         { key: "apartment.apartmentNumber", label: "رقم الشقة", sortable: true },
         { key: "claimFrom", label: "المطلوب منه", sortable: false },

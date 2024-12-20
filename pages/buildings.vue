@@ -53,7 +53,7 @@ const deleteSelectedRecord = async () => {
 
       <!-- Table -->
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable :rows="filteredRows" :columns="selectedColumns" v-model="selected" v-model:expand="expand" @select="select" :loading="isLoading">
+        <UTable :rows="filteredRows" :columns="selectedColumns" v-model="selected" v-model:expand="expand" :single-select="true" @select="select" :loading="isLoading">
           <template #expand="{ row }">
             <div class="px-8 py-8">
               <BuildingDetails :building="row" />

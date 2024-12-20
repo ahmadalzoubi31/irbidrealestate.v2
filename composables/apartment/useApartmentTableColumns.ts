@@ -1,6 +1,7 @@
 // composables/useTableColumns.ts
 export function useApartmentTableColumns() {
     const columns = [
+        {key: 'select', class: 'w-2'},
         { key: "buildingName", label: "اسم البناية", sortable: true },
         { key: "apartmentNumber", label: "رقم الشقة", sortable: false },
         { key: "ownerName", label: "اسم المالك", sortable: false },

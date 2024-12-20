@@ -1,6 +1,7 @@
 // composables/useTableColumns.ts
 export function useAdTableColumns() {
     const columns = [
+        {key: 'select', class: 'w-2'},
         { key: "code", label: "رقم الاعلان", sortable: false },
         { key: "propertyStatus", label: "حالة العقار", sortable: true },
         { key: "propertyType", label: "نوع العقار", sortable: true },

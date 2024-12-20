@@ -1,6 +1,7 @@
 // composables/useTableColumns.ts
 export function usePaymentTableColumns() {
     const columns = [
+        {key: 'select', class: 'w-2'},
         { key: "id", label: "رقم الدفعة", sortable: false },
         { key: "apartment.buildingName", label: "اسم البناية", sortable: true },
         { key: "apartment.apartmentNumber", label: "رقم الشقة", sortable: false },

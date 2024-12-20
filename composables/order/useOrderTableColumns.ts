@@ -1,6 +1,7 @@
 // composables/useTableColumns.ts
 export function useOrderTableColumns() {
     const columns = [
+        {key: 'select', class: 'w-2'},
         { key: "id", label: "رقم الطلب", sortable: false },
         { key: "type", label: "نوع الطلب", sortable: true },
         { key: "date", label: "تاريخ الطلب", sortable: false },
