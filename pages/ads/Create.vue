@@ -31,8 +31,7 @@ const state: ICreateAd = reactive({
   neighborhood: "",
   expectedRentAmount: "",
   notes: "",
-  interestedPeople: [],
-  files: []
+  interestedPeople: []
 });
 const items = (row: { name: string; number: string }) => [
   [
@@ -123,11 +122,7 @@ const submitForm = async () => {
   }
 
   useLoadingIndicator().start();
-  const payload = {
-    ...state,
-    files: files.value,
-  };
-  await createAd(payload);
+  await createAd(state, files.value);
 };
 const removeFile = (index: number) => {
   files.value.splice(index, 1);
@@ -153,53 +148,42 @@ const getLastCodePerType = computed(() => (ads.value ? ads.value.filter((el) => 
 // *** Watchers ***
 watch(
   () => state.propertyType,
-  (newVal, oldVal) => {
-    // console.log("🚀 ~ newVal:", newVal);
+  (newVal) => {
     const index: number = getLastCodePerType.value;
-    // console.log("🚀 ~ index:", index)
-
     switch (newVal) {
       case 1:
         state.code = "AS" + index;
         return "AS" + index;
-        break;
       case 2:
         state.code = "ASI" + index;
         return "ASI" + index;
-        break;
       case 3:
         state.code = "AR" + index;
         return "AR" + index;
-        break;
       case 4:
         state.code = "LS" + index;
         return "LS" + index;
-        break;
       case 5:
         state.code = "LR" + index;
         return "LR" + index;
-        break;
       case 6:
         state.code = "VS" + index;
         return "VS" + index;
-        break;
       case 7:
         state.code = "VR" + index;
         return "VR" + index;
-        break;
       case 8:
         state.code = "FS" + index;
         return "FS" + index;
-        break;
       case 9:
         state.code = "FR" + index;
         return "FR" + index;
-        break;
       default:
         break;
     }
   }
 );
+
 </script>
 
 <template>
@@ -297,16 +281,16 @@ watch(
         <div class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in files" class="relative inline-block">
             <NuxtImg
-                :src="el.content?.toString()"
-                alt="file"
-                class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
-                preload
+              :src="el.content?.toString()"
+              alt="file"
+              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+              preload
             />
             <UButton
-                icon="i-heroicons-minus-20-solid"
-                @click="removeFile(index)"
-                class="absolute top-0 left-0 bg-red-500 hover:bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-                style="transform: translate(-40%, -40%)"
+              icon="i-heroicons-minus-20-solid"
+              @click="removeFile(index)"
+              class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
             >
             </UButton>
           </div>

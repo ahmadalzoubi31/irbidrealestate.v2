@@ -1,6 +1,6 @@
 import prisma from "~/lib/prisma";
 import fs from "fs";
-import path from "path";
+import { join } from "path";
 
 export default defineEventHandler(async (event) => {
     const body: { files: number[] } = await readBody(event);
@@ -25,9 +25,9 @@ export default defineEventHandler(async (event) => {
 
         // Delete the actual files from the upload folder
         files.forEach((file) => {
-            const filePath = path.join(process.cwd(), "public", file.path);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
+
+            if (fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
             }
         });
 

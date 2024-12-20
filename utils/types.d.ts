@@ -121,7 +121,6 @@ declare interface ICreateAd {
   expectedRentAmount: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
-  files: Array<ICreateFile>;
 }
 
 declare interface IEditAd {
@@ -148,7 +147,7 @@ declare interface IEditAd {
   files: Array<any>;
 }
 
-declare interface ICreateFile {
+declare interface IAppFile {
   name: string;
   path: string;
   type: string;

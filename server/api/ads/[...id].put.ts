@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import type {Ad, AppFile, InterestedPeople} from "@prisma/client";
+import type {Ad, InterestedPeople} from "@prisma/client";
 
 // Utility function to validate incoming data
 const validateAdData = (data: Ad) => {
@@ -84,35 +84,6 @@ export default defineEventHandler(async (event) => {
                         data: {name: person.name, number: person.number, adId: id},
                     })
             );
-
-            // Extract IDs from the incoming request
-            // const incomingFilesWithIds: AppFile[] = files
-            //     .filter((file: AppFile) => file.id) // Only include those with IDs
-            //
-            // // Find IDs to delete (incoming IDs with false status)
-            // const idsFilesToDelete = incomingFilesWithIds.filter((file) => !file.status).map((file) => file.id);
-            //
-            // // Perform deletions
-            // const deleteFilesOperations = idsFilesToDelete.map((idFileToDelete: number) =>
-            //     tx.appFile.update({where: {id: idFileToDelete}, data: {status: false}}));
-            //
-            // // Find files to create (not have IDs)
-            // const idsFilesToCreate = files
-            //     .filter((file: AppFile) => !file.id) // Only include those with IDs
-
-            // Handle updates and creations
-            // const uploadOperations = idsFilesToCreate.map(async (file: any) =>
-            //     tx.appFile.create({
-            //       data: {
-            //         name: await storeFileLocally(
-            //             file, // the file object
-            //             16, // you can add a name for the file or length of Unique ID that will be automatically generated!
-            //             `/ads/${id}/` // the folder the file will be stored in
-            //         ),
-            //           adId: id
-            //       }
-            //     })
-            // );
 
             // Execute deletions, updates, and creations
             await Promise.all([...deleteOperations, ...upsertOperations]);
