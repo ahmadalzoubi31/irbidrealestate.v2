@@ -63,7 +63,7 @@ export function useAdActions() {
     const editAd = async (id: string, payload: IEditAd) => {
         try {
             // Separate the body form the files
-            const  {files, ...adData } = payload;
+            const { files, ...adData } = payload;
             // Separate new files from existing files
             const newFiles = files.filter(file => !file.id);
             const existingFiles = files.filter(file => file.id);
@@ -117,8 +117,8 @@ export function useAdActions() {
     const uploadFile = async (files: any[], relatedType: string, relatedId: string) => {
         try {
             // Validate file types and sizes
-            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-            const maxSize = 5 * 1024 * 1024; // 5 MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'video/mp4'];
+            const maxSize = 25 * 1024 * 1024; // 5 MB
 
             for (const file of files) {
                 if (!allowedTypes.includes(file.type)) {

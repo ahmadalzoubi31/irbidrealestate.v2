@@ -43,7 +43,7 @@ const state: IEditAd = reactive({
   expectedRentAmount: "",
   notes: "",
   interestedPeople: [],
-  files: []
+  files: [],
 });
 const items = (row: { name: string; number: string }) => [
   [
@@ -354,7 +354,7 @@ watchEffect(() => {
             <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
               <!-- Conditionally Render Image or Video -->
               <template v-if="selectedImage.endsWith('.mp4') || selectedImage.startsWith('data:video/mp4;base64,')">
-                <video :src="selectedImage" controls autoplay class="max-h-full max-w-full rounded-lg" />
+                <video :src="selectedImage" controls width="1600" class="max-w-full rounded-lg" />
               </template>
               <template v-else>
                 <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />

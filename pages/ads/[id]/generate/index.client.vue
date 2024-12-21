@@ -4,7 +4,9 @@ import type { Ad } from "@prisma/client";
 definePageMeta({
   layout: "generate",
 });
-
+// *** Variables ***
+const isModalOpen = ref(false);
+const selectedImage = ref("");
 
 // *** Fetch Data ***
 const selectedAdId = useRoute().params.id as string;
@@ -75,6 +77,16 @@ const getConfig = (code: string) => {
 const { heading, keys } = computed(() => getConfig(ad?.code || "")).value;
 
 const extracted = computed(() => (ad ? useExtractKeys(ad, keys) : {}));
+
+// *** Methods ***
+const openFile = (fileName: string) => {
+  selectedImage.value = `/upload/files/ads/${ad?.id}/${fileName}`;
+  isModalOpen.value = true;
+};
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedImage.value = "";
+};
 </script>
 
 <template>
@@ -101,27 +113,50 @@ const extracted = computed(() => (ad ? useExtractKeys(ad, keys) : {}));
 
       <section class="rounded-lg p-6 mb-4">
         <h2 class="text-2xl font-bold text-primary-800 mb-4">معرض الصور</h2>
-          <Slider :files="imageList" :adId="selectedAdId" />
-<!--        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">-->
-<!--          <NuxtImg-->
-<!--            v-for="file in imageList"-->
-<!--            :key="file.name"-->
-<!--            :src="`/upload/files/ads/${selectedAdId}/${file.name}`"-->
-<!--            class="rounded-lg shadow-md h-[300px] w-[300px]"-->
-<!--          />-->
-
-<!--        </div>-->
+        <!-- <Slider :files="imageList" :adId="selectedAdId" /> -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <NuxtImg
+            v-for="file in imageList"
+            :key="file.name"
+            :src="`/upload/files/ads/${selectedAdId}/${file.name}`"
+            class="rounded-lg shadow-md h-[300px] w-[300px] hover:cursor-pointer"
+            @click="openFile(file.name)"
+          />
+        </div>
       </section>
 
       <section class="rounded-lg p-6 mb-4">
         <h2 class="text-2xl font-bold text-primary-800 mb-4">معرض الفيديو</h2>
         <div>
-          <video v-for="file in videoList" :key="file.name" width="1200" height="200" controls class="rounded-lg shadow-md mb-4">
+          <video v-for="file in videoList" :key="file.name" width="1200" height="200" controls class="rounded-lg shadow-md mb-4 hover:cursor-pointer">
             <source :src="`/upload/files/ads/${selectedAdId}/${file.name}`" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
       </section>
+
+      <!-- Modal with Transition -->
+      <transition name="fade">
+        <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
+            <!-- Conditionally Render Image or Video -->
+            <div v-if="selectedImage.endsWith('.mp4')">
+              <video :src="selectedImage" controls autoplay class="max-h-full max-w-full rounded-lg" />
+            </div>
+            <div v-else>
+              <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />
+            </div>
+
+            <!-- Close Button -->
+            <UButton
+              type="button"
+              icon="i-heroicons-x-circle-20-solid"
+              @click="closeModal"
+              class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+            />
+          </div>
+        </div>
+      </transition>
     </main>
 
     <!-- Footer -->
