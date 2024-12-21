@@ -36,9 +36,10 @@ const deleteSelectedRecord = async () => {
 };
 const generateSharedLinkSelectedRecord = async () => {
   const id = selected.value[0].id;
-  await navigateTo(`/ads/${id}/generate`, {
-    replace: true,
-  });
+  window.open(`/ads/${id}/generate`, "_blank");
+  // await navigateTo(`/ads/${id}/generate`, {
+  //   replace: true,
+  // });
 };
 </script>
 
