@@ -91,7 +91,7 @@ const closeModal = () => {
       <!-- Image Gallery -->
       <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 class="text-3xl font-bold text-primary-800 mb-6 border-b pb-3">معرض الصور</h2>
-        <div class="grid grid-cols-6 gap-6">
+        <div class="grid md:grid-cols-6 grid-cols-2 gap-6">
           <NuxtImg
             v-for="file in imageList"
             :key="file.name"
@@ -105,7 +105,7 @@ const closeModal = () => {
       <!-- Video Gallery -->
       <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 class="text-3xl font-bold text-primary-800 mb-6 border-b pb-3">معرض الفيديو</h2>
-        <div class="grid grid-cols-6 gap-6">
+        <div class="grid md:grid-cols-6 grid-cols-1 gap-6">
           <video
             v-for="file in videoList"
             :key="file.name"
