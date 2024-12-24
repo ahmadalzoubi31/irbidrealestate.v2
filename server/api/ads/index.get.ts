@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     // Handle errors gracefully
     throw createError({
       statusCode: error.statusCode || 500,
-      statusMessage: error.message || "An unexpected error occurred",
+      message: error.message || "An unexpected error occurred",
     });
   }
 });

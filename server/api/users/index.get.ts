@@ -1,20 +1,14 @@
 import prisma from "~/lib/prisma";
-import { Claim } from "@prisma/client";
+import type { User } from "@prisma/client";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   try {
     // Simulate delay (e.g., fetching huge data)
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
-    // Fetch all claims
-    const claims: Claim[] = await prisma.claim.findMany({
-      include: {
-        apartment: true,
-        collections: true,
-        details: true,
-      },
-    });
-    return claims;
+    // Fetch all users
+    const users: User[] = await prisma.user.findMany();
+    return users;
   } catch (error: any) {
     // Handle errors gracefully
     throw createError({

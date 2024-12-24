@@ -1,3 +1,17 @@
+declare interface ICreateUser {
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  role: string;
+}
+
+declare interface IEditUser {
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
 declare interface ICreateBuilding {
   name: string;
   apartmentsCount: number;

@@ -2,7 +2,14 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxtjs/tailwindcss", "nuxt-file-storage", "@nuxt/image", "nuxt-swiper"],
+  modules: [
+    "@nuxt/ui",
+    "@nuxtjs/tailwindcss",
+    "nuxt-file-storage",
+    "@nuxt/image",
+    "nuxt-swiper",
+    "@sidebase/nuxt-auth"
+  ],
   colorMode: {
     preference: "light",
   },
@@ -16,6 +23,7 @@ export default defineNuxtConfig({
       'composables/ad/**',
       'composables/claim/**',
       'composables/order/**',
+      'composables/user/**',
     ]
   },
   fileStorage: {
@@ -29,5 +37,16 @@ export default defineNuxtConfig({
   // ssr: false,
   image: {
     // Options
+  },
+  runtimeConfig: {
+    authSecret: process.env.NEXTAUTH_SECRET
+  },
+  auth: {
+    baseURL: process.env.NEXTAUTH_URL,
+    globalAppMiddleware: false,
+    provider: {
+      type: 'authjs',
+      addDefaultCallbackUrl: false
+    },
   },
 });

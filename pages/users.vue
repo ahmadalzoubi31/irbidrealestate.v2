@@ -1,49 +1,52 @@
 <script setup lang="ts">
-import type { Building } from "@prisma/client";
+import type { User } from "@prisma/client";
+import { useUserActions } from "~/composables/user/useUserAction";
+import { useUsers } from "~/composables/user/useUsers";
+import { useUserTableColumns } from "~/composables/user/useUserTableColumns";
 
 // State
 const q = ref("");
-const selected: Ref<Building[]> = ref([]);
+const selected: Ref<User[]> = ref([]);
 const expand = ref({ openedRows: [], row: null });
 
 // Columns
-const { columns, selectedColumns } = useBuildingTableColumns();
+const { columns, selectedColumns } = useUserTableColumns();
 
 // Fetching
-const { buildings, status } = useBuildings();
+const { users, status } = useUsers();
 
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
 
 // Filtering
-const filteredRows = useFilteredRows<Building>(buildings, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<User>(users, q, ["createdAt", "updatedAt"]);
 
 // Actions
-const { deleteBuilding } = useBuildingActions();
+const { deleteUser } = useUserActions();
 
-const select = (row: Building) => {
+const select = (row: User) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
 
 const editSelectedRecord = async (id: string) => {
-  await navigateTo(`/buildings/${id}/edit`);
+  await navigateTo(`/users/${id}/edit`);
 };
 
 const deleteSelectedRecord = async () => {
   useLoadingIndicator().start();
   if (!selected.value.length) return;
-  await deleteBuilding(selected.value[0].id.toFixed());
+  await deleteUser(selected.value[0].id.toFixed());
 };
 </script>
 
 <template>
-  <div id="building">
-    <div class="parentWrapper" v-if="useRoute().name === 'buildings'">
+  <div id="user">
+    <div class="parentWrapper" v-if="useRoute().name === 'users'">
       <!-- Action Buttons -->
       <div id="buttonWrapper" class="my-3">
-        <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/buildings/create'" />
-        <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
+        <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مستخدم" :to="'/users/create'" />
+        <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مستخدم" @click="deleteSelectedRecord" />
       </div>
 
       <!-- Search Filter -->
@@ -64,12 +67,18 @@ const deleteSelectedRecord = async () => {
         >
           <template #expand="{ row }">
             <div class="px-8 py-8">
-              <BuildingDetails :building="row" />
+              <!-- <UserDetails :user="row" /> -->
+              {{ row }}
             </div>
           </template>
-          <template #name-data="{ row }">
+          <template #id-data="{ row }">
             <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
-              {{ row.name }}
+              {{ row.id }}
+            </span>
+          </template>
+          <template #status-data="{ row }">
+            <span>
+              {{ useGetStatusName(row.status) }}
             </span>
           </template>
         </UTable>

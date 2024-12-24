@@ -18,6 +18,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// *** User ***
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  username  String   @unique
+  password  String
+  role      String
+  status    Boolean  @default(true)
+  createdBy String?
+  createdAt DateTime @default(now())
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+}
+
 // *** Building ***
 model Building {
   id                        Int         @id @default(autoincrement())

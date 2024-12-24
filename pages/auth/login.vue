@@ -11,19 +11,21 @@ const isLoading = ref(false);
 // Declare Stores
 // const _accountStore = useAccountStore();
 
+const { signIn } = useAuth();
 // Declare Methods
 const submitForm = async () => {
-  // const supabase = useSupabaseClient();
-
   console.log("logging....");
-  // const { data, error } = await supabase.auth.signInWithPassword({
-  //   email: state.username,
-  //   password: state.password,
-  // });
-  // if (error) console.log(error);
-  // console.log("🚀 ~ submitForm ~ data:", data);
+  console.log({ state });
 
-  //   return await _accountStore.dispatchLoginIdentity(data);
+  try {
+    isLoading.value = true;
+    const res = await signIn("credentials", state);
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -35,10 +37,10 @@ const submitForm = async () => {
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" @submit.prevent="submitForm()">
+      <form class="space-y-6" @submit.prevent="submitForm">
         <div>
           <label for="username" class="block text-sm font-medium leading-6">رقم المعرف</label>
-          <UInput id="username" name="username" :size="'md'" :autofocus="true" :required="true" :model-value="state.username" />
+          <UInput id="username" name="username" :size="'md'" :autofocus="true" :required="true" v-model="state.username" />
         </div>
 
         <div>
@@ -49,7 +51,7 @@ const submitForm = async () => {
             </div>
           </div>
 
-          <UInput id="password" name="password" type="password" :size="'md'" :autofocus="true" :required="true" :model-value="state.password" />
+          <UInput id="password" name="password" type="password" :size="'md'" :autofocus="false" :required="true" v-model="state.password" />
         </div>
 
         <UButton :type="'submit'" :size="'md'" :loading="isLoading" class="w-full text-center bg-primary-400"> دخول </UButton>

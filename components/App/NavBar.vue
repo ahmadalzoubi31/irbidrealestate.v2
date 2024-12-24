@@ -2,7 +2,7 @@
 // const _accountStore = useAccountStore();
 
 // Declare Variables
-const data = reactive({
+const state = reactive({
   navigation: [
     { name: "البنايات", href: "/buildings", policy: ["user", "admin"] },
     { name: "الايجارات", href: "/apartments/rents", policy: ["user", "admin"] },
@@ -12,21 +12,28 @@ const data = reactive({
     // { name: "الخدمات", href: "/services", policy: ["user", "admin"] },
     // { name: "الصيانة", href: "/maintenances", policy: ["user", "admin"] },
     { name: "الطلبات الجديدة", href: "/orders", policy: ["user", "admin"] },
-    // { name: "المستخدمين", href: "/accounts", policy: ["admin"] },
+    { name: "المستخدمين", href: "/users", policy: ["admin"] },
   ],
   selected: "",
 });
-// const loggedUser = useJwt.getAccount();
-// const loggedUserRole = loggedUser.role;
-// const loggedUserName = loggedUser.username;
+
+const { data, signOut } = useAuth();
 // Declare Methods
 const clickSignOut = async () => {
-  //   await _accountStore.dispatchLogoutIdentity();
+  const { error } = await signOut({ redirect: false });
 
-  navigateTo("/sign-in");
+  if (error) {
+    console.error(`ERROR SIGNOUT:${JSON.stringify(error)}`);
+    throw createError({
+      statusCode: 500,
+      statusMessage: error,
+    });
+  } else {
+    await navigateTo("/auth/login");
+  }
 };
 
-onMounted(() => data.navigation.map((el) => (el.current = el.href === useRoute().fullPath ? true : false)));
+onMounted(() => state.navigation.map((el) => (el.current = el.href === useRoute().fullPath ? true : false)));
 </script>
 
 <template>
@@ -41,7 +48,7 @@ onMounted(() => data.navigation.map((el) => (el.current = el.href === useRoute()
           <div class="hidden xl:block xl:mr-14">
             <div class="flex">
               <NuxtLink
-                v-for="item in data.navigation"
+                v-for="item in state.navigation"
                 :active-class="'bg-primary-900 text-white'"
                 class="px-4 py-1 rounded-md text-gray-100 text-lg font-normal hover:bg-gray-700 hover:text-white"
                 :to="item.href"
@@ -49,6 +56,13 @@ onMounted(() => data.navigation.map((el) => (el.current = el.href === useRoute()
                 {{ item.name }}
               </NuxtLink>
             </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="text-white text-base font-normal">
+            <span class="ml-2">{{ data?.user?.username }}</span>
+            <a @click="clickSignOut" class="text-white underline hover:cursor-pointer">تسجيل الخروج</a>
           </div>
         </div>
       </div>
