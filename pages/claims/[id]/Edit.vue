@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type {Apartment, Claim} from "@prisma/client";
+import type { Apartment, Claim } from "@prisma/client";
 import { format } from "date-fns";
 
 const { editClaim } = useClaimActions();
@@ -12,7 +12,7 @@ const selectedClaimId = ref(route.params.id as string);
 // Access the shared state for claims
 const claims = useState<Claim[]>("claimList");
 // Find the specific claim reactively
-const claim = computed(() => claims.value?.find((el) => el.id === Number(selectedClaimId.value)));
+const claim = computed(() => claims.value?.find((el) => el.id === selectedClaimId.value));
 
 if (!claims.value || claims.value.length === 0) {
   await navigateTo("/claims");
@@ -49,7 +49,7 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
   ],
 ];
 const state: ICreateClaim = reactive({
-  apartmentId: 0,
+  apartmentId: "",
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
@@ -63,18 +63,17 @@ const submitForm = async () => {
   await editClaim(selectedClaimId.value, state);
 };
 const addCollectionData = () => {
- state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
+  state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
 
   detailData.item = "";
   detailData.price = 0;
 };
 const addDetailData = () => {
-   state.details.push({ item: detailData.item, price: detailData.price });
+  state.details.push({ item: detailData.item, price: detailData.price });
 
   detailData.item = "";
   detailData.price = 0;
 };
-
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
@@ -93,9 +92,9 @@ watchEffect(() => {
 // Get the select menu data
 const { apartments: availableApartments } = useApartments();
 const computedApartments = computed(() =>
-    availableApartments.value?.map((el) => {
-      return { id: el.id, name: el.apartmentNumber };
-    })
+  availableApartments.value?.map((el) => {
+    return { id: el.id, name: el.apartmentNumber };
+  })
 );
 </script>
 

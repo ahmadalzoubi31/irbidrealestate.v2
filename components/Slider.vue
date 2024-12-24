@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Create 10 slides
-import type { AdFile } from "@prisma/client";
+import type { AppFile } from "@prisma/client";
 
 const containerRef = ref(null);
 // const slides = ref(Array.from({ length: 10 }))
@@ -13,7 +13,7 @@ defineProps({
   },
   files: {
     required: true,
-    type: Array<AdFile>,
+    type: Array<AppFile>,
   },
 });
 </script>

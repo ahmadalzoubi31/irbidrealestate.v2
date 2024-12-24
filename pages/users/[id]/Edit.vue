@@ -11,7 +11,7 @@ const selectedUserId = ref(route.params.id as string);
 // Access the shared state for users
 const users = useState<User[]>("userList");
 // Find the specific user reactively
-const user = computed(() => users.value?.find((el) => el.id === Number(selectedUserId.value)));
+const user = computed(() => users.value?.find((el) => el.id === selectedUserId.value));
 
 if (!users.value || users.value.length === 0) {
   await navigateTo("/users");

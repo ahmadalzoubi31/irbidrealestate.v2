@@ -10,7 +10,7 @@ const selectedBuildingId = ref(route.params.id as string);
 // Access the shared state for buildings
 const buildings = useState<Building[]>("buildingList");
 // Find the specific building reactively
-const building = computed(() => buildings.value?.find((el) => el.id === Number(selectedBuildingId.value)));
+const building = computed(() => buildings.value?.find((el) => el.id === selectedBuildingId.value));
 
 if (!buildings.value || buildings.value.length === 0) {
   await navigateTo("/buildings");

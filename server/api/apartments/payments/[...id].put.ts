@@ -11,7 +11,7 @@ const validatePaymentData = (data: Payment) => {
 
 export default defineEventHandler(async (event) => {
   const body: Payment = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   // Check if body data is provided
   if (!body) {
@@ -23,13 +23,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Validate the provided apartment ID
-  if (isNaN(id)) {
-    throw createError({
-      statusCode: 400, // Bad Request for invalid ID
-      message: "Invalid ID provided",
-    });
-  }
 
   try {
     validatePaymentData(body); // Custom validation for required fields

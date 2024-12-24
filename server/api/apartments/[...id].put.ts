@@ -12,7 +12,7 @@ const validateApartmentData = (data: Apartment) => {
 
 export default defineEventHandler(async (event) => {
   const body: Apartment = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   // Check if body data is provided
   if (!body) {
@@ -24,13 +24,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Validate the provided apartment ID
-  if (isNaN(id)) {
-    throw createError({
-      statusCode: 400, // Bad Request for invalid ID
-      message: "Invalid ID provided",
-    });
-  }
 
   try {
     validateApartmentData(body); // Custom validation for required fields

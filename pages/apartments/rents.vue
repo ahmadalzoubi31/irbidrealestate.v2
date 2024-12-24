@@ -39,7 +39,7 @@ const editSelectedRecord = async (id: string) => {
 const deleteSelectedRecord = async () => {
   useLoadingIndicator().start();
   if (!selected.value.length) return;
-  await deleteApartment(selected.value[0].id.toFixed());
+  await deleteApartment(selected.value[0].id);
 };
 </script>
 

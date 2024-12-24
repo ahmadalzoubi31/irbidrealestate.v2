@@ -11,19 +11,10 @@ const validateOrderData = (data: Order) => {
 
 export default defineEventHandler(async (event) => {
   const body: Order = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
-    console.log(msg);
-    throw createError({
-      statusCode: 400,
-      message: msg,
-    });
-  }
-
-  if (isNaN(id)) {
-    const msg = "ERROR: Invalid ID";
     console.log(msg);
     throw createError({
       statusCode: 400,

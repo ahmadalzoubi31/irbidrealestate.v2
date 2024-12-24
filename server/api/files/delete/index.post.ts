@@ -3,7 +3,7 @@ import fs from "fs";
 import { join } from "path";
 
 export default defineEventHandler(async (event) => {
-    const body: { files: number[] } = await readBody(event);
+    const body: { files: string[] } = await readBody(event);
 
     if (!body || !body.files || body.files.length === 0) {
         throw createError({

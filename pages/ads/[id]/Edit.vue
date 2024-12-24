@@ -10,7 +10,7 @@ const selectedAdId = ref(route.params.id as string);
 // Access the shared state for ads
 const ads = useState<Ad[]>("adList");
 // Find the specific ad reactively
-const ad = computed(() => ads.value?.find((el) => el.id === Number(selectedAdId.value)));
+const ad = computed(() => ads.value?.find((el) => el.id === selectedAdId.value));
 
 if (!ads.value || ads.value.length === 0) {
   await navigateTo("/ads");

@@ -22,32 +22,8 @@ const videoList = computed(() => ad?.files.filter((el: { name: string | string[]
 // *** Config Generator ***
 const getConfig = (code: string) => {
   const baseConfig = {
-    heading: [
-      "رقم الاعلان",
-      "حالة العقار",
-      "نوع العقار",
-      "رابط الفيسبوك",
-      "رابط الانستقرام",
-      "المحافظة",
-      "المديرية",
-      "القرية",
-      "الحوض",
-      "رقم القطعة",
-      "الحي",
-    ],
-    keys: [
-      "code",
-      "propertyStatus",
-      "propertyType",
-      "facebookLink",
-      "instagramLink",
-      "governorate",
-      "directorate",
-      "village",
-      "basin",
-      "plot",
-      "neighborhood",
-    ],
+    heading: ["رقم الاعلان", "حالة العقار", "نوع العقار", "المحافظة", "المديرية", "القرية", "الحوض", "رقم القطعة", "الحي"],
+    keys: ["code", "propertyStatus", "propertyType", "governorate", "directorate", "village", "basin", "plot", "neighborhood"],
   };
 
   if (code.includes("LS") || code.includes("LR")) {
@@ -90,69 +66,74 @@ const closeModal = () => {
 </script>
 
 <template>
-  <UContainer>
+  <div class="min-h-screen">
     <!-- Header -->
-    <header class="bg-gray-800 shadow h-20 rounded-t-xl">
-      <div class="flex items-center justify-between px-6 h-20">
-        <h1 class="text-white text-xl font-bold">مؤسسة <span class="text-primary-300">اربد العقارية</span>.</h1>
-        <img src="@/assets/logo.png" alt="Logo" height="50" width="50" />
+    <header class="bg-gradient-to-r from-primary-800 to-primary-600 shadow-lg">
+      <div class="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+        <h1 class="text-white text-2xl font-bold">مؤسسة <span class="text-primary-200 font-extrabold">اربد العقارية</span></h1>
+        <img src="@/assets/logo.png" alt="Logo" class="h-16 w-16 transform hover:scale-105 transition-transform duration-300" />
       </div>
     </header>
 
     <!-- Body -->
-    <main class="bg-gray-100 -mb-12 pb-7">
-      <section class="rounded-lg p-6 mb-4">
-        <h2 class="text-2xl font-bold text-primary-800 mb-4">معلومات العقار</h2>
-        <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
-          <div v-for="(key, index) in keys" :key="key" class="font-medium">
-            <dt>{{ heading[index] }}</dt>
-            <dd class="font-normal text-primary-500">{{ extracted[key] || "-" }}</dd>
+    <main class="bg-white -mb-12 pb-7">
+      <!-- Property Information -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-3xl font-bold text-primary-800 mb-6 border-b pb-3">معلومات العقار</h2>
+        <dl class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div v-for="(key, index) in keys" :key="key" class="p-4 rounded-lg bg-gray-50 hover:bg-primary-50 transition-colors duration-300">
+            <dt class="text-gray-600 mb-2">{{ heading[index] }}</dt>
+            <dd class="text-primary-700 font-semibold">{{ extracted[key] || "-" }}</dd>
           </div>
         </dl>
       </section>
 
-      <section class="rounded-lg p-6 mb-4">
-        <h2 class="text-2xl font-bold text-primary-800 mb-4">معرض الصور</h2>
-        <!-- <Slider :files="imageList" :adId="selectedAdId" /> -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <!-- Image Gallery -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-3xl font-bold text-primary-800 mb-6 border-b pb-3">معرض الصور</h2>
+        <div class="grid grid-cols-6 gap-6">
           <NuxtImg
             v-for="file in imageList"
             :key="file.name"
             :src="`/upload/files/ads/${selectedAdId}/${file.name}`"
-            class="rounded-lg shadow-md h-[300px] w-[300px] hover:cursor-pointer"
+            class="rounded-xl shadow-md h-[200px] w-[200px] hover:opacity-90 transition-opacity duration-300 hover:cursor-pointer transform hover:scale-[1.02] transition-transform"
             @click="openFile(file.name)"
           />
         </div>
       </section>
 
-      <section class="rounded-lg p-6 mb-4">
-        <h2 class="text-2xl font-bold text-primary-800 mb-4">معرض الفيديو</h2>
-        <div>
-          <video v-for="file in videoList" :key="file.name" width="1200" height="200" controls class="rounded-lg shadow-md mb-4 hover:cursor-pointer">
+      <!-- Video Gallery -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-3xl font-bold text-primary-800 mb-6 border-b pb-3">معرض الفيديو</h2>
+        <div class="grid grid-cols-6 gap-6">
+          <video
+            v-for="file in videoList"
+            :key="file.name"
+            width="300"
+            height="300"
+            controls
+            class="rounded-xl shadow-md hover:opacity-95 transition-opacity duration-300"
+          >
             <source :src="`/upload/files/ads/${selectedAdId}/${file.name}`" type="video/mp4" />
-            Your browser does not support the video tag.
           </video>
         </div>
       </section>
 
-      <!-- Modal with Transition -->
-      <transition name="fade">
-        <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
-            <!-- Conditionally Render Image or Video -->
+      <!-- Modal -->
+      <transition name="fade" appear>
+        <div v-if="isModalOpen" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50" @click.self="closeModal">
+          <div class="bg-white rounded-xl p-4 max-w-[95%] max-h-[95%] relative">
             <div v-if="selectedImage.endsWith('.mp4')">
-              <video :src="selectedImage" controls autoplay class="max-h-full max-w-full rounded-lg" />
+              <video :src="selectedImage" controls autoplay class="max-h-[85vh] rounded-lg" />
             </div>
             <div v-else>
-              <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />
+              <img :src="selectedImage" alt="Selected Image" class="max-h-[85vh] rounded-lg" />
             </div>
-
-            <!-- Close Button -->
             <UButton
               type="button"
               icon="i-heroicons-x-circle-20-solid"
               @click="closeModal"
-              class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transform hover:scale-105 transition-transform"
             />
           </div>
         </div>
@@ -271,5 +252,17 @@ const closeModal = () => {
         </div>
       </div>
     </footer>
-  </UContainer>
+  </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

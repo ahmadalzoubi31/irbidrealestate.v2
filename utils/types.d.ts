@@ -97,7 +97,7 @@ declare interface IRenewApartment {
 }
 
 declare interface ICreatePayment {
-  apartmentId: number;
+  apartmentId: string;
   nextRentDate: Date;
   receivedPaymentDate: Date;
   depositAmount: number;
@@ -169,9 +169,9 @@ declare interface IAppFile {
   url: string;
   relatedId: string;
   relatedType: string;
-  adId: number | null;
-  paymentId: number | null;
-  apartmentId: number | null;
+  adId: string | null;
+  paymentId: string | null;
+  apartmentId: string | null;
 }
 
 
@@ -214,7 +214,7 @@ declare interface IDetail {
 }
 
 declare interface ICreateClaim {
-  apartmentId: number;
+  apartmentId: string;
   claimDate: Date;
   claimFrom: string;
   total: number;

@@ -6,6 +6,14 @@ export default defineNuxtRouteMiddleware((to) => {
         return
     }
 
+    // /ads/676b279f0e085198d8751785/generate
+    const pathArray = to.path.split('/')
+    console.log("🚀 ~ defineNuxtRouteMiddleware ~ pathArray:", pathArray)
+
+    if (pathArray.some((path) => path === 'generate')) {
+        return
+    }
+
     if (to.path === '/auth/login') {
         return
     }

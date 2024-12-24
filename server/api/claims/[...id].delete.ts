@@ -1,17 +1,9 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
-  // Validate the ID
-  if (isNaN(id)) {
-    const msg = "ERROR: Invalid ID";
-    console.log(msg);
-    throw createError({
-      statusCode: 400,
-      message: msg,
-    });
-  }
+
 
   try {
     // Check if the claim exists

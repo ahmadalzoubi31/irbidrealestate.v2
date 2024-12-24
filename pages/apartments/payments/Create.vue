@@ -6,7 +6,7 @@ const { createPayment } = usePaymentActions();
 
 // *** Define Variables ***
 const state: ICreatePayment = reactive({
-  apartmentId: 0,
+  apartmentId: "",
   nextRentDate: new Date(),
   receivedPaymentDate: new Date(),
   depositAmount: 0,

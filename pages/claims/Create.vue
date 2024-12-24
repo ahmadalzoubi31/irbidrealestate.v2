@@ -6,7 +6,7 @@ const { createClaim } = useClaimActions();
 
 // *** Define Variables ***
 const state: ICreateClaim = reactive({
-  apartmentId: 0,
+  apartmentId: "",
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
@@ -75,9 +75,9 @@ const addDetailData = () => {
 // Get the select menu data
 const { apartments: availableApartments } = useApartments();
 const computedApartments = computed(() =>
-    availableApartments.value?.map((el) => {
-      return { id: el.id, name: el.apartmentNumber };
-    })
+  availableApartments.value?.map((el) => {
+    return { id: el.id, name: el.apartmentNumber };
+  })
 );
 </script>
 

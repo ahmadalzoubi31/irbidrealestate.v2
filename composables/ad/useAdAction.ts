@@ -118,7 +118,7 @@ export function useAdActions() {
         try {
             // Validate file types and sizes
             const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'video/mp4'];
-            const maxSize = 25 * 1024 * 1024; // 5 MB
+            const maxSize = 200 * 1024 * 1024; // 200 MB
 
             for (const file of files) {
                 if (!allowedTypes.includes(file.type)) {

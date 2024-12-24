@@ -11,7 +11,7 @@ const selectedApartmentId = ref(route.params.id as string);
 // Access the shared state for apartments
 const apartments = useState<Apartment[]>("apartmentList");
 // Find the specific apartment reactively
-const apartment: any = computed(() => apartments.value?.find((el) => el.id === Number(selectedApartmentId.value)));
+const apartment: any = computed(() => apartments.value?.find((el) => el.id === selectedApartmentId.value));
 
 if (!apartments.value || apartments.value.length === 0) {
   await navigateTo("/apartments/rents");

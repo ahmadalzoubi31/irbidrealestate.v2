@@ -1,17 +1,7 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: number = Number(getRouterParams(event).id);
-
-  // Validate ID
-  if (isNaN(id)) {
-    const msg = "ERROR: Invalid ID format";
-    console.log(msg);
-    throw createError({
-      statusCode: 400,
-      message: msg,
-    });
-  }
+  const id: string = getRouterParams(event).id;
 
   try {
     // Fetch the building by ID

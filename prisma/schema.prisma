@@ -8,19 +8,17 @@
 // }
 generator client {
   provider                      = "prisma-client-js"
-  // binaryTargets                 = ["native", "darwin-arm64"]
-  // output                        = "../node_modules/.prisma/client"
   interactiveTransactionTimeout = 20000 // Increase to 10 seconds
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("MONGODB_DEV_URI")
 }
 
 // *** User ***
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   firstName String
   lastName  String
   username  String   @unique
@@ -35,7 +33,7 @@ model User {
 
 // *** Building ***
 model Building {
-  id                        Int         @id @default(autoincrement())
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
   name                      String      @unique
   apartmentsCount           Int         @default(0)
   storeCount                Int         @default(0)
@@ -56,7 +54,7 @@ model Building {
 
 // *** Apartment ***
 model Apartment {
-  id                   Int       @id @default(autoincrement())
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
   buildingName         String
   building             Building  @relation(fields: [buildingName], references: [name], onDelete: Cascade)
   apartmentNumber      String
@@ -92,7 +90,7 @@ model Apartment {
 
 // *** Payments ***
 model Payment {
-  id                  Int       @id @default(autoincrement())
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
   apartment           Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   nextRentDate        DateTime
   receivedPaymentDate DateTime
@@ -105,12 +103,12 @@ model Payment {
   createdAt           DateTime  @default(now())
   updatedBy           String?
   updatedAt           DateTime  @updatedAt
-  apartmentId         Int
+  apartmentId         String    @db.ObjectId
 }
 
 // *** Ads ***
 model Ad {
-  id                    Int                @id @default(autoincrement())
+  id                    String             @id @default(auto()) @map("_id") @db.ObjectId
   code                  String             @unique
   propertyStatus        String
   propertyType          Int
@@ -144,17 +142,16 @@ model Ad {
 
 // *** InterestedPeople ***
 model InterestedPeople {
-  id     Int    @id @default(autoincrement())
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
   name   String
   number String @default("###")
-
-  ad   Ad  @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId Int
+  ad     Ad     @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId   String @db.ObjectId
 }
 
 // *** Orders ***
 model Order {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   type        Int
   date        DateTime
   ownerName   String
@@ -172,7 +169,7 @@ model Order {
 
 // *** Claims ***
 model Claim {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
   claimDate   DateTime     @default(now())
   claimFrom   String
   collections Collection[]
@@ -184,30 +181,30 @@ model Claim {
   updatedBy   String?
   updatedAt   DateTime     @updatedAt
   apartment   Apartment    @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId Int
+  apartmentId String       @db.ObjectId
 }
 
 model Collection {
-  id       Int      @id @default(autoincrement())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   dateTime DateTime @default(now())
   payment  Float    @default(0.0)
   notes    String?
 
-  claim   Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
-  claimId Int
+  claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId String @db.ObjectId
 }
 
 model Detail {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
   item  String
   price Float  @default(0.0)
 
-  claim   Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
-  claimId Int
+  claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId String @db.ObjectId
 }
 
 // model AdFile {
-//   id        Int      @id @default(autoincrement())
+//   id        String @id @default(auto()) @map("_id") @db.ObjectId
 //   name      String
 //   status    Boolean  @default(true)
 //   createdBy String?
@@ -215,11 +212,11 @@ model Detail {
 //   updatedBy String?
 //   updatedAt DateTime @updatedAt
 //   Ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
-//   adId      Int
+//   adId      String @db.ObjectId
 // }
 
 model AppFile {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   path        String
   type        String
@@ -234,9 +231,9 @@ model AppFile {
   updatedAt   DateTime @updatedAt
 
   payment     Payment?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  paymentId   Int?
+  paymentId   String?    @db.ObjectId
   apartment   Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId Int?
+  apartmentId String?    @db.ObjectId
   ad          Ad?        @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId        Int?
+  adId        String?    @db.ObjectId
 }

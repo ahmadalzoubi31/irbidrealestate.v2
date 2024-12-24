@@ -3,15 +3,9 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
-  // Validate ID
-  if (isNaN(id)) {
-    throw createError({
-      statusCode: 400, // Changed status code to 400 for client error
-      message: "Invalid ID provided. Please provide a valid numeric ID.",
-    });
-  }
+
 
   try {
     // Fetch apartment by ID, including related building data

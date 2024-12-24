@@ -32,9 +32,9 @@ export default defineEventHandler(async (event) => {
             url: fileUrl,
             relatedId: relatedId,
             relatedType: relatedType,
-            adId: relatedType === "ads" ? Number(relatedId) : null,
-            apartmentId: relatedType === "apartments" ? Number(relatedId) : null,
-            paymentId: relatedType === "payments" ? Number(relatedId) : null,
+            adId: relatedType === "ads" ? relatedId : null,
+            apartmentId: relatedType === "apartments" ? relatedId : null,
+            paymentId: relatedType === "payments" ? relatedId : null,
         };
 
         fileList.push(fileInfoToPush);

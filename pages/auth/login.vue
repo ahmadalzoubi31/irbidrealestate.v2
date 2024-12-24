@@ -19,8 +19,8 @@ const submitForm = async () => {
 
   try {
     isLoading.value = true;
-    const res = await signIn("credentials", state);
-    console.log(res);
+    const res = await signIn("credentials", { ...state, redirect: false });
+    await navigateTo("/buildings");
   } catch (error) {
     console.log(error);
   } finally {
@@ -30,38 +30,183 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img class="mx-auto h-60 w-auto" src="@/assets/logo.svg" alt="Your Company" />
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight color-[#8c8b8b]">تسجيل دخول الى حسابك</h2>
-    </div>
+  <div class="limiter">
+    <div class="container-login">
+      <div class="wrap-login">
+        <form class="login-form" @submit.prevent="submitForm">
+          <span class="login-form-title mb-12">
+            <img class="mx-auto h-32 w-auto mb-4" src="@/assets/logo.svg" alt="Your Company" />
+            تسجيل دخول الى حسابك
+          </span>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" @submit.prevent="submitForm">
-        <div>
-          <label for="username" class="block text-sm font-medium leading-6">رقم المعرف</label>
-          <UInput id="username" name="username" :size="'md'" :autofocus="true" :required="true" v-model="state.username" />
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm font-medium leading-6">كلمة السر</label>
-            <div class="text-sm">
-              <a tabindex="3" href="#" class="font-semibold text-primary-600 hover:text-primary-500">هل نسيت كلمة السر؟</a>
-            </div>
+          <div class="wrap-input mb-8">
+            <input
+              id="username"
+              name="username"
+              :size="'lg'"
+              :autofocus="true"
+              :required="true"
+              v-model="state.username"
+              placeholder="رقم المعرف"
+              class="input100"
+            />
+            <span class="focus-input"></span>
           </div>
 
-          <UInput id="password" name="password" type="password" :size="'md'" :autofocus="false" :required="true" v-model="state.password" />
-        </div>
+          <div class="wrap-input mb-8">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              :size="'lg'"
+              :required="true"
+              v-model="state.password"
+              placeholder="كلمة السر"
+              class="input100"
+            />
+            <span class="focus-input"></span>
+          </div>
 
-        <UButton :type="'submit'" :size="'md'" :loading="isLoading" class="w-full text-center bg-primary-400"> دخول </UButton>
-      </form>
+          <div class="flex justify-between items-center mb-8">
+            <label class="checkbox-container">
+              تذكرني
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+            </label>
 
-      <!-- <p class="mt-10 text-center text-sm text-gray-500">
-        Not a member?
-        {{ " " }}
-        <a href="#" class="font-semibold leading-6 text-primary-600 hover:text-primary-500">Start a 14 day free trial</a>
-      </p> -->
+            <a href="#" class="text-sm hover:text-primary-500 transition-colors"> هل نسيت كلمة السر؟ </a>
+          </div>
+
+          <button :type="'submit'" :size="'lg'" :loading="isLoading" class="login-form-btn">دخول</button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.limiter {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container-login {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(174, 204, 54, 0.9), /* Primary lime green */ rgba(140, 139, 139, 0.85) /* Secondary gray */);
+  background-size: cover;
+  background-position: center;
+}
+
+.wrap-login {
+  width: 500px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 55px 55px 33px 55px;
+  box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.login-form {
+  width: 100%;
+}
+
+.login-form-title {
+  display: block;
+  font-size: 30px;
+  color: #333333;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.wrap-input {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.input100 {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #666666;
+  width: 100%;
+  background: #e6e6e6;
+  height: 50px;
+  border-radius: 25px;
+  padding: 0 30px;
+  transition: all 0.4s;
+}
+
+.input100:focus {
+  background: #fff;
+  box-shadow: 0 5px 30px 0px rgba(0, 0, 0, 0.1);
+}
+
+.focus-input {
+  display: block;
+  position: absolute;
+  border-radius: 25px;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 0px 0px 0px;
+  color: rgba(91, 104, 235, 0.8);
+}
+
+.login-form-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #aecc36, #8c8b8b);
+  font-size: 15px;
+  color: #fff;
+  text-transform: uppercase;
+  transition: all 0.4s;
+}
+
+.login-form-btn:hover {
+  background: linear-gradient(135deg, #8c8b8b, #aecc36);
+}
+
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #e6e6e6;
+  border-radius: 4px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background: linear-gradient(135deg, #aecc36, #8c8b8b);
+}
+</style>

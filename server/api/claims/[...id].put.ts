@@ -11,7 +11,7 @@ const validateClaimData = (data: Claim) => {
 
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event); // Use any because `body` contains nested objects
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   if (!body) {
     var msg = "ERROR: Argument data is missing";
@@ -22,14 +22,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if (isNaN(id)) {
-    const msg = "ERROR: Invalid ID";
-    console.log(msg);
-    throw createError({
-      statusCode: 400,
-      message: msg,
-    });
-  }
 
   try {
     // Validate the incoming data
@@ -59,7 +51,7 @@ export default defineEventHandler(async (event) => {
       // Fetch existing related records
       const existingCollection = await tx.collection.findMany({
         where: { claimId: id },
-        
+
       });
       const existingDetail = await tx.detail.findMany({
         where: { claimId: id },
@@ -95,40 +87,40 @@ export default defineEventHandler(async (event) => {
       const upsertCollectionOperations = collections.map((c: Collection) =>
         c.id
           ? tx.collection.update({
-              where: { id: c.id },
-              data: {
-                dateTime: c.dateTime,
-                payment: c.payment,
-                notes: c.notes,
-              },
-            })
+            where: { id: c.id },
+            data: {
+              dateTime: c.dateTime,
+              payment: c.payment,
+              notes: c.notes,
+            },
+          })
           : tx.collection.create({
-              data: {
-                dateTime: c.dateTime,
-                payment: c.payment,
-                notes: c.notes,
-                claimId: id,
-              },
-            })
+            data: {
+              dateTime: c.dateTime,
+              payment: c.payment,
+              notes: c.notes,
+              claimId: id,
+            },
+          })
       );
 
       // Handle updates and creations
       const upsertDetailOperations = details.map((d: Detail) =>
         d.id
           ? tx.detail.update({
-              where: { id: d.id },
-              data: {
-                item: d.item,
-                price: d.price,
-              },
-            })
+            where: { id: d.id },
+            data: {
+              item: d.item,
+              price: d.price,
+            },
+          })
           : tx.detail.create({
-              data: {
-                item: d.item,
-                price: d.price,
-                claimId: id,
-              },
-            })
+            data: {
+              item: d.item,
+              price: d.price,
+              claimId: id,
+            },
+          })
       );
 
       // Execute deletions, updates, and creations

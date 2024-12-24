@@ -3,15 +3,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: number = Number(getRouterParams(event).id);
-
-  // Validate ID
-  if (isNaN(id)) {
-    throw createError({
-      statusCode: 400,
-      message: "Invalid ID provided. Please provide a valid numeric ID.",
-    });
-  }
+  const id: string = getRouterParams(event).id;
 
   try {
     // Check if the payment exists

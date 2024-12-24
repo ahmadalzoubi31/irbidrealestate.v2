@@ -11,7 +11,7 @@ const selectedPaymentId = ref(route.params.id as string);
 // Access the shared state for payments
 const payments = useState<Payment[]>("paymentList");
 // Find the specific payment reactively
-const payment: any = computed(() => payments.value?.find((el) => el.id === Number(selectedPaymentId.value)));
+const payment: any = computed(() => payments.value?.find((el) => el.id === selectedPaymentId.value));
 
 if (!payments.value || payments.value.length === 0) {
   await navigateTo("/apartments/payments");

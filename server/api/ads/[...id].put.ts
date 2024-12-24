@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import type {Ad, InterestedPeople} from "@prisma/client";
+import type { Ad, InterestedPeople } from "@prisma/client";
 
 // Utility function to validate incoming data
 const validateAdData = (data: Ad) => {
@@ -11,7 +11,7 @@ const validateAdData = (data: Ad) => {
 
 export default defineEventHandler(async (event) => {
     const body: any = await readBody(event); // Use any because `body` contains nested objects
-    const id: number = Number(getRouterParams(event).id);
+    const id: string = getRouterParams(event).id;
 
     if (!body) {
         const msg = "ERROR: Argument data is missing";
@@ -22,16 +22,9 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    if (isNaN(id)) {
-        const msg = "ERROR: Invalid ID";
-        console.log(msg);
-        throw createError({
-            statusCode: 400,
-            message: msg,
-        });
-    }
 
-    const {files, interestedPeople, ...adData} = body;
+
+    const { files, interestedPeople, ...adData } = body;
 
 
     try {
@@ -40,8 +33,8 @@ export default defineEventHandler(async (event) => {
 
         // Check if the ad exists
         const ad = await prisma.ad.findUnique({
-            where: {id},
-            include: {interestedPeople: true, files: true},
+            where: { id },
+            include: { interestedPeople: true, files: true },
         });
 
         if (!ad) {
@@ -55,15 +48,15 @@ export default defineEventHandler(async (event) => {
 
         await prisma.$transaction(async (tx) => {
             // Update the ad data
-            await tx.ad.update({where: {id}, data: adData});
+            await tx.ad.update({ where: { id }, data: adData });
 
             // Fetch existing related people records
             const existingPeople = await tx.interestedPeople.findMany({
-                where: {adId: id},
+                where: { adId: id },
             });
 
             // Extract IDs from the incoming request
-            const incomingIds: number[] = interestedPeople
+            const incomingIds: string[] = interestedPeople
                 .filter((person: InterestedPeople) => person.id) // Only include those with IDs
                 .map((person: InterestedPeople) => person.id);
 
@@ -71,17 +64,17 @@ export default defineEventHandler(async (event) => {
             const idsToDelete = existingPeople.filter((person) => !incomingIds.includes(person.id)).map((person) => person.id);
 
             // Perform deletions
-            const deleteOperations = idsToDelete.map((idToDelete) => tx.interestedPeople.delete({where: {id: idToDelete}}));
+            const deleteOperations = idsToDelete.map((idToDelete) => tx.interestedPeople.delete({ where: { id: idToDelete } }));
 
             // Handle updates and creations
             const upsertOperations = interestedPeople.map((person: InterestedPeople) =>
                 person.id
                     ? tx.interestedPeople.update({
-                        where: {id: person.id},
-                        data: {name: person.name, number: person.number},
+                        where: { id: person.id },
+                        data: { name: person.name, number: person.number },
                     })
                     : tx.interestedPeople.create({
-                        data: {name: person.name, number: person.number, adId: id},
+                        data: { name: person.name, number: person.number, adId: id },
                     })
             );
 
@@ -97,7 +90,7 @@ export default defineEventHandler(async (event) => {
         });
     } catch (error: any) {
         console.log("🚀 ~ defineEventHandler ~ error:", error)
-        console.log({prisma_code: error.code});
+        console.log({ prisma_code: error.code });
 
         throw createError({
             statusCode: error.statusCode,
