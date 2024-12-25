@@ -21,11 +21,13 @@ export default NuxtAuthHandler({
       async authorize(credentials: { username: string, password: string }) {
         // TODO: Fetch user from database
         try {
-          if (credentials.username === 'appadmin') {
-            return {
-              username: 'appadmin'
-            }
-          }
+          // if (credentials.username === 'appadmin') {
+          //   return {
+          //     username: 'appadmin',
+          //     name: 'appadmin',
+          //     email: 'appadmin@null.net',
+          //   }
+          // }
           const user = await prisma.user.findUnique({
             where: {
               username: credentials.username || '',
@@ -50,6 +52,8 @@ export default NuxtAuthHandler({
           return {
             id: user.id,
             username: user.username,
+            name: user.username,
+            email: user.username + '@null.net',
           }
         } catch (error) {
           console.log('error', error);
@@ -83,11 +87,12 @@ export default NuxtAuthHandler({
       return token
     },
     /* on session retrival */
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       // Add user information to the session object
       session.user = {
         ...token,
-        ...session.user
+        ...session.user,
+        ...user
       };
 
       return session

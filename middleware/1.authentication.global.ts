@@ -8,7 +8,6 @@ export default defineNuxtRouteMiddleware((to) => {
 
     // /ads/676b279f0e085198d8751785/generate
     const pathArray = to.path.split('/')
-    console.log("🚀 ~ defineNuxtRouteMiddleware ~ pathArray:", pathArray)
 
     if (pathArray.some((path) => path === 'generate')) {
         return

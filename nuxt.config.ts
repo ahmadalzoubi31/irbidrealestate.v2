@@ -27,16 +27,7 @@ export default defineNuxtConfig({
     ]
   },
   fileStorage: {
-    // enter the absolute path to the location of your storage
-    // mount: '/home/$USR/development/nuxt-file-storage/server/files',
-
-    // {OR} use environment variables (recommended)
     mount: process.env.MOUNT,
-    // you need to set the mount in your .env file at the root of your project
-  },
-  // ssr: false,
-  image: {
-    // Options
   },
   runtimeConfig: {
     authSecret: process.env.NEXTAUTH_SECRET
@@ -49,4 +40,13 @@ export default defineNuxtConfig({
       addDefaultCallbackUrl: false
     },
   },
+  nitro: {
+    storage: {
+      data: {
+        driver: 'vercelKV'
+        /* Vercel KV driver options */
+
+      }
+    }
+  }
 });

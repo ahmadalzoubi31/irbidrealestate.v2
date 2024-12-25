@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { da } from "date-fns/locale";
+import { useStorage } from "@vueuse/core";
+
 definePageMeta({
   layout: "auth",
 });
@@ -11,20 +14,22 @@ const isLoading = ref(false);
 // Declare Stores
 // const _accountStore = useAccountStore();
 
-const { signIn } = useAuth();
+const { signIn, data } = useAuth();
 // Declare Methods
 const submitForm = async () => {
   console.log("logging....");
-  console.log({ state });
 
   try {
     isLoading.value = true;
-    const res = await signIn("credentials", { ...state, redirect: false });
+    await signIn("credentials", { ...state, redirect: false });
+
     await navigateTo("/buildings");
   } catch (error) {
     console.log(error);
   } finally {
-    isLoading.value = false;
+    setTimeout(() => {
+      isLoading.value = false;
+    }, 5000);
   }
 };
 </script>
@@ -77,7 +82,7 @@ const submitForm = async () => {
             <a href="#" class="text-sm hover:text-primary-500 transition-colors"> هل نسيت كلمة السر؟ </a>
           </div>
 
-          <button :type="'submit'" :size="'lg'" :loading="isLoading" class="login-form-btn">دخول</button>
+          <UButton :type="'submit'" :size="'lg'" :loading="isLoading" class="login-form-btn">دخول</UButton>
         </form>
       </div>
     </div>
@@ -169,6 +174,7 @@ const submitForm = async () => {
   color: #fff;
   text-transform: uppercase;
   transition: all 0.4s;
+  justify-content: center;
 }
 
 .login-form-btn:hover {

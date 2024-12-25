@@ -61,7 +61,7 @@ onMounted(() => state.navigation.map((el) => (el.current = el.href === useRoute(
 
         <div class="flex items-center space-x-4">
           <div class="text-white text-base font-normal">
-            <span class="ml-2">{{ data?.user?.username }}</span>
+            <span class="ml-2">{{ data?.user?.name }}</span>
             <a @click="clickSignOut" class="text-white underline hover:cursor-pointer">تسجيل الخروج</a>
           </div>
         </div>
