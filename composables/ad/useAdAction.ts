@@ -2,6 +2,7 @@ import type { Ad } from "@prisma/client";
 
 export function useAdActions() {
     const toast = useToast();
+    const { uploadFile } = useUpload();
 
     const handleError = (error: any, defaultMessage: string) => {
         toast.add({
@@ -114,38 +115,7 @@ export function useAdActions() {
         }
     };
 
-    const uploadFile = async (files: any[], relatedType: string, relatedId: string) => {
-        try {
-            // Validate file types and sizes
-            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'video/mp4'];
-            const maxSize = 200 * 1024 * 1024; // 200 MB
 
-            for (const file of files) {
-                if (!allowedTypes.includes(file.type)) {
-                    throw new Error(`نوع الملف غير صالح: ${file.type}`);
-                }
-                if (file.size > maxSize) {
-                    throw new Error(`حجم الملف يتجاوز الحد المسموح به ${maxSize / (1024 * 1024)} ميغابايت`);
-                }
-            }
-
-            // Sanitize file names
-            const sanitizedFiles = files.map(file => {
-                const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-                return { ...file, name: sanitizedFileName };
-            });
-
-            // Upload files
-            await $fetch(`/api/files?relatedType=${relatedType}&relatedId=${relatedId}`, {
-                method: "POST",
-                body: sanitizedFiles,
-                key: "uploadFile",
-            });
-            handleSuccess("تم رفع الملفات بنجاح");
-        } catch (error: any) {
-            handleError(error, "حدث خطأ أثناء رفع الملفات");
-        }
-    };
 
     return { createAd, editAd, deleteAd, getOneAd };
 }

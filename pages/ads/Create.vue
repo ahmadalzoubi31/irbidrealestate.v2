@@ -31,7 +31,7 @@ const state: ICreateAd = reactive({
   neighborhood: "",
   expectedRentAmount: "",
   notes: "",
-  interestedPeople: []
+  interestedPeople: [],
 });
 const items = (row: { name: string; number: string }) => [
   [
@@ -110,6 +110,20 @@ const propertyTypeOptions = [
 ];
 
 // *** Define Methods ***
+const validateFiles = () => {
+  for (const file of files.value) {
+    if (!file.type.startsWith("image/")) {
+      toast.add({
+        description: "Only image files are allowed.",
+        color: "red",
+        timeout: 5000,
+      });
+      return false;
+    }
+  }
+  return true;
+};
+
 const submitForm = async () => {
   // Early validation for required fields before making the API call
   if (!state.code) {
@@ -118,6 +132,10 @@ const submitForm = async () => {
       color: "yellow",
       timeout: 5000,
     });
+    return;
+  }
+
+  if (!validateFiles()) {
     return;
   }
 
@@ -183,7 +201,6 @@ watch(
     }
   }
 );
-
 </script>
 
 <template>
@@ -277,6 +294,7 @@ watch(
         <div class="col-span-6 sm:col-span-1">
           <label for="adPhotos"> صور الاعلان </label>
           <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
+          <!-- <AppUpload /> -->
         </div>
         <div class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in files" class="relative inline-block">

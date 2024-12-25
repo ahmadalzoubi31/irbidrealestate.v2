@@ -10,11 +10,6 @@ export default defineEventHandler(async (event) => {
     const relatedId = queryList?.relatedId || '';
 
     for (const file of body) {
-        const name = await storeFileLocally(
-            file,
-            16,
-            `/${relatedType}/${relatedId}/`
-        );
 
         const rootDir = process.cwd();
         const uploadDir = join(rootDir, "public", "upload", "files");

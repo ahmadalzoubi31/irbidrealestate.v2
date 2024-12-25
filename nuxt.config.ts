@@ -42,10 +42,11 @@ export default defineNuxtConfig({
   },
   nitro: {
     storage: {
-      data: {
-        driver: 'vercelKV'
-        /* Vercel KV driver options */
-
+      customDriver: {
+        driver: 'mongodb',
+        connectionString: process.env.MONGODB_DEV_URI,
+        databaseName: "irbidrealestate_dev_db",
+        collectionName: "test",
       }
     }
   }
