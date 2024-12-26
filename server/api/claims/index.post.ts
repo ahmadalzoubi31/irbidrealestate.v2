@@ -1,10 +1,10 @@
-import {Prisma, Claim } from "@prisma/client";
+import { Prisma, Claim } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 // Utility function for validating request data
 const validateClaimData = (data: Claim) => {
   // TODO: Add any additional field validation as needed
-  if (!data.claimDate ) {
+  if (!data.claimDate) {
     throw new Error("Missing required fields: claimDate");
   }
 };

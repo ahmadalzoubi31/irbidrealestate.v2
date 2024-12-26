@@ -58,7 +58,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment!.apartment.apartmentNumber"
+            :model-value="payment!.Apartment.apartmentNumber"
           />
         </div>
         <!-- nextRentDate -->
@@ -86,7 +86,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="format(new Date(payment?.apartment.rentDate), 'dd/MM/yyyy')"
+            :model-value="format(new Date(payment?.Apartment.rentDate), 'dd/MM/yyyy')"
           />
         </div>
         <!-- rentAmount -->
@@ -100,7 +100,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.apartment.rentAmount"
+            :model-value="payment?.Apartment.rentAmount"
           />
         </div>
         <!-- commissionAmount -->
@@ -114,7 +114,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.apartment.commissionAmount"
+            :model-value="payment?.Apartment.commissionAmount"
           />
         </div>
         <!-- maintenanceDiscount -->
@@ -128,7 +128,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.apartment.maintenanceDiscount"
+            :model-value="payment?.Apartment.Building.maintenanceAmount"
           />
         </div>
         <!-- services -->
@@ -142,7 +142,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.apartment.services"
+            :model-value="payment?.Apartment.Building.serviceAmount"
           />
         </div>
       </div>

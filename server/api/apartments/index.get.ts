@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     // Fetch all apartments
     const apartments: Apartment[] = await prisma.apartment.findMany({
       include: {
-        building: true,  // Include related apartment data
+        Building: true // Include related apartment data
       },
     });
     return apartments;

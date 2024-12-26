@@ -163,7 +163,7 @@ watchEffect(() => {
             :size="'sm'"
             :autofocus="true"
             :required="false"
-            :disable="true"
+            :disabled="true"
             inputClass="bg-gray-200"
             :model-value="ad?.code"
           />
@@ -188,7 +188,7 @@ watchEffect(() => {
             id="propertyType"
             name="propertyType"
             :required="false"
-            :disable="true"
+            :disabled="true"
             inputClass="bg-gray-200"
             :model-value="useGetPropertyTypeName(ad?.propertyType || 0)"
           />

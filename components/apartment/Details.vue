@@ -48,11 +48,11 @@ const heading = [
 
 // Specify the keys you want to extract
 const keysToExtract = [
-"buildingName",
+"Building.name",
 "apartmentNumber",
-"building.basinName",
-"building.basinNumber",
-"building.landNumber",
+"Building.basinName",
+"Building.basinNumber",
+"Building.landNumber",
 "ownerName",
 "ownerNumber",
 "agentName",
@@ -73,8 +73,8 @@ const keysToExtract = [
 "isServiceIncluded",
 "insurance",
 "commissionAmount",
-"building.maintenanceAmount",
-"building.serviceAmount",
+"Building.maintenanceAmount",
+"Building.serviceAmount",
 "status",
 "createdBy",
 "createdAt",

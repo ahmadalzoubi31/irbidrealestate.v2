@@ -26,11 +26,11 @@ export default defineEventHandler(async (event) => {
     try {
         // Validate the incoming data
         validateBuildingData(body);
-
         // Check if the building exists
         const building = await prisma.building.findUnique({
             where: { id },
         });
+
 
         if (!building) {
             const msg = "ERROR: No building found with the given ID";
@@ -41,10 +41,16 @@ export default defineEventHandler(async (event) => {
             });
         }
 
+        // Calucalte the number of related apartments
+        const registeredApartmentsCount = await prisma.apartment.count({
+            where: {
+                buildingId: body.id,
+            },
+        })
         // Perform the update
         const updatedBuilding = await prisma.building.update({
             where: { id },
-            data: body,
+            data: { ...body, registeredApartmentsCount },
         });
 
         // Return success response

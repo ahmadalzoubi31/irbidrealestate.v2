@@ -1,8 +1,8 @@
-import type { Ad } from "@prisma/client";
+import type {Ad} from "@prisma/client";
 
 export function useAdActions() {
     const toast = useToast();
-    const { uploadFile } = useUpload();
+    const {uploadFile} = useUpload();
 
     const handleError = (error: any, defaultMessage: string) => {
         toast.add({
@@ -21,7 +21,7 @@ export function useAdActions() {
     };
 
     const getOneAd = async (id: string) => {
-        const { data, status, error } = await useFetch<Ad>("/api/ads/" + id, {
+        const {data, status, error} = await useFetch<Ad>("/api/ads/" + id, {
             key: "getAdById",
             server: true
         });
@@ -31,22 +31,23 @@ export function useAdActions() {
             navigateTo("/ads");
         }
 
-        return { data: data.value, status: status.value };
+        return {data: data.value, status: status.value};
     };
 
     const createAd = async (payload: ICreateAd, files: any[]) => {
         try {
             // Create the ad
-            const newAd = await $fetch("/api/ads", { method: "POST", body: payload });
+            const newAd = await $fetch("/api/ads", {method: "POST", body: payload});
 
+            console.log({files})
             // Upload the files with the new ad's ID as the related ID
             if (files.length > 0) {
-                try {
-                    await uploadFile(files, "ads", newAd.data.id.toString());
-                } catch (uploadError: any) {
-                    handleError(uploadError, "حدث خطأ أثناء رفع الملف");
+
+                const res: boolean = await uploadFile(files, "ads", newAd.data.id.toString());
+
+                if (!res) {
                     // Optionally, you can delete the created ad if file upload fails
-                    await $fetch("/api/ads/" + newAd.data.id, { method: "DELETE" });
+                    await $fetch("/api/ads/" + newAd.data.id, {method: "DELETE"});
                     throw new Error("تم إنشاء الإعلان ولكن فشل رفع الملفات. تم حذف الإعلان.");
                 }
             }
@@ -64,13 +65,13 @@ export function useAdActions() {
     const editAd = async (id: string, payload: IEditAd) => {
         try {
             // Separate the body form the files
-            const { files, ...adData } = payload;
+            const {files, ...adData} = payload;
             // Separate new files from existing files
             const newFiles = files.filter(file => !file.id);
             const existingFiles = files.filter(file => file.id);
 
             // Update the ad details
-            await $fetch("/api/ads/" + id, { method: "PUT", body: adData });
+            await $fetch("/api/ads/" + id, {method: "PUT", body: adData});
 
             // Handle file uploads
             if (newFiles.length > 0) {
@@ -86,7 +87,7 @@ export function useAdActions() {
             if (filesToDelete.length > 0) {
                 await $fetch("/api/files/delete", {
                     method: "POST",
-                    body: { files: filesToDelete.map(file => file.id) },
+                    body: {files: filesToDelete.map(file => file.id)},
                 });
             }
 
@@ -105,7 +106,7 @@ export function useAdActions() {
         if (!confirmDelete) return;
 
         try {
-            await $fetch("/api/ads/" + id, { method: "DELETE", key: "deleteAd" });
+            await $fetch("/api/ads/" + id, {method: "DELETE", key: "deleteAd"});
             await refreshNuxtData("getAds");
             handleSuccess("تم حذف الاعلان بنجاح");
         } catch (error: any) {
@@ -116,6 +117,5 @@ export function useAdActions() {
     };
 
 
-
-    return { createAd, editAd, deleteAd, getOneAd };
+    return {createAd, editAd, deleteAd, getOneAd};
 }

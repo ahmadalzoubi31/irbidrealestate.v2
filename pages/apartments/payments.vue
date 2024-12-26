@@ -43,12 +43,12 @@ const deleteSelectedRecord = async () => {
   <div id="payment">
     <div class="parentWrapper" v-if="useRoute().name === 'apartments-payments'">
       <div id="paymentTable">
-        <!-- Action Buttons -->
-        <div id="buttonWrapper" class="my-3">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة دفعة" :to="'/apartments/payments/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف دفعة" @click="deleteSelectedRecord" />
-        </div>
-        <div id="filterWrapper" class="my-3">
+        <!-- Action Buttons & Search Filter -->
+        <div class="flex my-3 justify-between">
+          <div id="buttonWrapper">
+            <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/apartments/payments/create'" />
+            <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
+          </div>
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
         </div>
 

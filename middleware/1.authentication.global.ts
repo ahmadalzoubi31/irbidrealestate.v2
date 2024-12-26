@@ -2,6 +2,7 @@ export default defineNuxtRouteMiddleware((to) => {
     const { status, signIn } = useAuth()
 
     // Return immediately if user is already authenticated
+    // TODO: validate cookies and/or token here
     if (status.value === 'authenticated') {
         return
     }

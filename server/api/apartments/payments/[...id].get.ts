@@ -11,9 +11,9 @@ export default defineEventHandler(async (event) => {
     const payment = await prisma.payment.findUnique({
       where: { id },
       include: {
-        apartment: {
+        Apartment: {
           include: {
-            building: true,
+            Building: true,
           },
         },
       },

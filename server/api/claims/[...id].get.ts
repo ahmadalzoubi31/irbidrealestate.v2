@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     const claim = await prisma.claim.findUnique({
       where: { id },
       include: {
-        apartment: true,
+        Apartment: true,
         collections: true,
         details: true,
       },

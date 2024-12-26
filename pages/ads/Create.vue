@@ -219,7 +219,7 @@ watch(
             :size="'sm'"
             :autofocus="true"
             :required="true"
-            :disable="true"
+            :disabled="true"
             inputClass="bg-gray-200"
             v-model="state.code"
           />

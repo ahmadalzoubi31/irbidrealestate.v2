@@ -26,9 +26,15 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateBuildingData(body);
 
+    // Calucalte the number of related apartments
+    const registeredApartmentsCount = await prisma.apartment.count({
+      where: {
+        buildingId: body.id,
+      },
+    })
     // Create a new building entry
     const newBuilding: Building = await prisma.building.create({
-      data: body,
+      data: { ...body, registeredApartmentsCount },
     });
 
     // Return success response

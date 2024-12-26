@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
 
     // TODO: Double check with out this.
     // Remove the 'name' field if it exists, as it is not updatable
-    const { buildingName, ...updateData } = body;
+    const { buildingId, ...updateData } = body;
 
     // Proceed with updating the apartment data
     const updatedApartment = await prisma.apartment.update({

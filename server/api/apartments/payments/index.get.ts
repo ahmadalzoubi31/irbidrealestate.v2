@@ -9,9 +9,9 @@ export default defineEventHandler(async (event) => {
     // Fetch all payments along with related apartment and building details
     const payments: Payment[] = await prisma.payment.findMany({
       include: {
-        apartment: {
+        Apartment: {
           include: {
-            building: true,
+            Building: true,
           },
         },
       },

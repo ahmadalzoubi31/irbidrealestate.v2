@@ -129,7 +129,7 @@ const uploadImage = (event: any) => console.log(event);
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :modelValue="apartment?.buildingName"
+            :modelValue="apartment?.Building.name"
           />
         </div>
         <!-- apartmentNumber -->
@@ -155,7 +155,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.building.basinName"
+            :model-value="apartment?.Building.basinName"
           />
         </div>
         <!-- basinNumber -->
@@ -168,7 +168,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.building.basinNumber"
+            :model-value="apartment?.Building.basinNumber"
           />
         </div>
         <!-- landNumber -->
@@ -181,7 +181,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.building.landNumber"
+            :model-value="apartment?.Building.landNumber"
           />
         </div>
         <!-- ownerName -->
@@ -384,7 +384,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="true"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.building.maintenanceAmount"
+            :model-value="apartment?.Building.maintenanceAmount"
           />
         </div>
         <!-- serviceAmount -->
@@ -397,7 +397,7 @@ const uploadImage = (event: any) => console.log(event);
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.building.serviceAmount"
+            :model-value="apartment?.Building.serviceAmount"
           />
         </div>
       </div>

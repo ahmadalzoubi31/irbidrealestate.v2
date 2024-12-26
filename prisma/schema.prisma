@@ -13,7 +13,7 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("MONGODB_POR_URI")
+  url      = env("MONGODB_DEV_URI")
 }
 
 // *** User ***
@@ -55,8 +55,6 @@ model Building {
 // *** Apartment ***
 model Apartment {
   id                   String    @id @default(auto()) @map("_id") @db.ObjectId
-  buildingName         String
-  building             Building  @relation(fields: [buildingName], references: [name], onDelete: Cascade)
   apartmentNumber      String
   ownerName            String
   ownerNumber          String?
@@ -86,12 +84,13 @@ model Apartment {
   updatedAt            DateTime  @updatedAt
   payments             Payment[]
   claims               Claim[]
+  Building             Building? @relation(fields: [buildingId], references: [id])
+  buildingId           String?   @db.ObjectId
 }
 
 // *** Payments ***
 model Payment {
   id                  String    @id @default(auto()) @map("_id") @db.ObjectId
-  apartment           Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   nextRentDate        DateTime
   receivedPaymentDate DateTime
   depositAmount       Float
@@ -104,6 +103,7 @@ model Payment {
   updatedBy           String?
   updatedAt           DateTime  @updatedAt
   apartmentId         String    @db.ObjectId
+  Apartment           Apartment @relation(fields: [apartmentId], references: [id])
 }
 
 // *** Ads ***
@@ -145,8 +145,8 @@ model InterestedPeople {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   name   String
   number String @default("###")
-  ad     Ad     @relation(fields: [adId], references: [id], onDelete: Cascade)
   adId   String @db.ObjectId
+  Ad     Ad     @relation(fields: [adId], references: [id])
 }
 
 // *** Orders ***
@@ -180,8 +180,8 @@ model Claim {
   createdAt   DateTime     @default(now())
   updatedBy   String?
   updatedAt   DateTime     @updatedAt
-  apartment   Apartment    @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   apartmentId String       @db.ObjectId
+  Apartment   Apartment    @relation(fields: [apartmentId], references: [id])
 }
 
 model Collection {
@@ -190,8 +190,8 @@ model Collection {
   payment  Float    @default(0.0)
   notes    String?
 
-  claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
   claimId String @db.ObjectId
+  Claim   Claim  @relation(fields: [claimId], references: [id])
 }
 
 model Detail {
@@ -199,8 +199,8 @@ model Detail {
   item  String
   price Float  @default(0.0)
 
-  claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
   claimId String @db.ObjectId
+  Claim   Claim  @relation(fields: [claimId], references: [id])
 }
 
 // model AdFile {
@@ -221,7 +221,6 @@ model AppFile {
   path        String
   type        String
   size        String
-  url         String
   relatedId   String
   relatedType String
   status      Boolean  @default(true)
@@ -230,10 +229,10 @@ model AppFile {
   updatedBy   String?
   updatedAt   DateTime @updatedAt
 
-  payment     Payment?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  paymentId   String?    @db.ObjectId
-  apartment   Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  Apartment   Apartment? @relation(fields: [apartmentId], references: [id])
   apartmentId String?    @db.ObjectId
-  ad          Ad?        @relation(fields: [adId], references: [id], onDelete: Cascade)
+  Payment     Payment?   @relation(fields: [paymentId], references: [id])
+  paymentId   String?    @db.ObjectId
+  Ad          Ad?        @relation(fields: [adId], references: [id])
   adId        String?    @db.ObjectId
 }

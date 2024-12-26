@@ -68,7 +68,7 @@ export default NuxtAuthHandler({
   },
 
   callbacks: {
-    /* on before signin */
+    /* on before signing */
     async signIn({ user, account, profile, email, credentials }) {
       return true
     },
@@ -86,7 +86,7 @@ export default NuxtAuthHandler({
       }
       return token
     },
-    /* on session retrival */
+    /* on session retrieval */
     async session({ session, token, user }) {
       // Add user information to the session object
       session.user = {

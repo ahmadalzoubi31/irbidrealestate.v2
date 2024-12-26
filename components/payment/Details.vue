@@ -29,10 +29,10 @@ const heading = [
 
 // Specify the keys you want to extract
 const keysToExtract = [
-"apartment.buildingName",
-"apartment.apartmentNumber",
-"apartment.rentDate",
-"apartment.rentAmount",
+"Apartment.Building.name",
+"Apartment.apartmentNumber",
+"Apartment.rentDate",
+"Apartment.rentAmount",
 "receivedPaymentDate",
 "depositAmount",
 "depositDate",

@@ -46,15 +46,13 @@ const generateSharedLinkSelectedRecord = async () => {
 <template>
   <div id="ad">
     <div class="parentWrapper" v-if="useRoute().name === 'ads'">
-      <!-- Action Buttons -->
-      <div id="buttonWrapper" class="my-3">
-        <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة اعلان" :to="'/ads/create'" />
-        <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" @click="deleteSelectedRecord" />
-        <UButton icon="i-heroicons-arrow-right-on-rectangle-20-solid" label="انشاء رابط مشترك" @click="generateSharedLinkSelectedRecord" />
-      </div>
-
-      <!-- Search Filter -->
-      <div id="filterWrapper" class="my-3">
+      <!-- Action Buttons & Search Filter -->
+      <div class="flex my-3 justify-between">
+        <div id="buttonWrapper">
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة اعلان" :to="'/ads/create'" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-arrow-right-on-rectangle-20-solid" label="انشاء رابط مشترك" @click="generateSharedLinkSelectedRecord" />
+        </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
 

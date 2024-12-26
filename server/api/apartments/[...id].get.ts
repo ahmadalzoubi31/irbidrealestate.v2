@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const apartment = await prisma.apartment.findUnique({
       where: { id },
       include: {
-        building: true,  // Include the related building data
+        Building: true,  // Include the related building data
       },
     });
 

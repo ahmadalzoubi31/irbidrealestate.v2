@@ -44,9 +44,9 @@ const fillRentAmount = computed(() => availableApartments.value?.find((a) => a.i
 const fillRentDate = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.rentDate);
 const fillCommissionAmount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.commissionAmount);
 // @ts-ignore
-const fillMaintenanceDiscount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.building.maintenanceAmount);
+const fillMaintenanceDiscount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.Building.maintenanceAmount);
 // @ts-ignore
-const fillServices = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.building.serviceAmount);
+const fillServices = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.Building.serviceAmount);
 
 // const calculateNextRentDate = computed(() => fillRentDate.value?.toDateString());
 const calculateNextRentDate = ref();

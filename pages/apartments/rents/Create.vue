@@ -6,7 +6,7 @@ const { createApartment } = useApartmentActions();
 
 // *** Define Variables ***
 const state: ICreateApartment = reactive({
-  buildingName: "",
+  buildingId: "",
   apartmentNumber: "",
   ownerName: "",
   ownerNumber: "",
@@ -38,7 +38,7 @@ const additionalState = reactive({
   maintenanceAmount: 0,
   serviceAmount: 0,
 });
-const isRegistered = ref(false);
+const isOutOfBuilding = ref(false);
 const isFurnitureOptions = [
   { id: 0, name: "لا", value: false },
   { id: 1, name: "نعم", value: true },
@@ -60,7 +60,7 @@ const rentDurationOptions = [
 // *** Define Methods ***
 const submitForm = async () => {
   // Early validation for required fields before making the API call
-  if (!state.buildingName || !state.apartmentNumber || !state.ownerName) {
+  if (!state.apartmentNumber || !state.ownerName) {
     toast.add({
       description: "من فضلك أكمل جميع الحقول المطلوبة.",
       color: "yellow",
@@ -83,11 +83,18 @@ const computedBuildings = computed(() =>
 );
 
 // Filling data
-const fillBasinName = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.basinName);
-const fillBasinNumber = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.basinNumber);
-const fillLandNumber = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.landNumber);
-const fillServiceAmount = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.serviceAmount);
-const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) => a.name == state.buildingName)?.maintenanceAmount);
+const fillBasinName = computed(() => availableBuildings.value?.find((b) => b.id == state.buildingId)?.basinName);
+const fillBasinNumber = computed(() => availableBuildings.value?.find((b) => b.id == state.buildingId)?.basinNumber);
+const fillLandNumber = computed(() => availableBuildings.value?.find((b) => b.id == state.buildingId)?.landNumber);
+const fillServiceAmount = computed(() => availableBuildings.value?.find((b) => b.id == state.buildingId)?.serviceAmount);
+const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((b) => b.id == state.buildingId)?.maintenanceAmount);
+
+watch(isOutOfBuilding, (newVal, oldVal) => {
+  console.log("🚀 ~ watch ~ newVal:", newVal);
+  if (newVal) {
+    state.buildingId = "";
+  }
+});
 </script>
 
 <template>
@@ -100,20 +107,21 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName" class="flex justify-between">
-            <div>اسم البناية <span class="text-xs text-primary-500">(اجباري) </span></div>
-            <div><UToggle v-model="isRegistered" size="sm" /> <small> شقة خارجية </small></div>
+            <div>اسم البناية <span v-show="!isOutOfBuilding" class="text-xs text-primary-500">(اجباري) </span></div>
+            <div><UToggle v-model="isOutOfBuilding" size="sm" /> <small> شقة خارجية </small></div>
           </label>
           <USelectMenu
-            v-if="!isRegistered"
+            v-if="!isOutOfBuilding"
             id="buildingName"
             name="buildingName"
-            v-model="state.buildingName"
+            v-model="state.buildingId"
             :autofocus="true"
+            :required="!isOutOfBuilding"
             :options="computedBuildings"
-            value-attribute="name"
+            value-attribute="id"
             option-attribute="name"
           />
-          <UInput v-else id="buildingName" name="buildingName" :autofocus="true" v-model="state.buildingName" />
+          <UInput v-else id="buildingName" name="buildingName" :autofocus="true" :disabled="true" />
         </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">
@@ -127,7 +135,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         <div class="col-span-6 sm:col-span-2">
           <label for="basinName"> اسم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput
-            v-if="!isRegistered"
+            v-if="!isOutOfBuilding"
             id="basinName"
             name="basinName"
             :size="'sm'"
@@ -142,7 +150,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         <div class="col-span-6 sm:col-span-2">
           <label for="basinNumber"> رقم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput
-            v-if="!isRegistered"
+            v-if="!isOutOfBuilding"
             id="basinNumber"
             name="basinNumber"
             :size="'sm'"
@@ -157,7 +165,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         <div class="col-span-6 sm:col-span-2">
           <label for="landNumber"> رقم قطعة الأرض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput
-            v-if="!isRegistered"
+            v-if="!isOutOfBuilding"
             id="landNumber"
             name="landNumber"
             :size="'sm'"
@@ -334,7 +342,10 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <label for="contractImage">
+            صورة العقد
+            <!-- <span class="text-xs text-primary-500">(اجباري)</span> -->
+          </label>
           <UInput
             id="contractImage"
             name="contractImage"
@@ -362,7 +373,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         <div class="col-span-6 sm:col-span-2">
           <label for="maintenanceAmount"> خصم الصيانة </label>
           <UInput
-            v-if="!isRegistered"
+            v-if="!isOutOfBuilding"
             id="maintenanceAmount"
             name="maintenanceAmount"
             :size="'sm'"
@@ -385,7 +396,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((a) 
         <div class="col-span-6 sm:col-span-2">
           <label for="serviceAmount"> الخدمات </label>
           <UInput
-            v-if="!isRegistered"
+            v-if="!isOutOfBuilding"
             id="serviceAmount"
             name="serviceAmount"
             :size="'sm'"

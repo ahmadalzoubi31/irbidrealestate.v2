@@ -4,7 +4,7 @@ import prisma from "~/lib/prisma";
 // Utility function for validating request data
 const validateApartmentData = (data: Apartment) => {
   // TODO: Add more validation as needed (for example, checking rentAmount or rentDuration)
-  if (!data.buildingName || !data.apartmentNumber || !data.ownerName) {
+  if (!data.apartmentNumber || !data.ownerName) {
     throw new Error("Missing required fields: buildingName, apartmentNumber, and ownerName");
   }
 };
@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
     };
 
   } catch (error: any) {
+    console.error("An error occurred while creating the apartment:", error);
     console.log({ prisma_code: error.code });
 
     // Handle known Prisma client errors

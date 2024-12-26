@@ -45,13 +45,22 @@ export const useUpload = () => {
       //     key: "uploadFile",
       // });
 
-      await $fetch(`/api/upload?relatedType=${relatedType}&relatedId=${relatedId}`, {
+      const res = await $fetch(`/api/upload?relatedType=${relatedType}&relatedId=${relatedId}`, {
         method: "POST",
         body: files,
       });
+
+      // console.log({res})
+
+      if(!res) {
+        throw new Error()
+      }
+
       handleSuccess("تم رفع الملفات بنجاح");
+      return true
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء رفع الملفات");
+      return false
     }
   };
 
