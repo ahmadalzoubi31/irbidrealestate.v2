@@ -19,11 +19,12 @@ export default defineEventHandler(async (event) => {
         path: filePathDB,
         relatedType,
         relatedId,
+        adId: relatedType === "ads" ? relatedId : null,
+        apartmentId: relatedType === "apartments" ? relatedId : null,
+        paymentId: relatedType === "payments" ? relatedId : null,
       }
 
-      await prisma.appFile.create({
-        data: fileToSve,
-      })
+      await prisma.appFile.create({ data: fileToSve, })
       await useStorage('customDriver').setItem(file.name, file.content);
     }
 

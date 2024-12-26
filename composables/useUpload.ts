@@ -32,19 +32,6 @@ export const useUpload = () => {
         }
       }
 
-      // Sanitize file names
-      // const sanitizedFiles = files.map(file => {
-      //     const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-      //     return { ...file, name: sanitizedFileName };
-      // });
-
-      // Upload files
-      // await $fetch(`/api/files?relatedType=${relatedType}&relatedId=${relatedId}`, {
-      //     method: "POST",
-      //     body: sanitizedFiles,
-      //     key: "uploadFile",
-      // });
-
       const res = await $fetch(`/api/upload?relatedType=${relatedType}&relatedId=${relatedId}`, {
         method: "POST",
         body: files,
@@ -52,7 +39,7 @@ export const useUpload = () => {
 
       // console.log({res})
 
-      if(!res) {
+      if (!res) {
         throw new Error()
       }
 
