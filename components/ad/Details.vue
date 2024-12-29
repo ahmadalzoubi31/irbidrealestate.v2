@@ -195,7 +195,7 @@ const extracted: Ad = useExtractKeys(props.ad, keys);
 // Declare Methods
 const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 const openFile = (fileName: string) => {
-  selectedImage.value = `/upload/files/ads/${props.ad.id}/${fileName}`;
+  selectedImage.value = props.ad.files.find((file: { name: string }) => file.name === fileName)?.content.value;
   isModalOpen.value = true;
 };
 const closeModal = () => {
@@ -225,7 +225,7 @@ const closeModal = () => {
       <dt class="font-medium">ملفات الاعلان</dt>
       <dd class="font-normal text-primary-500">
         <div v-for="(el, index) in ad.files" :key="index" class="relative inline-block">
-          <div v-if="el.name.endsWith('.mp4')">
+          <div v-if="false">
             <!-- Render video thumbnail (optional) -->
             <video
               :class="el.status ? 'opacity-100' : 'opacity-25'"
@@ -242,7 +242,7 @@ const closeModal = () => {
             <!-- Render image -->
             <NuxtImg
               :class="el.status ? 'opacity-100' : 'opacity-25'"
-              :src="`/upload/files/ads/${ad?.id}/${el.name}`"
+              :src="el.content.value"
               alt="file"
               class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
               preload
@@ -256,7 +256,7 @@ const closeModal = () => {
           <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
               <!-- Conditionally Render Image or Video -->
-              <div v-if="selectedImage.endsWith('.mp4')">
+              <div v-if="false">
                 <video :src="selectedImage" controls autoplay class="max-h-full max-w-full rounded-lg" />
               </div>
               <div v-else>

@@ -3,7 +3,6 @@ import prisma from "~/lib/prisma";
 export default defineEventHandler(async (event) => {
   const id: string = getRouterParams(event).id;
 
-
   try {
     // Fetch the ad by ID
     const ad = await prisma.ad.findUnique({
@@ -13,10 +12,15 @@ export default defineEventHandler(async (event) => {
         files: {
           where: {
             status: true,
+          },
+          include: {
+            content: true,
           }
         }
       },
     });
+
+    // const fileContent = await prisma.f
 
     if (!ad) {
       const msg = `ERROR: No ad found with ID ${id}`;

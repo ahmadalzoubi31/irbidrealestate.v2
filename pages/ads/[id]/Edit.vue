@@ -1,20 +1,29 @@
 <script setup lang="ts">
 import type { Ad } from "@prisma/client";
 
-const { editAd } = useAdActions();
+const { getOneAd, editAd } = useAdActions();
 const route = useRoute();
 
 // Extract route parameter
 const selectedAdId = ref(route.params.id as string);
 
-// Access the shared state for ads
-const ads = useState<Ad[]>("adList");
-// Find the specific ad reactively
-const ad = computed(() => ads.value?.find((el) => el.id === selectedAdId.value));
+// // Access the shared state for ads
+// const ads = useState<Ad[]>("adList");
+// // Find the specific ad reactively
+// const ad = computed(() => ads.value?.find((el) => el.id === selectedAdId.value));
 
-if (!ads.value || ads.value.length === 0) {
-  await navigateTo("/ads");
-}
+// if (!ads.value || ads.value.length === 0) {
+//   await navigateTo("/ads");
+// }
+// const fileContentArray: any = ref([]);
+// // @ts-ignore
+// if (ad?.files.length > 0) {
+//   // @ts-ignore
+//   const fileNameArray = ad.files.map((file) => file.name);
+//   fileContentArray.value = await useStorage().getItems(fileNameArray);
+// }
+
+const { data: ad, status } = await getOneAd(selectedAdId.value);
 
 const isModalOpen = ref(false);
 const selectedImage = ref("");
@@ -89,7 +98,7 @@ const openFile = (fileName: string, isNew: boolean) => {
   if (isNew) {
     selectedImage.value = fileName;
   } else {
-    selectedImage.value = `/upload/files/ads/${ad.value?.id}/${fileName}`;
+    selectedImage.value = `/upload/files/ads/${ad?.id}/${fileName}`;
   }
   isModalOpen.value = true;
 };
@@ -117,30 +126,30 @@ const addInterestedPerson = () => {
 
 // Reactively update the form state when `ad` becomes available
 watchEffect(() => {
-  if (ad.value) {
-    state.propertyStatus = ad.value.propertyStatus;
-    state.propertyOwnerName = ad.value.propertyOwnerName;
-    state.propertyOwnerNumber = ad.value.propertyOwnerNumber;
-    state.propertyOwnerIdentity = ad.value.propertyOwnerIdentity;
-    state.propertyAgentName = ad.value.propertyAgentName;
-    state.propertyAgentNumber = ad.value.propertyAgentNumber;
-    state.propertyAgentIdentity = ad.value.propertyAgentIdentity;
-    state.facebookLink = ad.value.facebookLink;
-    state.instagramLink = ad.value.instagramLink;
-    state.governorate = ad.value.governorate;
-    state.directorate = ad.value.directorate;
-    state.village = ad.value.village;
-    state.basin = ad.value.basin;
-    state.plot = ad.value.plot;
-    state.apartmentNumber = ad.value.apartmentNumber;
-    state.classification = ad.value.classification;
-    state.neighborhood = ad.value.neighborhood;
-    state.expectedRentAmount = ad.value.expectedRentAmount;
-    state.notes = ad.value.notes;
+  if (ad) {
+    state.propertyStatus = ad.propertyStatus;
+    state.propertyOwnerName = ad.propertyOwnerName;
+    state.propertyOwnerNumber = ad.propertyOwnerNumber;
+    state.propertyOwnerIdentity = ad.propertyOwnerIdentity;
+    state.propertyAgentName = ad.propertyAgentName;
+    state.propertyAgentNumber = ad.propertyAgentNumber;
+    state.propertyAgentIdentity = ad.propertyAgentIdentity;
+    state.facebookLink = ad.facebookLink;
+    state.instagramLink = ad.instagramLink;
+    state.governorate = ad.governorate;
+    state.directorate = ad.directorate;
+    state.village = ad.village;
+    state.basin = ad.basin;
+    state.plot = ad.plot;
+    state.apartmentNumber = ad.apartmentNumber;
+    state.classification = ad.classification;
+    state.neighborhood = ad.neighborhood;
+    state.expectedRentAmount = ad.expectedRentAmount;
+    state.notes = ad.notes;
     // @ts-ignore
-    state.interestedPeople = ad.value.interestedPeople;
+    state.interestedPeople = ad.interestedPeople;
     // @ts-ignore
-    state.files = ad.value.files;
+    state.files = ad.files;
   }
 });
 </script>
@@ -249,11 +258,12 @@ watchEffect(() => {
         <div class="col-span-6 sm:col-span-6 flex">
           <!-- For existing files -->
           <div v-for="(el, index) in state.files" :key="index" class="relative inline-block">
-            <template v-if="el.name.endsWith('.mp4')">
+            <!-- <template v-if="el.name.endsWith('.mp4')"> -->
+            <template v-if="false">
               <!-- Render video thumbnail (optional) -->
               <video
                 :class="el.status ? 'opacity-100' : 'opacity-25'"
-                :src="`/upload/files/ads/${ad?.id}/${el.name}`"
+                :src="'#'"
                 class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg mr-3"
                 preload="metadata"
                 @click="openFile(el.name, false)"
@@ -268,7 +278,6 @@ watchEffect(() => {
                 class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
                 style="transform: translate(-40%, -40%)"
               />
-
               <UButton
                 v-else
                 icon="i-heroicons-plus-20-solid"
@@ -281,7 +290,7 @@ watchEffect(() => {
               <!-- Render image -->
               <NuxtImg
                 :class="el.status ? 'opacity-100' : 'opacity-25'"
-                :src="`/upload/files/ads/${ad?.id}/${el.name}`"
+                :src="el.content.value"
                 alt="file"
                 class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
                 preload
@@ -308,7 +317,7 @@ watchEffect(() => {
 
           <!-- For new files -->
           <div v-for="(el, index) in files" :key="index + 'new'" class="relative inline-block">
-            <template v-if="el.content?.toString().startsWith('data:video/mp4;base64,')">
+            <template v-if="false">
               <!-- Render video thumbnail (optional) -->
               <video
                 :src="el.content?.toString()"

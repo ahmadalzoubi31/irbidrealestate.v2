@@ -135,9 +135,7 @@ const submitForm = async () => {
     return;
   }
 
-  if (!validateFiles()) {
-    return;
-  }
+  if (!validateFiles()) return;
 
   useLoadingIndicator().start();
   await createAd(state, files.value);
@@ -294,7 +292,6 @@ watch(
         <div class="col-span-6 sm:col-span-1">
           <label for="adPhotos"> صور الاعلان </label>
           <UInput id="adPhotos" name="adPhotos" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" multiple />
-          <!-- <AppUpload /> -->
         </div>
         <div class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in files" class="relative inline-block">

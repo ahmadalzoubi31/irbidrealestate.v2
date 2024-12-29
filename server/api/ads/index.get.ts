@@ -13,10 +13,14 @@ export default defineEventHandler(async (event) => {
         files: {
           where: {
             status: true,
+          },
+          include: {
+            content: true,
           }
         }
       },
     });
+
     return ads;
   } catch (error: any) {
     // Handle errors gracefully

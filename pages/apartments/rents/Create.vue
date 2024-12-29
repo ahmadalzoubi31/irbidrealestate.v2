@@ -29,7 +29,9 @@ const state: ICreateApartment = reactive({
   insurance: 0,
   commissionAmount: 0,
 });
-const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
 const additionalState = reactive({
   buildingName: "",
   basinName: "",
@@ -58,6 +60,19 @@ const rentDurationOptions = [
 ];
 
 // *** Define Methods ***
+const validateFiles = () => {
+  for (const file of furnitureImages.value) {
+    if (!file.type.startsWith("image/")) {
+      toast.add({
+        description: "Only image files are allowed.",
+        color: "red",
+        timeout: 5000,
+      });
+      return false;
+    }
+  }
+  return true;
+};
 const submitForm = async () => {
   // Early validation for required fields before making the API call
   if (!state.apartmentNumber || !state.ownerName) {
@@ -68,11 +83,15 @@ const submitForm = async () => {
     });
     return;
   }
-  useLoadingIndicator().start();
-  await createApartment(state);
-};
 
-const uploadImage = (event: any) => console.log(event);
+  if (!validateFiles()) return;
+
+  useLoadingIndicator().start();
+  await createApartment(state, furnitureImages.value, renterIdentificationImage.value, contractImage.value);
+};
+const removeFurnitureImages = (index: number) => {
+  furnitureImages.value.splice(index, 1);
+};
 
 // Get the select menu data
 const { buildings: availableBuildings } = useBuildings();
@@ -224,10 +243,27 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             option-attribute="name"
           />
         </div>
-        <!-- furnitureImage -->
-        <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
-          <label for="furnitureImage"> صورة كشف الاثاث </label>
-          <UInput id="furnitureImage" name="furnitureImage" @input="handleFileInput" type="file" size="sm" icon="i-heroicons-folder" />
+        <!-- furnitureImages -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="furnitureImages"> صورة كشف الاثاث </label>
+          <UInput id="furnitureImages" name="furnitureImages" :type="'file'" :size="'sm'" :required="false" @input="handle1" multiple />
+        </div>
+        <div class="col-span-6 sm:col-span-6 flex">
+          <div v-for="(el, index) in furnitureImages" class="relative inline-block">
+            <NuxtImg
+              :src="el.content?.toString()"
+              alt="file"
+              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+              preload
+            />
+            <UButton
+              icon="i-heroicons-minus-20-solid"
+              @click="removeFurnitureImages(index)"
+              class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+          </div>
         </div>
       </div>
     </div>
@@ -328,32 +364,30 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
           <UInput id="renterIdentification" name="renterIdentification" :size="'sm'" :required="false" v-model="state.renterIdentification" />
         </div>
         <!-- renterIdentificationImage -->
-        <div class="col-span-6 sm:col-span-1">
+        <div class="col-span-6 sm:col-span-2">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput
-            id="renterIdentificationImage"
-            name="renterIdentificationImage"
-            @input="handleFileInput"
-            type="file"
-            size="sm"
-            :required="false"
-            icon="i-heroicons-folder"
+          <UInput id="renterIdentificationImage" name="renterIdentificationImage" :type="'file'" :size="'sm'" :required="false" @input="handle2" />
+          <NuxtImg
+            v-if="renterIdentificationImage.length > 0"
+            :src="renterIdentificationImage[0].content?.toString()"
+            alt="file"
+            class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+            preload
           />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage">
             صورة العقد
-            <!-- <span class="text-xs text-primary-500">(اجباري)</span> -->
+            <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
-          <UInput
-            id="contractImage"
-            name="contractImage"
-            @input="handleFileInput"
-            type="file"
-            size="sm"
-            :required="false"
-            icon="i-heroicons-folder"
+          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
+          <NuxtImg
+            v-if="contractImage.length > 0"
+            :src="contractImage[0].content?.toString()"
+            alt="file"
+            class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+            preload
           />
         </div>
       </div>

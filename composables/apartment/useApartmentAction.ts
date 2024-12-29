@@ -3,6 +3,23 @@ import type { Apartment } from "@prisma/client";
 // composables/useApartmentActions.ts
 export function useApartmentActions() {
     const toast = useToast();
+    const { uploadFile } = useUpload();
+
+    const handleError = (error: any, defaultMessage: string) => {
+        toast.add({
+            description: error.message || defaultMessage,
+            color: "rose",
+            timeout: 10000,
+        });
+    };
+
+    const handleSuccess = (message: string) => {
+        toast.add({
+            description: message,
+            color: "primary",
+            timeout: 5000,
+        });
+    };
 
     const getOneApartment = async (id: string) => {
         const { data, status, error } = await useFetch<Apartment>("/api/apartments/" + id, {
@@ -12,57 +29,108 @@ export function useApartmentActions() {
         });
 
         if (status.value === 'error') {
-            toast.add({
-                description: error.value!.message || "الايجار المطلوب غير موجود.",
-                color: "rose",
-                timeout: 10000,
-            });
+            handleError(error.value, "الايجار المطلوب غير موجود.");
             navigateTo("/apartments/rents");
         }
 
         return { data: data.value, status: status.value }
 
     }
-    const createApartment = async (payload: ICreateApartment) => {
+    const createApartment = async (payload: ICreateApartment, furnitureImages: any[], renterIdentificationImage: any, contractImage: any) => {
         try {
-            await $fetch("/api/apartments", { method: "POST", body: payload });
+            // Create the apartment
+            const newApartment = await $fetch("/api/apartments", { method: "POST", body: payload });
+
+            // Upload the furniture images with the new apartment's ID as the related ID
+            if (furnitureImages.length > 0) {
+                const res: boolean = await uploadFile(furnitureImages, "apartments", newApartment.data.id.toString(), "furniture");
+                if (!res) {
+                    // Optionally, you can delete the created apartment if file upload fails
+                    await $fetch("/api/apartments/" + newApartment.data.id, { method: "DELETE" });
+                    throw new Error("تم إنشاء الايجار ولكن فشل رفع الملفات. تم حذف الايجار.");
+                }
+            }
+            // Upload the renter identification image with the new apartment's ID as the related ID
+            if (renterIdentificationImage) {
+                const res: boolean = await uploadFile(renterIdentificationImage, "apartments", newApartment.data.id.toString(), "renter-identification");
+                if (!res) {
+                    // Optionally, you can delete the created apartment if file upload fails
+                    await $fetch("/api/apartments/" + newApartment.data.id, { method: "DELETE" });
+                    throw new Error("تم إنشاء الايجار ولكن فشل رفع الملفات. تم حذف الايجار.");
+                }
+            }
+            // Upload the contract image with the new apartment's ID as the related ID
+            if (contractImage) {
+                const res: boolean = await uploadFile(contractImage, "apartments", newApartment.data.id.toString(), "contract");
+                if (!res) {
+                    // Optionally, you can delete the created apartment if file upload fails
+                    await $fetch("/api/apartments/" + newApartment.data.id, { method: "DELETE" });
+                    throw new Error("تم إنشاء الايجار ولكن فشل رفع الملفات. تم حذف الايجار.");
+                }
+            }
+
             await refreshNuxtData("getApartments");
             await navigateTo("/apartments/rents");
-
-            toast.add({
-                description: "تم انشاء الايجار بنجاح",
-                color: "primary",
-                timeout: 5000,
-            });
-
+            handleSuccess("تم انشاء الايجار بنجاح");
         } catch (error: any) {
-            toast.add({
-                description: error.message || "حدث خطأ أثناء الحفظ",
-                color: "rose",
-                timeout: 10000,
-            })
+            handleError(error, "حدث خطأ أثناء الحفظ");
         } finally {
             useLoadingIndicator().finish()
         }
     }
     const editApartment = async (id: string, payload: IEditApartment) => {
         try {
+            // Separate the body form the files
+            const { furnitureImages, renterIdentificationImage, contractImage, ...adData } = payload;
+            // Separate new files from existing files
+            const newFiles = furnitureImages.filter(file => !file.id);
+            const existingFiles = furnitureImages.filter(file => file.id);
+
+            // Update the apartment details
             await $fetch("/api/apartments/" + id, { method: "PUT", body: payload });
+
+            // Handle furniture images
+            if (newFiles.length > 0) {
+                try {
+                    await uploadFile(newFiles, "apartments", id, "furniture");
+                } catch (uploadError: any) {
+                    handleError(uploadError, "حدث خطأ أثناء رفع الملف");
+                }
+            }
+
+            // Handle renter identification image
+            if (renterIdentificationImage) {
+                try {
+                    await uploadFile(renterIdentificationImage, "apartments", id, "renter-identification");
+                } catch (uploadError: any) {
+                    handleError(uploadError, "حدث خطأ أثناء رفع الملف");
+                }
+            }
+
+            // Handle contract image
+            if (contractImage) {
+                try {
+                    await uploadFile(contractImage, "apartments", id, "contract");
+                } catch (uploadError: any) {
+                    handleError(uploadError, "حدث خطأ أثناء رفع الملف");
+                }
+            }
+
+            // handle file deletions
+            const filesToDelete = existingFiles.filter(file => !file.status);
+            if (filesToDelete.length > 0) {
+                await $fetch("/api/files/delete", {
+                    method: "POST",
+                    body: { files: filesToDelete.map(file => file.id) },
+                });
+            }
+
+
             await refreshNuxtData("getApartments");
             await navigateTo("/apartments/rents");
-
-            toast.add({
-                description: "تم تعديل الايجار بنجاح",
-                color: "primary",
-                timeout: 5000,
-            });
-
+            handleSuccess("تم تعديل الايجار بنجاح");
         } catch (error: any) {
-            toast.add({
-                description: error.message || "حدث خطأ أثناء التعديل",
-                color: "rose",
-                timeout: 10000,
-            })
+            handleError(error, "حدث خطأ أثناء التعديل");
         } finally {
             useLoadingIndicator().finish()
         }
@@ -74,17 +142,9 @@ export function useApartmentActions() {
         try {
             await $fetch("/api/apartments/" + id, { method: "DELETE", key: "deleteApartment" });
             await refreshNuxtData("getApartments");
-            toast.add({
-                description: "تم حذف الايجار بنجاح",
-                color: "primary",
-                timeout: 5000,
-            });
+            handleSuccess("تم حذف الايجار بنجاح");
         } catch (error: any) {
-            toast.add({
-                description: error.message || "حدث خطأ أثناء الحذف",
-                color: "rose",
-                timeout: 10000,
-            });
+            handleError(error, "حدث خطأ أثناء الحذف");
         } finally {
             useLoadingIndicator().finish()
         }

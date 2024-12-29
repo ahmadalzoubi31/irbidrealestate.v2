@@ -10,6 +10,7 @@ const validateBuildingData = (data: Building) => {
   }
 };
 
+
 export default defineEventHandler(async (event) => {
   const body: Building = await readBody(event);
 

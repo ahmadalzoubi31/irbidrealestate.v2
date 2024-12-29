@@ -1,8 +1,13 @@
-export default defineNuxtRouteMiddleware((to) => {
-    const { status, signIn } = useAuth()
+export default defineNuxtRouteMiddleware(async (to) => {
+    const { status, signIn, getSession } = useAuth()
 
     // Return immediately if user is already authenticated
     // TODO: validate cookies and/or token here
+    const session = await getSession();
+    if (!session) {
+        return "/auth/login"
+    }
+
     if (status.value === 'authenticated') {
         return
     }

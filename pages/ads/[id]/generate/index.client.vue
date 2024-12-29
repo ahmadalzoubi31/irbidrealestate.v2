@@ -56,7 +56,8 @@ const extracted = computed(() => (ad ? useExtractKeys(ad, keys) : {}));
 
 // *** Methods ***
 const openFile = (fileName: string) => {
-  selectedImage.value = `/upload/files/ads/${ad?.id}/${fileName}`;
+  // @ts-ignore
+  selectedImage.value = ad?.files.find((file) => file.name === fileName)?.content.value || "";
   isModalOpen.value = true;
 };
 const closeModal = () => {
@@ -95,7 +96,7 @@ const closeModal = () => {
           <NuxtImg
             v-for="file in imageList"
             :key="file.name"
-            :src="`/upload/files/ads/${selectedAdId}/${file.name}`"
+            :src="file.content.value"
             class="rounded-xl shadow-md h-[200px] w-[200px] hover:opacity-90 transition-opacity duration-300 hover:cursor-pointer transform hover:scale-[1.02] transition-transform"
             @click="openFile(file.name)"
           />

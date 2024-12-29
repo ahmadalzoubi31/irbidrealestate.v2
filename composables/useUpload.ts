@@ -17,7 +17,7 @@ export const useUpload = () => {
     });
   };
 
-  const uploadFile = async (files: any[], relatedType: string, relatedId: string) => {
+  const uploadFile = async (files: any[], relatedType: string, relatedId: string, purpose: string) => {
     try {
       // Validate file types and sizes
       const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
@@ -32,7 +32,7 @@ export const useUpload = () => {
         }
       }
 
-      const res = await $fetch(`/api/upload?relatedType=${relatedType}&relatedId=${relatedId}`, {
+      const res = await $fetch(`/api/upload?relatedType=${relatedType}&relatedId=${relatedId}&purpose=${purpose}`, {
         method: "POST",
         body: files,
       });

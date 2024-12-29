@@ -81,6 +81,9 @@ declare interface IEditApartment {
   isServiceIncluded: boolean;
   insurance: number;
   commissionAmount: number;
+  furnitureImages: Array<any>;
+  renterIdentificationImage: any;
+  contractImage: any;
 }
 
 declare interface IBrokeApartment {
@@ -167,6 +170,8 @@ declare interface IAppFile {
   type: string;
   size: string;
   url: string;
+  key: string;
+  purpose: string;
   relatedId: string;
   relatedType: string;
   adId: string | null;
