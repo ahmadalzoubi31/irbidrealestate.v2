@@ -1,4 +1,4 @@
-import { join } from "@prisma/client/runtime/library";
+import { join } from "path";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
@@ -10,10 +10,20 @@ export default defineEventHandler(async (event) => {
   const purpose = queryList?.purpose || '';
 
   try {
-    const fileCount = await prisma.appFile.count({ where: { relatedId, relatedType, purpose } });
+    const fileCount: string = (await prisma.appFile.count({ where: { relatedId, relatedType, purpose } })).toString();
     for (const file of body) {
+      // this will use to update and delete the file like follow format: type:count:id Ex. ad:id:1, contract:id:1, furniture:1:id:1, furniture:1:id:2
+      const key = join(relatedType, purpose, fileCount);
+
+      // Upload the file content to the server
+      await useStorage('customDriver').setItem(key, file.content);
+
       const filePathDB = `${relatedType}/${relatedId}/${file.name}`;
-      const key = join([relatedType, fileCount, 'id', relatedId], ':').text; // this will use to update and delete the file like follow format: type:count:id Ex. ad:id:1, contract:id:1, furniture:1:id:1, furniture:1:id:2
+
+      // Fetch the file content id
+      const fileContent = await prisma.fileContent.findFirstOrThrow({ where: { key: key } })
+      const fileContentId = fileContent.id;
+
 
       const fileToSve = {
         name: file.name,
@@ -27,10 +37,8 @@ export default defineEventHandler(async (event) => {
         adId: relatedType === "ads" ? relatedId : null,
         apartmentId: relatedType === "apartments" ? relatedId : null,
         paymentId: relatedType === "payments" ? relatedId : null,
-        fileContentId: (await prisma.fileContent.findFirstOrThrow({ where: { key: file.name } })).id,
+        fileContentId: fileContentId
       }
-
-      await useStorage('customDriver').setItem(key, file.content);
 
       await prisma.appFile.create({ data: fileToSve, })
 

@@ -26,7 +26,7 @@ export default defineAppConfig({
         color: "text-gray-600 dark:text-white",
       },
       td: {
-        padding: "py-2",
+        padding: "py-3",
       },
       checkbox: {
         padding: "hidden",

@@ -84,7 +84,7 @@ model Apartment {
   updatedAt            DateTime  @updatedAt
   payments             Payment[]
   claims               Claim[]
-  Building             Building? @relation(fields: [buildingId], references: [id])
+  Building             Building? @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   buildingId           String?   @db.ObjectId
 }
 
@@ -103,7 +103,7 @@ model Payment {
   updatedBy           String?   @default("-")
   updatedAt           DateTime  @updatedAt
   apartmentId         String    @db.ObjectId
-  Apartment           Apartment @relation(fields: [apartmentId], references: [id])
+  Apartment           Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
 }
 
 // *** Ads ***
@@ -181,7 +181,7 @@ model Claim {
   updatedBy   String?      @default("-")
   updatedAt   DateTime     @updatedAt
   apartmentId String       @db.ObjectId
-  Apartment   Apartment    @relation(fields: [apartmentId], references: [id])
+  Apartment   Apartment    @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
 }
 
 model Collection {
@@ -191,7 +191,7 @@ model Collection {
   notes    String?
 
   claimId String @db.ObjectId
-  Claim   Claim  @relation(fields: [claimId], references: [id])
+  Claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
 
 model Detail {
@@ -200,7 +200,7 @@ model Detail {
   price Float  @default(0.0)
 
   claimId String @db.ObjectId
-  Claim   Claim  @relation(fields: [claimId], references: [id])
+  Claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
 
 // model AdFile {
@@ -223,7 +223,7 @@ model AppFile {
   size        String
   key         String
   purpose     String
-  content     FileContent @relation(fields: [fileContentId], references: [id])
+  content     FileContent @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
   relatedId   String
   relatedType String
   status      Boolean     @default(true)
@@ -232,11 +232,11 @@ model AppFile {
   updatedBy   String?     @default("-")
   updatedAt   DateTime    @updatedAt
 
-  Apartment     Apartment? @relation(fields: [apartmentId], references: [id])
+  Apartment     Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   apartmentId   String?    @db.ObjectId
-  Payment       Payment?   @relation(fields: [paymentId], references: [id])
+  Payment       Payment?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   paymentId     String?    @db.ObjectId
-  Ad            Ad?        @relation(fields: [adId], references: [id])
+  Ad            Ad?        @relation(fields: [adId], references: [id], onDelete: Cascade)
   adId          String?    @db.ObjectId
   fileContentId String     @db.ObjectId
 }

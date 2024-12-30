@@ -51,7 +51,7 @@ export function useApartmentActions() {
                 }
             }
             // Upload the renter identification image with the new apartment's ID as the related ID
-            if (renterIdentificationImage) {
+            if (renterIdentificationImage.length > 0) {
                 const res: boolean = await uploadFile(renterIdentificationImage, "apartments", newApartment.data.id.toString(), "renter-identification");
                 if (!res) {
                     // Optionally, you can delete the created apartment if file upload fails
@@ -60,7 +60,7 @@ export function useApartmentActions() {
                 }
             }
             // Upload the contract image with the new apartment's ID as the related ID
-            if (contractImage) {
+            if (contractImage.length > 0) {
                 const res: boolean = await uploadFile(contractImage, "apartments", newApartment.data.id.toString(), "contract");
                 if (!res) {
                     // Optionally, you can delete the created apartment if file upload fails

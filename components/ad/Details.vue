@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Ad } from "@prisma/client";
+import type {Ad} from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
@@ -11,6 +11,7 @@ const props = defineProps({
   },
 });
 
+console.log(props.ad)
 const isModalOpen = ref(false);
 const selectedImage = ref("");
 // Helper to define headings and keys based on `ad.code`
@@ -217,14 +218,14 @@ const closeModal = () => {
       <dd v-else-if="key == 'propertyType'" class="font-normal text-primary-500">{{ useGetPropertyTypeName(entry as number) }}</dd>
       <dd v-else class="font-normal text-primary-500">{{ entry == null || entry == "" ? "-" : entry }}</dd>
     </div>
-    <div v-for="entry in ad.interestedPeople">
+    <div v-for="entry in props.ad.interestedPeople">
       <dt class="font-medium col-span-4">الاشخاص المهتمين بالاعلان</dt>
       <dd class="font-normal text-primary-500">{{ entry.name }} - {{ entry.number }}</dd>
     </div>
     <div class="col-span-4">
       <dt class="font-medium">ملفات الاعلان</dt>
       <dd class="font-normal text-primary-500">
-        <div v-for="(el, index) in ad.files" :key="index" class="relative inline-block">
+        <div v-for="(el, index) in props.ad.files" :key="index" class="relative inline-block">
           <div v-if="false">
             <!-- Render video thumbnail (optional) -->
             <video
