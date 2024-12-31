@@ -1,4 +1,3 @@
-import { join } from "path";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
@@ -10,10 +9,10 @@ export default defineEventHandler(async (event) => {
   const purpose = queryList?.purpose || '';
 
   try {
-    const fileCount: string = (await prisma.appFile.count({ where: { relatedId, relatedType, purpose } })).toString();
     for (const file of body) {
+      const fileCount: string = (await prisma.appFile.count({ where: { relatedId, relatedType, purpose } })).toString();
       // this will use to update and delete the file like follow format: type:count:id Ex. ad:id:1, contract:id:1, furniture:1:id:1, furniture:1:id:2
-      const key = join(relatedType, purpose, fileCount);
+      const key = new String().concat(relatedType, ':', purpose, ':', fileCount, ':', relatedId);
 
       // Upload the file content to the server
       await useStorage('customDriver').setItem(key, file.content);

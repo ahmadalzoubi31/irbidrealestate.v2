@@ -136,6 +136,10 @@ const base64ToBlob = (base64: string, contentType: string) => {
                 مشاهدة
               </a>
             </div>
+            <div v-if="file.purpose === 'furniture'" class="flex w-0 flex-1 items-center">
+              <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+              <span class="ml-2 w-0 flex-1 truncate">صورة كشف الاثاث</span>
+            </div>
             <div v-if="file.purpose === 'furniture'" class="ml-4 flex-shrink-0">
               <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
@@ -145,6 +149,10 @@ const base64ToBlob = (base64: string, contentType: string) => {
                 <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
                 مشاهدة
               </a>
+            </div>
+            <div v-if="file.purpose === 'renter-identification'" class="flex w-0 flex-1 items-center">
+              <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+              <span class="ml-2 w-0 flex-1 truncate">صورة الاثبات</span>
             </div>
             <div v-if="file.purpose === 'renter-identification'" class="ml-4 flex-shrink-0">
               <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">

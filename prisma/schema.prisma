@@ -216,29 +216,29 @@ model Detail {
 // }
 
 model AppFile {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   path        String
   type        String
   size        String
   key         String
   purpose     String
-  content     FileContent @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
   relatedId   String
   relatedType String
-  status      Boolean     @default(true)
-  createdBy   String      @default("-")
-  createdAt   DateTime    @default(now())
-  updatedBy   String?     @default("-")
-  updatedAt   DateTime    @updatedAt
+  status      Boolean  @default(true)
+  createdBy   String   @default("-")
+  createdAt   DateTime @default(now())
+  updatedBy   String?  @default("-")
+  updatedAt   DateTime @updatedAt
 
-  Apartment     Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId   String?    @db.ObjectId
-  Payment       Payment?   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  paymentId     String?    @db.ObjectId
-  Ad            Ad?        @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId          String?    @db.ObjectId
-  fileContentId String     @db.ObjectId
+  Apartment     Apartment?  @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId   String?     @db.ObjectId
+  Payment       Payment?    @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  paymentId     String?     @db.ObjectId
+  Ad            Ad?         @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId          String?     @db.ObjectId
+  content       FileContent @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
+  fileContentId String      @db.ObjectId
 }
 
 model FileContent {

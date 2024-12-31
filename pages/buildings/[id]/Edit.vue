@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import type { Building } from "@prisma/client";
 
-const { editBuilding } = useBuildingActions();
+const { getOneBuilding, editBuilding } = useBuildingActions();
 const route = useRoute();
 
 // Extract route parameter
 const selectedBuildingId = ref(route.params.id as string);
 
-// Access the shared state for buildings
-const buildings = useState<Building[]>("buildingList");
-// Find the specific building reactively
-const building = computed(() => buildings.value?.find((el) => el.id === selectedBuildingId.value));
-
-if (!buildings.value || buildings.value.length === 0) {
-  await navigateTo("/buildings");
-}
+const { data: building, status } = await getOneBuilding(selectedBuildingId.value);
 
 const state = reactive<IEditBuilding>({
   apartmentsCount: 0,
@@ -29,15 +22,15 @@ const state = reactive<IEditBuilding>({
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
-  if (building.value) {
-    state.apartmentsCount = building.value.apartmentsCount;
-    state.storeCount = building.value.storeCount;
-    state.basinName = building.value.basinName;
-    state.basinNumber = building.value.basinNumber;
-    state.landNumber = building.value.landNumber;
-    state.serviceAmount = building.value.serviceAmount;
-    state.maintenanceAmount = building.value.maintenanceAmount;
-    state.electricBill = building.value.electricBill ?? "";
+  if (building) {
+    state.apartmentsCount = building.apartmentsCount;
+    state.storeCount = building.storeCount;
+    state.basinName = building.basinName;
+    state.basinNumber = building.basinNumber;
+    state.landNumber = building.landNumber;
+    state.serviceAmount = building.serviceAmount;
+    state.maintenanceAmount = building.maintenanceAmount;
+    state.electricBill = building.electricBill ?? "";
   }
 });
 

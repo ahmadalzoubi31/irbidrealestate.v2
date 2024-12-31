@@ -40,7 +40,7 @@ export function useApartmentActions() {
         try {
             // Create the apartment
             const newApartment = await $fetch("/api/apartments", { method: "POST", body: payload });
-
+            debugger;
             // Upload the furniture images with the new apartment's ID as the related ID
             if (furnitureImages.length > 0) {
                 const res: boolean = await uploadFile(furnitureImages, "apartments", newApartment.data.id.toString(), "furniture");
@@ -99,7 +99,7 @@ export function useApartmentActions() {
             }
 
             // Handle renter identification image
-            if (renterIdentificationImage) {
+            if (renterIdentificationImage.length > 0) {
                 try {
                     await uploadFile(renterIdentificationImage, "apartments", id, "renter-identification");
                 } catch (uploadError: any) {
@@ -108,7 +108,7 @@ export function useApartmentActions() {
             }
 
             // Handle contract image
-            if (contractImage) {
+            if (contractImage.length > 0) {
                 try {
                     await uploadFile(contractImage, "apartments", id, "contract");
                 } catch (uploadError: any) {

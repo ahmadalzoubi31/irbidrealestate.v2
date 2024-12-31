@@ -2,21 +2,18 @@
 import { format } from "date-fns";
 import type { Apartment } from "@prisma/client";
 
-const { editApartment } = useApartmentActions();
+const { getOneApartment, editApartment } = useApartmentActions();
 const route = useRoute();
 
 // Extract route parameter
 const selectedApartmentId = ref(route.params.id as string);
 
-// Access the shared state for apartments
-const apartments = useState<Apartment[]>("apartmentList");
-// Find the specific apartment reactively
-const apartment: any = computed(() => apartments.value?.find((el) => el.id === selectedApartmentId.value));
+const { data: apartment, status } = await getOneApartment(selectedApartmentId.value);
+console.log("🚀 ~ apartment:", apartment);
 
-if (!apartments.value || apartments.value.length === 0) {
-  await navigateTo("/apartments/rents");
-}
-
+const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
 const state: IEditApartment = reactive({
   ownerName: "",
   ownerNumber: "",
@@ -38,6 +35,9 @@ const state: IEditApartment = reactive({
   isServiceIncluded: false,
   insurance: 0,
   commissionAmount: 0,
+  furnitureImages: [],
+  renterIdentificationImage: null,
+  contractImage: null,
 });
 const isFurnitureOptions = [
   {
@@ -78,27 +78,27 @@ const renterNationalityOptions = [
 
 // Reactively update the form state when `apartment` becomes available
 watchEffect(() => {
-  if (apartment.value) {
-    state.ownerName = apartment.value.ownerName;
-    state.ownerNumber = apartment.value.ownerNumber!;
-    state.agentName = apartment.value.agentName;
-    state.agentNumber = apartment.value.agentNumber!;
-    state.electricSub = apartment.value.electricSub!;
-    state.waterSub = apartment.value.waterSub!;
-    state.realLocation = apartment.value.realLocation!;
-    state.renterName = apartment.value.renterName;
-    state.renterNumber = apartment.value.renterNumber;
-    state.rentDuration = apartment.value.rentDuration;
-    state.rentAmount = apartment.value.rentAmount;
-    state.rentDate = apartment.value.rentDate;
-    state.rentPaymentWay = apartment.value.rentPaymentWay!;
-    state.isFurniture = apartment.value.isFurniture;
-    state.rentStatus = apartment.value.rentStatus;
-    state.renterNationality = apartment.value.renterNationality!;
-    state.renterIdentification = apartment.value.renterIdentification!;
-    state.isServiceIncluded = apartment.value.isServiceIncluded;
-    state.insurance = apartment.value.insurance;
-    state.commissionAmount = apartment.value.commissionAmount;
+  if (apartment) {
+    state.ownerName = apartment.ownerName;
+    state.ownerNumber = apartment.ownerNumber!;
+    state.agentName = apartment.agentName;
+    state.agentNumber = apartment.agentNumber!;
+    state.electricSub = apartment.electricSub!;
+    state.waterSub = apartment.waterSub!;
+    state.realLocation = apartment.realLocation!;
+    state.renterName = apartment.renterName;
+    state.renterNumber = apartment.renterNumber;
+    state.rentDuration = apartment.rentDuration;
+    state.rentAmount = apartment.rentAmount;
+    state.rentDate = apartment.rentDate;
+    state.rentPaymentWay = apartment.rentPaymentWay!;
+    state.isFurniture = apartment.isFurniture;
+    state.rentStatus = apartment.rentStatus;
+    state.renterNationality = apartment.renterNationality!;
+    state.renterIdentification = apartment.renterIdentification!;
+    state.isServiceIncluded = apartment.isServiceIncluded;
+    state.insurance = apartment.insurance;
+    state.commissionAmount = apartment.commissionAmount;
   }
 });
 

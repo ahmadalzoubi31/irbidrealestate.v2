@@ -7,22 +7,6 @@ const route = useRoute();
 // Extract route parameter
 const selectedAdId = ref(route.params.id as string);
 
-// // Access the shared state for ads
-// const ads = useState<Ad[]>("adList");
-// // Find the specific ad reactively
-// const ad = computed(() => ads.value?.find((el) => el.id === selectedAdId.value));
-
-// if (!ads.value || ads.value.length === 0) {
-//   await navigateTo("/ads");
-// }
-// const fileContentArray: any = ref([]);
-// // @ts-ignore
-// if (ad?.files.length > 0) {
-//   // @ts-ignore
-//   const fileNameArray = ad.files.map((file) => file.name);
-//   fileContentArray.value = await useStorage().getItems(fileNameArray);
-// }
-
 const { data: ad, status } = await getOneAd(selectedAdId.value);
 
 const isModalOpen = ref(false);
