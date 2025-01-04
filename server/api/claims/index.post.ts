@@ -25,6 +25,12 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateClaimData(body);
 
+    // Remove billImage form body.details object.
+    //@ts-ignore
+    body.details.forEach((detail) => {
+      delete detail.billImage;
+    });
+
     // Relate the claim with the related records
     const data = {
       ...body,

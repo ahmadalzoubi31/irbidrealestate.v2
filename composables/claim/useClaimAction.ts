@@ -43,6 +43,7 @@ export function useClaimActions() {
   const createClaim = async (payload: ICreateClaim, billImage: any) => {
     try {
       // Create the claim
+      debugger;
       const newClaim = await $fetch("/api/claims", { method: "POST", body: payload });
       // Upload the bill image with the new claim's ID as the related ID
       if (billImage.length > 0) {

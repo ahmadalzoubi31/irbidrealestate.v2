@@ -41,5 +41,12 @@ export default defineAppConfig({
     button: {
       rounded: "rounded-sm",
     },
+    modal: {
+      width: "sm:max-w-7xl",
+    },
+    card: {
+      base: 'w-full',
+    }
+
   },
 });

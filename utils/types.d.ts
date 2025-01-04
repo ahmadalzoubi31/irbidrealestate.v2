@@ -212,6 +212,7 @@ declare interface ICollection {
 declare interface IDetail {
   item: string;
   price: number;
+  billImage: any;
 }
 
 declare interface ICreateClaim {

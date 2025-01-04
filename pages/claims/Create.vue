@@ -22,6 +22,7 @@ const collectionData = reactive({
 const detailData = reactive({
   item: "",
   price: 0,
+  billImage: null,
 });
 const detailItem = (row: { item: string; price: number }) => [
   [
@@ -44,7 +45,8 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
     },
   ],
 ];
-
+const isOpen = ref(false);
+const modalData = ref("");
 // *** Define Methods ***
 const submitForm = async () => {
   // TODO: Early validation for required fields before making the API call
@@ -57,6 +59,7 @@ const submitForm = async () => {
     return;
   }
   useLoadingIndicator().start();
+  debugger;
   await createClaim(state, files.value);
 };
 const addCollectionData = () => {
@@ -67,10 +70,15 @@ const addCollectionData = () => {
   collectionData.notes = "";
 };
 const addDetailData = () => {
-  state.details.push({ item: detailData.item, price: detailData.price });
+  state.details.push({ item: detailData.item, price: detailData.price, billImage: files.value[0] });
 
   detailData.item = "";
   detailData.price = 0;
+  detailData.billImage = null;
+};
+const fillModalPropertirs = (rowContent: string) => {
+  modalData.value = rowContent;
+  isOpen.value = true;
 };
 
 // Get the select menu data
@@ -85,7 +93,6 @@ watch(
     state.claimFrom = ownerName as string;
   }
 );
-
 watch(
   () => state.details,
   (newDetails) => {
@@ -95,7 +102,6 @@ watch(
   },
   { deep: true }
 );
-
 watch(
   () => state.collections,
   (newCollections) => {
@@ -213,6 +219,12 @@ watch(
           :rows="state.details"
           :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'billImage', label: 'الفاتورة' }, { key: 'actions' }]"
         >
+          <template #billImage-data="{ row }">
+            <div @click="fillModalPropertirs(row.billImage.content)" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+              مشاهدة
+            </div>
+          </template>
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
@@ -221,7 +233,11 @@ watch(
         </UTable>
       </div>
     </div>
-
+    <UModal v-model="isOpen">
+      <div class="p-4 w-full">
+        <NuxtImg :src="modalData" sizes="100vw" />
+      </div>
+    </UModal>
     <!-- More Info Section -->
     <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
       <h3 class="text-center font-semibold text-xl mb-1">تفاصيل التحصيل</h3>

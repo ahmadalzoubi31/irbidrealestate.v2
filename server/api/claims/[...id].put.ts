@@ -23,6 +23,12 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateClaimData(body);
 
+    // Remove billImage form body.details object.
+    //@ts-ignore
+    body.details.forEach((detail) => {
+      delete detail.billImage;
+    });
+
     // Separate `collections, details` from the main body
     const { collections, details, ...claimData } = body;
     // Validate claim existence
@@ -74,40 +80,40 @@ export default defineEventHandler(async (event) => {
       const upsertCollectionOperations = collections.map((c: Collection) =>
         c.id
           ? tx.collection.update({
-              where: { id: c.id },
-              data: {
-                dateTime: c.dateTime,
-                payment: c.payment,
-                notes: c.notes,
-              },
-            })
+            where: { id: c.id },
+            data: {
+              dateTime: c.dateTime,
+              payment: c.payment,
+              notes: c.notes,
+            },
+          })
           : tx.collection.create({
-              data: {
-                dateTime: c.dateTime,
-                payment: c.payment,
-                notes: c.notes,
-                claimId: id,
-              },
-            })
+            data: {
+              dateTime: c.dateTime,
+              payment: c.payment,
+              notes: c.notes,
+              claimId: id,
+            },
+          })
       );
 
       // Handle updates and creations
       const upsertDetailOperations = details.map((d: Detail) =>
         d.id
           ? tx.detail.update({
-              where: { id: d.id },
-              data: {
-                item: d.item,
-                price: d.price,
-              },
-            })
+            where: { id: d.id },
+            data: {
+              item: d.item,
+              price: d.price,
+            },
+          })
           : tx.detail.create({
-              data: {
-                item: d.item,
-                price: d.price,
-                claimId: id,
-              },
-            })
+            data: {
+              item: d.item,
+              price: d.price,
+              claimId: id,
+            },
+          })
       );
 
       // Execute deletions, updates, and creations

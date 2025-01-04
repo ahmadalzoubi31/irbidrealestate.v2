@@ -203,11 +203,13 @@ model Collection {
 }
 
 model Detail {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  item    String
-  price   Float  @default(0.0)
-  claimId String @db.ObjectId
-  Claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  item      String
+  price     Float    @default(0.0)
+  files     AppFile? @relation(fields: [appFileId], references: [id])
+  claimId   String   @db.ObjectId
+  Claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  appFileId String?  @db.ObjectId
 }
 
 // model AdFile {
@@ -248,6 +250,7 @@ model AppFile {
   fileContentId String      @db.ObjectId
   Claim         Claim?      @relation(fields: [claimId], references: [id])
   claimId       String?     @db.ObjectId
+  Detail        Detail[]
 }
 
 model FileContent {
