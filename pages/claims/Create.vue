@@ -5,6 +5,7 @@ const toast = useToast();
 const { createClaim } = useClaimActions();
 
 // *** Define Variables ***
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const state: ICreateClaim = reactive({
   apartmentId: "",
   claimDate: new Date(),
@@ -56,7 +57,7 @@ const submitForm = async () => {
     return;
   }
   useLoadingIndicator().start();
-  await createClaim(state);
+  await createClaim(state, files.value);
 };
 const addCollectionData = () => {
   state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
@@ -75,9 +76,34 @@ const addDetailData = () => {
 // Get the select menu data
 const { apartments: availableApartments } = useApartments();
 const computedApartments = computed(() =>
-  availableApartments.value?.map((el) => {
-    return { id: el.id, name: el.apartmentNumber };
-  })
+  availableApartments.value?.filter((a) => a.rentStatus === 2 || a.rentStatus === 3).map((a) => ({ id: a.id, name: a.apartmentNumber }))
+);
+watch(
+  () => state.apartmentId,
+  () => {
+    const ownerName = availableApartments.value?.filter((a) => a.id === state.apartmentId).map((a) => a.ownerName)[0];
+    state.claimFrom = ownerName as string;
+  }
+);
+
+watch(
+  () => state.details,
+  (newDetails) => {
+    const totalDetails = newDetails.reduce((sum, detail) => sum + detail.price, 0);
+    const totalCollections = state.collections.reduce((sum, collection) => sum + collection.payment, 0);
+    state.total = totalDetails - totalCollections;
+  },
+  { deep: true }
+);
+
+watch(
+  () => state.collections,
+  (newCollections) => {
+    const totalDetails = state.details.reduce((sum, detail) => sum + detail.price, 0);
+    const totalCollections = newCollections.reduce((sum, collection) => sum + collection.payment, 0);
+    state.total = totalDetails - totalCollections;
+  },
+  { deep: true }
 );
 </script>
 
@@ -92,8 +118,8 @@ const computedApartments = computed(() =>
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentId">
             رقم الشقة
-            <span class="text-sm text-primary-500">(اجباري)</span></label
-          >
+            <span class="text-sm text-primary-500">(اجباري)</span>
+          </label>
           <USelectMenu
             id="apartmentId"
             name="apartmentId"
@@ -134,11 +160,17 @@ const computedApartments = computed(() =>
         </div>
         <!-- total -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="total">
-            المبلغ الكلي
-            <span class="text-sm text-primary-500">(اجباري)</span></label
-          >
-          <UInput id="total" name="total" type="number" :size="'sm'" :required="true" v-model="state.total" />
+          <label for="total"> المبلغ الكلي </label>
+          <UInput
+            id="total"
+            name="total"
+            type="text"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            v-model="state.total"
+          />
         </div>
       </div>
     </div>
@@ -159,6 +191,12 @@ const computedApartments = computed(() =>
         <div class="col-span-6 sm:col-span-2">
           <UInput id="price" name="price" type="number" :size="'sm'" :required="false" v-model="detailData.price" />
         </div>
+        <!-- billImage -->
+        <label for="billImage" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
+        <div class="col-span-6 sm:col-span-2">
+          <UInput id="billImage" name="billImage" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" />
+        </div>
+
         <UButton
           :type="'button'"
           :size="'md'"
@@ -170,7 +208,11 @@ const computedApartments = computed(() =>
         </UButton>
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable class="" :rows="state.details" :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'actions' }]">
+        <UTable
+          class=""
+          :rows="state.details"
+          :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'billImage', label: 'الفاتورة' }, { key: 'actions' }]"
+        >
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />

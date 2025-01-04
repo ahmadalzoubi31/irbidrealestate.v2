@@ -44,21 +44,26 @@ const deleteSelectedRecord = async () => {
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/claims/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مطالبة" :to="'/claims/create'" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مطالبة" @click="deleteSelectedRecord" />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
 
       <!-- Table -->
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
+        <UTable
+          :rows="filteredRows"
+          :columns="selectedColumns"
+          v-model="selected"
+          v-model:expand="expand"
+          :single-select="true"
+          @select="select"
+          :loading="isLoading"
+        >
           <template #expand="{ row }">
-            <div class="px-8">
-              <div class="py-8">
-                <!-- {{ row }} -->
-                <ClaimDetails :claim="row" />
-              </div>
+            <div class="px-8 py-8">
+              <ClaimDetails :claim="row" />
             </div>
           </template>
           <template #claimDate-data="{ row }">

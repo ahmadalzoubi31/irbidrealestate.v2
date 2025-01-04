@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const isRenewedModalOpen: Ref<boolean> = useState("isRenewedModalOpen");
+const { renewApartment } = useApartmentActions();
 
 // Define State
 const state: IRenewApartment = reactive({
@@ -7,8 +8,19 @@ const state: IRenewApartment = reactive({
   renterNumber: "",
 });
 
-const uploadImage = (event: any) => console.log(event);
-const submitForm = () => console.log("Submitting ...");
+// Define props
+const props = defineProps({
+  selectedApartmentId: {
+    type: String,
+    required: true,
+  },
+});
+
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
+const submitForm = async () => {
+  useLoadingIndicator().start();
+  await renewApartment(props.selectedApartmentId, files.value);
+};
 </script>
 
 <template>
@@ -20,20 +32,18 @@ const submitForm = () => console.log("Submitting ...");
         </template>
 
         <div class="grid grid-cols-4 gap-x-6 gap-y-4">
-          <!-- renterName -->
-          <div class="col-span-6 sm:col-span-2">
-            <label for="renterName"> الاسم الكامل <span class="text-xs text-primary-500">(اجباري)</span></label>
-            <UInput id="renterName" name="renterName" :size="'sm'" :required="true" v-model="state.renterName" />
-          </div>
-          <!-- renterNumber -->
-          <div class="col-span-6 sm:col-span-2">
-            <label for="renterNumber"> رقم الموبايل <span class="text-xs text-primary-500">(اجباري)</span> </label>
-            <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="true" v-model="state.renterNumber" />
-          </div>
           <!-- contractImage -->
-          <div class="col-span-6 sm:col-span-2">
-            <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-            <UInput id="contractImage" name="contractImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+          <div class="col-span-6 sm:col-span-4">
+            <label for="contractImage"> صورة العقد الجديد <span class="text-xs text-primary-500">(اجباري)</span></label>
+            <UInput
+              id="contractImage"
+              name="contractImage"
+              @input="handleFileInput"
+              type="file"
+              size="sm"
+              :required="true"
+              icon="i-heroicons-folder"
+            />
           </div>
         </div>
 

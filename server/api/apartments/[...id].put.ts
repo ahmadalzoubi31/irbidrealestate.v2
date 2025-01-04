@@ -5,9 +5,6 @@ import { Apartment } from "@prisma/client";
 // Utility function to validate the request body
 const validateApartmentData = (data: Apartment) => {
   // TODO: Add any additional field validation as needed
-  if (!data.ownerName) {
-    throw new Error("Missing required fields: ownerName");
-  }
 };
 
 export default defineEventHandler(async (event) => {
@@ -23,7 +20,6 @@ export default defineEventHandler(async (event) => {
       message: msg,
     });
   }
-
 
   try {
     validateApartmentData(body); // Custom validation for required fields
@@ -41,8 +37,6 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // TODO: Double check with out this.
-    // Remove the 'name' field if it exists, as it is not updatable
     const { buildingId, ...updateData } = body;
 
     // Proceed with updating the apartment data
@@ -57,7 +51,6 @@ export default defineEventHandler(async (event) => {
       message: "Apartment updated successfully",
       data: updatedApartment,
     };
-
   } catch (error: any) {
     console.error("Error updating apartment:", error.message);
 

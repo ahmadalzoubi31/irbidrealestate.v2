@@ -4,9 +4,6 @@ import prisma from "~/lib/prisma";
 // Utility function to validate incoming data
 const validateClaimData = (data: Claim) => {
   // TODO: Add any additional field validation as needed
-  if (!data.claimDate) {
-    throw new Error("Missing required field: claimDate");
-  }
 };
 
 export default defineEventHandler(async (event) => {
@@ -21,7 +18,6 @@ export default defineEventHandler(async (event) => {
       message: msg,
     });
   }
-
 
   try {
     // Validate the incoming data
@@ -51,7 +47,6 @@ export default defineEventHandler(async (event) => {
       // Fetch existing related records
       const existingCollection = await tx.collection.findMany({
         where: { claimId: id },
-
       });
       const existingDetail = await tx.detail.findMany({
         where: { claimId: id },
@@ -67,69 +62,56 @@ export default defineEventHandler(async (event) => {
         .map((d: Detail) => d.id);
 
       // Find IDs to delete (existing IDs not in the incoming list)
-      const idsCollectionToDelete = existingCollection
-        .filter((c) => !incomingCollectionIds.includes(c.id))
-        .map((c) => c.id);
-      const idsDetailToDelete = existingDetail
-        .filter((d) => !incomingDetailIds.includes(d.id))
-        .map((d) => d.id);
+      const idsCollectionToDelete = existingCollection.filter((c) => !incomingCollectionIds.includes(c.id)).map((c) => c.id);
+      const idsDetailToDelete = existingDetail.filter((d) => !incomingDetailIds.includes(d.id)).map((d) => d.id);
 
       // Perform deletions
-      const deleteCollectionOperations = idsCollectionToDelete.map((id) =>
-        tx.collection.delete({ where: { id: id } })
-      );
+      const deleteCollectionOperations = idsCollectionToDelete.map((id) => tx.collection.delete({ where: { id: id } }));
       // Perform deletions
-      const deleteDetailOperations = idsDetailToDelete.map((id) =>
-        tx.detail.delete({ where: { id: id } })
-      );
+      const deleteDetailOperations = idsDetailToDelete.map((id) => tx.detail.delete({ where: { id: id } }));
 
       // Handle updates and creations
       const upsertCollectionOperations = collections.map((c: Collection) =>
         c.id
           ? tx.collection.update({
-            where: { id: c.id },
-            data: {
-              dateTime: c.dateTime,
-              payment: c.payment,
-              notes: c.notes,
-            },
-          })
+              where: { id: c.id },
+              data: {
+                dateTime: c.dateTime,
+                payment: c.payment,
+                notes: c.notes,
+              },
+            })
           : tx.collection.create({
-            data: {
-              dateTime: c.dateTime,
-              payment: c.payment,
-              notes: c.notes,
-              claimId: id,
-            },
-          })
+              data: {
+                dateTime: c.dateTime,
+                payment: c.payment,
+                notes: c.notes,
+                claimId: id,
+              },
+            })
       );
 
       // Handle updates and creations
       const upsertDetailOperations = details.map((d: Detail) =>
         d.id
           ? tx.detail.update({
-            where: { id: d.id },
-            data: {
-              item: d.item,
-              price: d.price,
-            },
-          })
+              where: { id: d.id },
+              data: {
+                item: d.item,
+                price: d.price,
+              },
+            })
           : tx.detail.create({
-            data: {
-              item: d.item,
-              price: d.price,
-              claimId: id,
-            },
-          })
+              data: {
+                item: d.item,
+                price: d.price,
+                claimId: id,
+              },
+            })
       );
 
       // Execute deletions, updates, and creations
-      await Promise.all([
-        ...deleteCollectionOperations,
-        ...upsertCollectionOperations,
-        ...deleteDetailOperations,
-        ...upsertDetailOperations,
-      ]);
+      await Promise.all([...deleteCollectionOperations, ...upsertCollectionOperations, ...deleteDetailOperations, ...upsertDetailOperations]);
     });
   } catch (error: any) {
     console.log({ prisma_code: error.code });

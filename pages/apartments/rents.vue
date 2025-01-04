@@ -7,7 +7,6 @@ import format from "date-fns/format";
 const q = ref("");
 const selected: Ref<Apartment[]> = ref([]);
 const expand = ref({ openedRows: [], row: null });
-const modalState = ref<null | string>(null);
 
 // Columns
 const { columns, selectedColumns } = useApartmentTableColumns();
@@ -22,7 +21,11 @@ const isLoading = computed(() => status.value !== "success" && status.value !== 
 const filteredRows = useFilteredRows<Apartment>(apartments, q, ["createdAt", "updatedAt"]);
 
 // Define the `openModal` function before passing it to `useApartmentActions`
-const openModal = (type: string) => (modalState.value = type);
+const openModal = (type: string) => {
+  if (type === "renewed") useState("isRenewedModalOpen").value = true;
+  if (type === "expired") useState("isExpiredModalOpen").value = true;
+  if (type === "broken") useState("isBrokenModalOpen").value = true;
+};
 
 // Actions
 const { deleteApartment, getDropdownItems } = useApartmentActions();
@@ -46,11 +49,16 @@ const deleteSelectedRecord = async () => {
 <template>
   <div id="apartment">
     <div class="parentWrapper" v-if="useRoute().name === 'apartments-rents'">
+      <!-- Modals -->
+      <ApartmentExpiredModal :selectedApartmentId="selected[0]?.id" />
+      <ApartmentBrokenModal :selectedApartmentId="selected[0]?.id" />
+      <ApartmentRenewedModal :selectedApartmentId="selected[0]?.id" />
+
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/apartments/rents/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
+          <!-- <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" /> -->
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
@@ -64,7 +72,11 @@ const deleteSelectedRecord = async () => {
             </div>
           </template>
           <template #apartmentNumber-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+            <span
+              v-if="row.rentStatus != 0 && row.rentStatus != 1"
+              :class="['font-bold text-blue-500 dark:text-blue-400 underline']"
+              @click="editSelectedRecord(row.id)"
+            >
               {{ row.apartmentNumber }}
             </span>
           </template>
@@ -79,7 +91,7 @@ const deleteSelectedRecord = async () => {
             </span>
           </template>
           <template #actions-data="{ row }">
-            <UDropdown :items="getDropdownItems(row, openModal)" class="align-middle">
+            <UDropdown v-if="row.rentStatus != 0 && row.rentStatus != 1" :items="getDropdownItems(row, openModal)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
             </UDropdown>
           </template>

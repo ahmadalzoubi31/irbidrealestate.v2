@@ -18,7 +18,6 @@ const state: ICreateBuilding = reactive({
 
 // *** Define Methods ***
 const submitForm = async () => {
-  useLoadingIndicator().start();
   // Early validation for required fields before making the API call
   if (!state.name || !state.apartmentsCount || !state.basinName || !state.basinNumber || !state.landNumber) {
     toast.add({
@@ -29,6 +28,7 @@ const submitForm = async () => {
     return;
   }
 
+  useLoadingIndicator().start();
   await createBuilding(state);
 };
 </script>

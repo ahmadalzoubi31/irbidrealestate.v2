@@ -51,11 +51,11 @@ declare interface ICreateApartment {
   rentAmount: number;
   rentDate: Date;
   rentPaymentWay: string;
-  isFurniture: boolean;
+  isFurniture: string;
   rentStatus: number;
   renterNationality: string;
   renterIdentification: string;
-  isServiceIncluded: boolean;
+  isServiceIncluded: string;
   insurance: number;
   commissionAmount: number;
 }
@@ -74,16 +74,13 @@ declare interface IEditApartment {
   rentAmount: number;
   rentDate: Date;
   rentPaymentWay: string;
-  isFurniture: boolean;
+  isFurniture: string;
   rentStatus: number;
   renterNationality: string;
   renterIdentification: string;
-  isServiceIncluded: boolean;
+  isServiceIncluded: string;
   insurance: number;
   commissionAmount: number;
-  furnitureImages: Array<any>;
-  renterIdentificationImage: any;
-  contractImage: any;
 }
 
 declare interface IBrokeApartment {
@@ -179,7 +176,6 @@ declare interface IAppFile {
   apartmentId: string | null;
 }
 
-
 declare interface IInterestedPeople {
   name: string;
   number: string;
@@ -209,13 +205,13 @@ declare interface IEditOrder {
 
 declare interface ICollection {
   dateTime: Date;
-  payment: Number;
+  payment: number;
   notes: string | null;
 }
 
 declare interface IDetail {
   item: string;
-  price: Number;
+  price: number;
 }
 
 declare interface ICreateClaim {

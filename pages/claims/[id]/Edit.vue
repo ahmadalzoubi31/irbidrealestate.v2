@@ -1,22 +1,15 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Apartment, Claim } from "@prisma/client";
+import type { Claim } from "@prisma/client";
 import { format } from "date-fns";
 
-const { editClaim } = useClaimActions();
+const { getOneClaim, editClaim } = useClaimActions();
 const route = useRoute();
 
 // Extract route parameter
 const selectedClaimId = ref(route.params.id as string);
 
-// Access the shared state for claims
-const claims = useState<Claim[]>("claimList");
-// Find the specific claim reactively
-const claim = computed(() => claims.value?.find((el) => el.id === selectedClaimId.value));
-
-if (!claims.value || claims.value.length === 0) {
-  await navigateTo("/claims");
-}
+const { data: claim } = await getOneClaim(selectedClaimId.value);
 
 const collectionData = reactive({
   dateTime: new Date(),
@@ -48,6 +41,7 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
     },
   ],
 ];
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const state: ICreateClaim = reactive({
   apartmentId: "",
   claimDate: new Date(),
@@ -60,7 +54,7 @@ const state: ICreateClaim = reactive({
 // Handle form submission
 const submitForm = async () => {
   useLoadingIndicator().start();
-  await editClaim(selectedClaimId.value, state);
+  await editClaim(selectedClaimId.value, state, files.value);
 };
 const addCollectionData = () => {
   state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
@@ -77,24 +71,39 @@ const addDetailData = () => {
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
-  if (claim.value) {
-    state.apartmentId = claim.value.apartmentId;
-    state.claimDate = claim.value.claimDate;
-    state.claimFrom = claim.value.claimFrom;
-    state.total = claim.value.total;
+  if (claim) {
+    state.apartmentId = claim.apartmentId;
+    state.claimDate = claim.claimDate;
+    state.claimFrom = claim.claimFrom;
+    state.total = claim.total;
     // @ts-ignore
-    state.collections = claim.value.collections;
+    state.collections = claim.collections;
     // @ts-ignore
-    state.details = claim.value.details;
+    state.details = claim.details;
   }
 });
 
 // Get the select menu data
 const { apartments: availableApartments } = useApartments();
 const computedApartments = computed(() =>
-  availableApartments.value?.map((el) => {
-    return { id: el.id, name: el.apartmentNumber };
-  })
+  availableApartments.value?.filter((a) => a.rentStatus === 2 || a.rentStatus === 3).map((a) => ({ id: a.id, name: a.apartmentNumber }))
+);
+watch(
+  () => state.apartmentId,
+  () => {
+    const ownerName = availableApartments.value?.filter((a) => a.id === state.apartmentId).map((a) => a.ownerName)[0];
+    state.claimFrom = ownerName as string;
+  }
+);
+
+watch(
+  () => state.details,
+  (newDetails) => {
+    const totalDetails = newDetails.reduce((sum, detail) => sum + detail.price, 0);
+    const totalCollections = state.collections.reduce((sum, collection) => sum + collection.payment, 0);
+    state.total = totalDetails - totalCollections;
+  },
+  { deep: true }
 );
 </script>
 
@@ -109,30 +118,31 @@ const computedApartments = computed(() =>
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentId">
             رقم الشقة
-            <span class="text-sm text-primary-500">(اجباري)</span></label
-          >
-          <USelectMenu
+            <span class="text-xs text-primary-500">(اجباري)</span>
+          </label>
+          <UInput
             id="apartmentId"
             name="apartmentId"
             :required="true"
-            v-model="state.apartmentId"
-            :options="computedApartments"
-            value-attribute="id"
-            option-attribute="name"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :modelValue="claim?.Apartment?.apartmentNumber"
           />
         </div>
         <!-- claimDate -->
         <div class="col-span-6 sm:col-span-2">
           <label for="claimDate">
             تاريخ المطالبة
-            <span class="text-xs text-primary-500">(اجباري)</span></label
-          >
+            <span class="text-xs text-primary-500">(اجباري)</span>
+          </label>
           <UPopover :popper="{ placement: 'bottom-start' }">
             <UInput
               icon="i-heroicons-calendar-days-20-solid"
               name="claimDate"
               :size="'sm'"
               class="w-full"
+              :disabled="true"
+              inputClass="bg-gray-200"
               :model-value="format(state.claimDate, 'dd/MM/yyyy')"
             />
 
@@ -147,7 +157,15 @@ const computedApartments = computed(() =>
             مطالبة مالية من السيد/السيدة
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
-          <UInput id="claimFrom" name="claimFrom" :size="'sm'" :required="true" v-model="state.claimFrom" />
+          <UInput
+            id="claimFrom"
+            name="claimFrom"
+            :size="'sm'"
+            :required="true"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            :modelValue="claim?.claimFrom"
+          />
         </div>
         <!-- total -->
         <div class="col-span-6 sm:col-span-2">
@@ -155,7 +173,16 @@ const computedApartments = computed(() =>
             المبلغ الكلي
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
-          <UInput id="total" name="total" type="number" :size="'sm'" :required="true" v-model="state.total" />
+          <UInput
+            id="total"
+            name="total"
+            type="number"
+            :size="'sm'"
+            :required="true"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            v-model="state.total"
+          />
         </div>
       </div>
     </div>
@@ -176,6 +203,11 @@ const computedApartments = computed(() =>
         <div class="col-span-6 sm:col-span-2">
           <UInput id="price" name="price" type="number" :size="'sm'" :required="false" v-model="detailData.price" />
         </div>
+        <!-- billImage -->
+        <label for="billImage" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
+        <div class="col-span-6 sm:col-span-2">
+          <UInput id="billImage" name="billImage" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" />
+        </div>
         <UButton
           :type="'button'"
           :size="'md'"
@@ -187,7 +219,11 @@ const computedApartments = computed(() =>
         </UButton>
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable class="" :rows="state.details" :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'actions' }]">
+        <UTable
+          class=""
+          :rows="state.details"
+          :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'billImage', label: 'الفاتورة' }, { key: 'actions' }]"
+        >
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />

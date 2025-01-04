@@ -23,8 +23,7 @@ export function useAdActions() {
     const getOneAd = async (id: string) => {
         const { data, status, error } = await useFetch<Ad>("/api/ads/" + id, {
             key: "getAdById",
-            server: false,
-            lazy: true
+            server: true,
         });
 
         if (status.value === 'error') {

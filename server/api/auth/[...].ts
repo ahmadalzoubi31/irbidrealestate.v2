@@ -1,24 +1,24 @@
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { NuxtAuthHandler } from '#auth'
+import CredentialsProvider from "next-auth/providers/credentials";
+import { NuxtAuthHandler } from "#auth";
 import prisma from "~/lib/prisma";
 import type { User } from "@prisma/client";
-import bycrpt from 'bcrypt'
+import bycrpt from "bcrypt";
 
 export default NuxtAuthHandler({
   // a) Never hardcode your secret in your code!! and b) use a secure secret, `test-123` is **not** secure!!
   secret: process.env.NEXTAUTH_SECRET,
 
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
+    signIn: "/auth/login",
+    error: "/auth/error",
   },
 
   providers: [
     // @ts-expect-error You need to use .default here for it to work during SSR. May be fixed via Vite at some point
     CredentialsProvider.default({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {},
-      async authorize(credentials: { username: string, password: string }) {
+      async authorize(credentials: { username: string; password: string }) {
         // TODO: Fetch user from database
         try {
           // if (credentials.username === 'appadmin') {
@@ -30,61 +30,62 @@ export default NuxtAuthHandler({
           // }
           const user = await prisma.user.findUnique({
             where: {
-              username: credentials.username || '',
-            }
+              username: credentials.username || "",
+            },
           });
 
           if (!user) {
             throw createError({
               statusCode: 401,
-              message: 'Unauthorized'
-            })
+              message: "Unauthorized",
+            });
           }
 
-          const isValid = await bycrpt.compare(credentials.password, user.password)
+          const isValid = await bycrpt.compare(credentials.password, user.password);
           if (!isValid) {
             throw createError({
               statusCode: 401,
-              message: 'Unauthorized'
-            })
+              message: "Unauthorized",
+            });
           }
 
           return {
             id: user.id,
             username: user.username,
             name: user.username,
-            email: user.username + '@null.net',
-          }
+            email: user.username + "@null.net",
+          };
         } catch (error) {
-          console.log('error', error);
-
+          console.log("error", error);
         }
-      }
-    })
+      },
+    }),
   ],
 
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
+    // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 1 * 24 * 60 * 60, // 1 days
   },
 
   callbacks: {
     /* on before signing */
     async signIn({ user, account, profile, email, credentials }) {
-      return true
+      return true;
     },
     /* on redirect to another url */
     async redirect({ url, baseUrl }) {
-      return baseUrl
+      return baseUrl;
     },
     /* on JWT token creation or mutation */
     async jwt({ token, user, account }) {
       if (user) {
         token = {
           ...token,
-          ...user
+          ...user,
         };
       }
-      return token
+      return token;
     },
     /* on session retrieval */
     async session({ session, token, user }) {
@@ -92,10 +93,10 @@ export default NuxtAuthHandler({
       session.user = {
         ...token,
         ...session.user,
-        ...user
+        ...user,
       };
 
-      return session
-    }
-  }
-})
+      return session;
+    },
+  },
+});

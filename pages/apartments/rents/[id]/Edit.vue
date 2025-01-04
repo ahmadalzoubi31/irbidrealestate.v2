@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { format } from "date-fns";
-import type { Apartment } from "@prisma/client";
 
 const { getOneApartment, editApartment } = useApartmentActions();
 const route = useRoute();
@@ -8,12 +7,13 @@ const route = useRoute();
 // Extract route parameter
 const selectedApartmentId = ref(route.params.id as string);
 
-const { data: apartment, status } = await getOneApartment(selectedApartmentId.value);
-console.log("🚀 ~ apartment:", apartment);
+const { data: apartment } = await getOneApartment(selectedApartmentId.value);
 
 const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
+const existingContractImage = apartment?.files.find((file) => file.purpose === "contract");
+const existingRenterIdentificationImage = apartment?.files.find((file) => file.purpose === "renter-identification");
 const state: IEditApartment = reactive({
   ownerName: "",
   ownerNumber: "",
@@ -28,40 +28,21 @@ const state: IEditApartment = reactive({
   rentAmount: 0,
   rentDate: new Date(),
   rentPaymentWay: "",
-  isFurniture: false,
+  isFurniture: "لا",
   rentStatus: 3,
   renterNationality: "اردني",
   renterIdentification: "",
-  isServiceIncluded: false,
+  isServiceIncluded: "لا",
   insurance: 0,
   commissionAmount: 0,
-  furnitureImages: [],
-  renterIdentificationImage: null,
-  contractImage: null,
 });
 const isFurnitureOptions = [
-  {
-    id: 0,
-    name: "لا",
-    value: false,
-  },
-  {
-    id: 1,
-    name: "نعم",
-    value: true,
-  },
+  { id: 0, name: "لا", value: "لا" },
+  { id: 1, name: "نعم", value: "نعم" },
 ];
 const isServiceIncludedOptions = [
-  {
-    id: 0,
-    name: "لا",
-    value: false,
-  },
-  {
-    id: 1,
-    name: "نعم",
-    value: true,
-  },
+  { id: 0, name: "لا", value: "لا" },
+  { id: 1, name: "نعم", value: "نعم" },
 ];
 const renterNationalityOptions = [
   {
@@ -75,6 +56,8 @@ const renterNationalityOptions = [
     value: "غير اردني",
   },
 ];
+const isModalOpen = ref(false);
+const selectedImage = ref("");
 
 // Reactively update the form state when `apartment` becomes available
 watchEffect(() => {
@@ -105,9 +88,26 @@ watchEffect(() => {
 // Handle form submission
 const submitForm = async () => {
   useLoadingIndicator().start();
-  await editApartment(selectedApartmentId.value, state);
+  await editApartment(selectedApartmentId.value, state, furnitureImages.value, renterIdentificationImage.value, contractImage.value);
 };
-const uploadImage = (event: any) => console.log(event);
+const removeFurnitureImages = (index: number) => {
+  furnitureImages.value.splice(index, 1);
+};
+const removeExistingFurnitureImages = (index: number) => {
+  apartment?.files.splice(index, 1);
+};
+const openFile = (file: string, isNew: boolean) => {
+  if (isNew) {
+    selectedImage.value = file;
+  } else {
+    selectedImage.value = file;
+  }
+  isModalOpen.value = true;
+};
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedImage.value = "";
+};
 </script>
 
 <template>
@@ -232,11 +232,45 @@ const uploadImage = (event: any) => console.log(event);
             option-attribute="name"
           />
         </div>
-        <!-- furnitureImage -->
-        <div class="col-span-6 sm:col-span-2" v-if="state.isFurniture">
-          <label for="furnitureImage"> صورة كشف الاثاث </label>
-          <UInput id="furnitureImage" name="furnitureImage" @input="uploadImage($event)" type="file" size="sm" icon="i-heroicons-folder" />
+        <!-- furnitureImages -->
+        <!-- <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-2">
+          <label for="furnitureImages"> صورة كشف الاثاث </label>
+          <UInput id="furnitureImages" name="furnitureImages" :type="'file'" :size="'sm'" :required="false" @input="handle1" multiple />
         </div>
+        <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-6 flex">
+          <div v-for="(el, index) in apartment?.files" class="relative inline-block">
+            <NuxtImg
+              :src="el.content.value"
+              alt="file"
+              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+              @click="openFile(el.content.value, false)"
+              preload
+            />
+            <UButton
+              icon="i-heroicons-minus-20-solid"
+              @click="removeFurnitureImages(index)"
+              class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+          </div>
+          <div v-for="(el, index) in furnitureImages" class="relative inline-block">
+            <NuxtImg
+              :src="el.content?.toString()"
+              alt="file"
+              class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+              @click="openFile(el.content?.toString() as string, false)"
+              preload
+            />
+            <UButton
+              icon="i-heroicons-minus-20-solid"
+              @click="removeFurnitureImages(index)"
+              class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
+              style="transform: translate(-40%, -40%)"
+            >
+            </UButton>
+          </div>
+        </div> -->
       </div>
     </div>
 
@@ -336,29 +370,29 @@ const uploadImage = (event: any) => console.log(event);
           <UInput id="renterIdentification" name="renterIdentification" :size="'sm'" :required="false" v-model="state.renterIdentification" />
         </div>
         <!-- renterIdentificationImage -->
-        <div class="col-span-6 sm:col-span-1">
+        <div class="col-span-6 sm:col-span-2">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput
-            id="renterIdentificationImage"
-            name="renterIdentificationImage"
-            @input="uploadImage($event)"
-            type="file"
-            size="sm"
-            :required="false"
-            icon="i-heroicons-folder"
+          <UInput id="renterIdentificationImage" name="renterIdentificationImage" :type="'file'" :size="'sm'" :required="false" @input="handle2" />
+          <NuxtImg
+            v-if="existingRenterIdentificationImage"
+            :src="existingRenterIdentificationImage.content?.value.toString()"
+            alt="file"
+            class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+            preload
+            @click="openFile(existingRenterIdentificationImage.content?.value.toString(), false)"
           />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput
-            id="contractImage"
-            name="contractImage"
-            @input="uploadImage($event)"
-            type="file"
-            size="sm"
-            :required="false"
-            icon="i-heroicons-folder"
+          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
+          <NuxtImg
+            v-if="existingContractImage"
+            :src="existingContractImage.content?.value.toString()"
+            alt="file"
+            class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
+            preload
+            @click="openFile(existingContractImage.content?.value.toString(), false)"
           />
         </div>
       </div>
@@ -402,6 +436,29 @@ const uploadImage = (event: any) => console.log(event);
         </div>
       </div>
     </div>
+
+    <!-- Modal with Transition -->
+    <transition name="fade">
+      <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
+          <!-- Conditionally Render Image or Video -->
+          <template v-if="selectedImage.endsWith('.mp4') || selectedImage.startsWith('data:video/mp4;base64,')">
+            <video :src="selectedImage" controls width="1600" class="max-w-full rounded-lg" />
+          </template>
+          <template v-else>
+            <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />
+          </template>
+
+          <!-- Close Button -->
+          <UButton
+            type="button"
+            icon="i-heroicons-x-circle-20-solid"
+            @click="closeModal"
+            class="absolute top-2 right-2 bg-gray-400 hover:bg-gray-500 text-white rounded-full"
+          />
+        </div>
+      </div>
+    </transition>
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">

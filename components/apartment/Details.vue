@@ -94,15 +94,7 @@ const extracted: Apartment = useExtractKeys(props.apartment, keysToExtract);
 
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
-const base64ToBlob = (base64: string, contentType: string) => {
-  const byteCharacters = atob(base64);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  return window.URL.createObjectURL(new Blob([byteArray], { type: contentType }))
-};
+
 </script>
 
 <template>
@@ -155,6 +147,34 @@ const base64ToBlob = (base64: string, contentType: string) => {
               <span class="ml-2 w-0 flex-1 truncate">صورة الاثبات</span>
             </div>
             <div v-if="file.purpose === 'renter-identification'" class="ml-4 flex-shrink-0">
+              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+                <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
+                تنزيل
+              </a>
+              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+                <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+                مشاهدة
+              </a>
+            </div>
+            <div v-if="file.purpose === 'clearance'" class="flex w-0 flex-1 items-center">
+              <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+              <span class="ml-2 w-0 flex-1 truncate">صورة المخالصة</span>
+            </div>
+            <div v-if="file.purpose === 'clearance'" class="ml-4 flex-shrink-0">
+              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+                <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
+                تنزيل
+              </a>
+              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+                <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+                مشاهدة
+              </a>
+            </div>
+            <div v-if="file.purpose === 'new-contract'" class="flex w-0 flex-1 items-center">
+              <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+              <span class="ml-2 w-0 flex-1 truncate">صورة العقد الجديد</span>
+            </div>
+            <div v-if="file.purpose === 'new-contract'" class="ml-4 flex-shrink-0">
               <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
                 تنزيل

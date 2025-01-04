@@ -7,8 +7,7 @@ export function useBuildingActions() {
     const getOneBuilding = async (id: string) => {
         const { data, status, error } = await useFetch<Building>("/api/buildings/" + id, {
             key: "getBuildingById",
-            server: false,
-            lazy: true
+            server: true,
         });
 
         if (status.value === 'error') {

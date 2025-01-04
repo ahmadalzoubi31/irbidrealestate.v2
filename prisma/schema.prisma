@@ -54,26 +54,33 @@ model Building {
 
 // *** Apartment ***
 model Apartment {
-  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
-  apartmentNumber      String
-  ownerName            String
-  ownerNumber          String?
-  agentName            String
-  agentNumber          String?
-  realLocation         String?
-  electricSub          String?
-  waterSub             String?
-  renterName           String
-  renterNumber         String    @default("###")
-  rentDuration         String
-  rentAmount           Float     @default(0.0)
-  rentDate             DateTime  @default(now())
-  rentPaymentWay       String?
-  isFurniture          Boolean   @default(false)
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  apartmentNumber String
+  ownerName       String
+  ownerNumber     String?
+  agentName       String
+  agentNumber     String?
+  realLocation    String?
+  electricSub     String?
+  waterSub        String?
+  renterName      String
+  renterNumber    String   @default("###")
+  rentDuration    String
+  rentAmount      Float    @default(0.0)
+  rentDate        DateTime @default(now())
+  rentPaymentWay  String?
+  isFurniture     String   @default("لا")
+  /**
+   * 0 ==> "منتهي"
+   * 1 ==> "مفسوخ"
+   * 2 ==> "مجدد"
+   * 3 ==> "قائم"
+   */
+
   rentStatus           Int       @default(3)
   renterNationality    String?
   renterIdentification String?
-  isServiceIncluded    Boolean   @default(false)
+  isServiceIncluded    String    @default("لا")
   insurance            Float     @default(0)
   commissionAmount     Float     @default(0)
   files                AppFile[]
@@ -174,6 +181,7 @@ model Claim {
   claimFrom   String
   collections Collection[]
   details     Detail[]
+  files       AppFile[]
   total       Float        @default(0.0)
   status      Boolean      @default(true)
   createdBy   String       @default("-")
@@ -195,10 +203,9 @@ model Collection {
 }
 
 model Detail {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  item  String
-  price Float  @default(0.0)
-
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  item    String
+  price   Float  @default(0.0)
   claimId String @db.ObjectId
   Claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
@@ -239,6 +246,8 @@ model AppFile {
   adId          String?     @db.ObjectId
   content       FileContent @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
   fileContentId String      @db.ObjectId
+  Claim         Claim?      @relation(fields: [claimId], references: [id])
+  claimId       String?     @db.ObjectId
 }
 
 model FileContent {

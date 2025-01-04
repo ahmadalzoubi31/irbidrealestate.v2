@@ -30,14 +30,10 @@ const submitForm = async () => {
   await createPayment(state);
 };
 
-const uploadImage = (event: any) => console.log(event);
-
 // Get the select menu data
 const { apartments: availableApartments } = useApartments();
 const computedApartments = computed(() =>
-  availableApartments.value?.map((el) => {
-    return { id: el.id, name: el.apartmentNumber };
-  })
+  availableApartments.value?.filter((a) => a.rentStatus === 2 || a.rentStatus === 3).map((a) => ({ id: a.id, name: a.apartmentNumber }))
 );
 
 const fillRentAmount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.rentAmount);

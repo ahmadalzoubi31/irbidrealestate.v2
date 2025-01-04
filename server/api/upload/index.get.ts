@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
-  return await useStorage('customDriver').getItem(body.name);
+  return await useStorage('customDriver').getItemRaw("files");
 });

@@ -92,14 +92,45 @@ const closeModal = () => {
       <!-- Image Gallery -->
       <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 class="text-3xl font-bold text-primary-800 mb-6 border-b pb-3">معرض الصور</h2>
-        <div class="grid md:grid-cols-6 grid-cols-2 gap-6">
-          <NuxtImg
+        <div class="grid md:grid-cols-1 grid-cols-1">
+          <!--    <NuxtImg
             v-for="file in imageList"
             :key="file.name"
             :src="file.content.value"
             class="rounded-xl shadow-md h-[200px] w-[200px] hover:opacity-90 transition-opacity duration-300 hover:cursor-pointer transform hover:scale-[1.02] transition-transform"
             @click="openFile(file.name)"
-          />
+          /> -->
+          <UCarousel
+            :items="imageList"
+            :ui="{
+              item: 'basis-full',
+              container: 'rounded-lg',
+              indicators: {
+                wrapper: 'relative bottom-0 mt-4',
+              },
+            }"
+            indicators
+            class="w-2/3 mx-auto"
+          >
+            <template #default="{ item }">
+              <img
+                :src="item.content.value"
+                class="rounded-xl shadow-md hover:opacity-90 hover:cursor-pointer"
+                draggable="false"
+                @click="openFile(item.name)"
+              />
+            </template>
+
+            <template #indicator="{ onClick, page, active }">
+              <UButton
+                :label="String(page)"
+                :variant="active ? 'solid' : 'outline'"
+                size="2xs"
+                class="rounded-full min-w-6 justify-center"
+                @click="onClick(page)"
+              />
+            </template>
+          </UCarousel>
         </div>
       </section>
 

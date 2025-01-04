@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // *** Dependencies ***
 import { format } from "date-fns";
+import { is } from "date-fns/locale";
 const toast = useToast();
 const { createApartment } = useApartmentActions();
 
@@ -21,14 +22,32 @@ const state: ICreateApartment = reactive({
   rentAmount: 0,
   rentDate: new Date(),
   rentPaymentWay: "",
-  isFurniture: false,
+  isFurniture: "لا",
   rentStatus: 3,
   renterNationality: "اردني",
   renterIdentification: "",
-  isServiceIncluded: false,
+  isServiceIncluded: "لا",
   insurance: 0,
   commissionAmount: 0,
 });
+const isOutOfBuilding = ref(false);
+const isFurnitureOptions = [
+  { id: 0, name: "لا", value: "لا" },
+  { id: 1, name: "نعم", value: "نعم" },
+];
+const isServiceIncludedOptions = [
+  { id: 0, name: "لا", value: "لا" },
+  { id: 1, name: "نعم", value: "نعم" },
+];
+const renterNationalityOptions = [
+  { id: 0, name: "اردني", value: "اردني" },
+  { id: 1, name: "غير اردني", value: "غير اردني" },
+];
+const rentDurationOptions = [
+  { id: 0, name: "سنة", value: "سنة" },
+  { id: 1, name: "سنتان", value: "سنتان" },
+  { id: 2, name: "3 سنين", value: "3 سنين" },
+];
 const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
@@ -40,39 +59,8 @@ const additionalState = reactive({
   maintenanceAmount: 0,
   serviceAmount: 0,
 });
-const isOutOfBuilding = ref(false);
-const isFurnitureOptions = [
-  { id: 0, name: "لا", value: false },
-  { id: 1, name: "نعم", value: true },
-];
-const isServiceIncludedOptions = [
-  { id: 0, name: "لا", value: false },
-  { id: 1, name: "نعم", value: true },
-];
-const renterNationalityOptions = [
-  { id: 0, name: "اردني", value: "اردني" },
-  { id: 1, name: "غير اردني", value: "غير اردني" },
-];
-const rentDurationOptions = [
-  { id: 0, name: "سنة", value: "سنة" },
-  { id: 1, name: "سنتان", value: "سنتان" },
-  { id: 2, name: "3 سنين", value: "3 سنين" },
-];
 
 // *** Define Methods ***
-const validateFiles = () => {
-  for (const file of furnitureImages.value) {
-    if (!file.type.startsWith("image/")) {
-      toast.add({
-        description: "Only image files are allowed.",
-        color: "red",
-        timeout: 5000,
-      });
-      return false;
-    }
-  }
-  return true;
-};
 const submitForm = async () => {
   // Early validation for required fields before making the API call
   if (!state.apartmentNumber || !state.ownerName) {
@@ -83,8 +71,6 @@ const submitForm = async () => {
     });
     return;
   }
-
-  if (!validateFiles()) return;
 
   useLoadingIndicator().start();
   await createApartment(state, furnitureImages.value, renterIdentificationImage.value, contractImage.value);
@@ -109,7 +95,6 @@ const fillServiceAmount = computed(() => availableBuildings.value?.find((b) => b
 const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((b) => b.id == state.buildingId)?.maintenanceAmount);
 
 watch(isOutOfBuilding, (newVal, oldVal) => {
-  console.log("🚀 ~ watch ~ newVal:", newVal);
   if (newVal) {
     state.buildingId = "";
   }
@@ -233,22 +218,15 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
         <!-- isFurniture -->
         <div class="col-span-6 sm:col-span-2">
           <label for="isFurniture"> هل الشقة مفروشة ؟ </label>
-          <USelectMenu
-            id="isFurniture"
-            name="isFurniture"
-            :required="false"
-            v-model="state.isFurniture"
-            :options="isFurnitureOptions"
-            value-attribute="value"
-            option-attribute="name"
-          />
+          <!-- <USelectMenu :options="isFurnitureOptions" value-attribute="value" option-attribute="name" /> -->
+          <USelectMenu v-model="state.isFurniture" :options="isFurnitureOptions" value-attribute="value" option-attribute="name" />
         </div>
         <!-- furnitureImages -->
-        <div class="col-span-6 sm:col-span-2">
+        <!-- <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-2">
           <label for="furnitureImages"> صورة كشف الاثاث </label>
           <UInput id="furnitureImages" name="furnitureImages" :type="'file'" :size="'sm'" :required="false" @input="handle1" multiple />
         </div>
-        <div class="col-span-6 sm:col-span-6 flex">
+        <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in furnitureImages" class="relative inline-block">
             <NuxtImg
               :src="el.content?.toString()"
@@ -264,7 +242,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             >
             </UButton>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -367,13 +345,13 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
         <div class="col-span-6 sm:col-span-2">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
           <UInput id="renterIdentificationImage" name="renterIdentificationImage" :type="'file'" :size="'sm'" :required="false" @input="handle2" />
-          <NuxtImg
+          <!-- <NuxtImg
             v-if="renterIdentificationImage.length > 0"
             :src="renterIdentificationImage[0].content?.toString()"
             alt="file"
             class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
             preload
-          />
+          /> -->
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
@@ -381,14 +359,14 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             صورة العقد
             <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
-          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
-          <NuxtImg
+          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="true" @input="handle3" />
+          <!-- <NuxtImg
             v-if="contractImage.length > 0"
             :src="contractImage[0].content?.toString()"
             alt="file"
             class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
             preload
-          />
+          /> -->
         </div>
       </div>
     </div>

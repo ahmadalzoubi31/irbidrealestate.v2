@@ -20,7 +20,7 @@ export const useUpload = () => {
   const uploadFile = async (files: any[], relatedType: string, relatedId: string, purpose: string) => {
     try {
       // Validate file types and sizes
-      const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
       const maxSize = 10 * 1024 * 1024; // 10 MB
 
       for (const file of files) {
@@ -40,17 +40,32 @@ export const useUpload = () => {
       // console.log({res})
 
       if (!res) {
-        throw new Error()
+        if (purpose === "furniture") {
+          throw new Error("حدث خطأ أثناء رفع صور الأثاث");
+        } else if (purpose === "renter-identification") {
+          throw new Error("حدث خطأ أثناء رفع صورة هوية المستأجر");
+        } else if (purpose === "contract") {
+          throw new Error("حدث خطأ أثناء رفع صورة العقد");
+        } else {
+          throw new Error();
+        }
       }
 
-      handleSuccess("تم رفع الملفات بنجاح");
-      return true
+      if (purpose === "furniture") {
+        handleSuccess("تم رفع صور الأثاث بنجاح");
+      } else if (purpose === "renter-identification") {
+        handleSuccess("تم رفع صورة هوية المستأجر بنجاح");
+      } else if (purpose === "contract") {
+        handleSuccess("تم رفع صورة العقد بنجاح");
+      } else {
+        handleSuccess("تم رفع الملفات بنجاح");
+      }
+      return true;
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء رفع الملفات");
-      return false
+      return false;
     }
   };
 
-
   return { uploadFile };
-}
+};

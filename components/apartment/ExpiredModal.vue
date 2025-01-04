@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const isExpiredModalOpen: Ref<boolean> = useState("isExpiredModalOpen");
+const { expireApartment } = useApartmentActions();
 
 // Define State
 const state: IExpireApartment = reactive({
@@ -7,8 +8,19 @@ const state: IExpireApartment = reactive({
   renterNumber: "",
 });
 
-const uploadImage = (event: any) => console.log(event);
-const submitForm = () => console.log("Submitting ...");
+// Define props
+const props = defineProps({
+  selectedApartmentId: {
+    type: String,
+    required: true,
+  },
+});
+
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
+const submitForm = async () => {
+  useLoadingIndicator().start();
+  await expireApartment(props.selectedApartmentId, files.value);
+};
 </script>
 
 <template>
@@ -23,7 +35,15 @@ const submitForm = () => console.log("Submitting ...");
           <!-- clearanceImage -->
           <div class="col-span-6 sm:col-span-2">
             <label for="clearanceImage"> صورة المخالصة <span class="text-xs text-primary-500">(اجباري)</span></label>
-            <UInput id="clearanceImage" name="clearanceImage" @input="uploadImage($event)" type="file" size="sm" :required="false" icon="i-heroicons-folder" />
+            <UInput
+              id="clearanceImage"
+              name="clearanceImage"
+              @input="handleFileInput"
+              type="file"
+              size="sm"
+              :required="true"
+              icon="i-heroicons-folder"
+            />
           </div>
         </div>
 
