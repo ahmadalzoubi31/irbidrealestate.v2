@@ -1,4 +1,4 @@
-import type { Claim } from "@prisma/client";
+import type { Claim, ClaimDetail } from "@prisma/client";
 
 // Extend the Claim type to include the files property
 interface ClaimWithApartment extends Claim {
@@ -40,20 +40,15 @@ export function useClaimActions() {
 
     return { data: data.value, status: status.value };
   };
-  const createClaim = async (payload: ICreateClaim, billImage: any) => {
+  const createClaim = async (payload: ICreateClaim) => {
     try {
+      // Separate the details and collections from the payload
+      const { details, collections, ...claimData } = payload;
       // Create the claim
-      debugger;
-      const newClaim = await $fetch("/api/claims", { method: "POST", body: payload });
-      // Upload the bill image with the new claim's ID as the related ID
-      if (billImage.length > 0) {
-        const res: boolean = await uploadFile(billImage, "claims", newClaim.data.id.toString(), "bill");
-        if (!res) {
-          // Optionally, you can delete the created claim if file upload fails
-          await $fetch("/api/claims/" + newClaim.data.id, { method: "DELETE" });
-          throw new Error("تم إنشاء المطالبة ولكن فشل رفع الملفات. تم حذف المطالبة.");
-        }
-      }
+      const newClaim = await $fetch("/api/claims", { method: "POST", body: claimData });
+      // Create the details and collections
+      // const newClaimCollections = await $fetch("/api/claims/" + newClaim.data.id + "/collections", { method: "POST", body: collections });
+      const newClaimDetails = await $fetch<{ data: ClaimDetail }>("/api/claims/" + newClaim.data.id + "/details", { method: "POST", body: details });
 
       await refreshNuxtData("getClaims");
       await navigateTo("/claims");

@@ -25,25 +25,19 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateClaimData(body);
 
-    // Remove billImage form body.details object.
-    //@ts-ignore
-    body.details.forEach((detail) => {
-      delete detail.billImage;
-    });
-
     // Relate the claim with the related records
-    const data = {
-      ...body,
-      // @ts-ignore
-      collections: { create: body.collections },
-      // @ts-ignore
-      details: { create: body.details },
-    }
+    // const data = {
+    //   ...body,
+    //   // @ts-ignore
+    //   collections: { create: body.collections },
+    //   // @ts-ignore
+    //   details: { create: body.details },
+    // }
+
     // Create a new claim entry
     const newClaim: Claim = await prisma.claim.create({
-      data: data,
+      data: body,
     });
-
 
     // Return success response
     return {
@@ -69,7 +63,7 @@ export default defineEventHandler(async (event) => {
     console.log(error.message || "An unexpected error occurred while creating the claim.");
     throw createError({
       statusCode: 500,
-      message: error.message || "An unexpected error occurred while creating the claim."
+      message: error.message || "An unexpected error occurred while creating the claim.",
     });
   }
 });
