@@ -2,7 +2,7 @@
 definePageMeta({
   layout: "auth",
 });
-
+const toast = useToast();
 // Reactive State
 const state = reactive({
   username: "",
@@ -14,20 +14,24 @@ const isLoading = ref(false);
 const submitForm = async () => {
   try {
     isLoading.value = true;
-    await useAuth().signIn("credentials", { ...state, redirect: false });
+    const result: any = await useAuth().signIn("credentials", { ...state, redirect: false });
+
+    if (result.error) {
+      throw new Error(result.error);
+    }
+
     await navigateTo("/buildings");
   } catch (error: any) {
-    console.error(error);
+    console.log(error);
     // Display toast notification on error
-    useToast().add({
-      description: error.message,
+    const msg = "الرجاء التاكد من اسم المستخدم وكلمة المرور";
+    toast.add({
+      description: msg,
       color: "rose",
       timeout: 10000,
     });
   } finally {
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 5000);
+    isLoading.value = false;
   }
 };
 </script>

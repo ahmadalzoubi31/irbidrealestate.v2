@@ -56,7 +56,7 @@ export default NuxtAuthHandler({
             email: user.username + "@null.net",
           };
         } catch (error) {
-          console.log("error", error);
+          return error;
         }
       },
     }),
@@ -71,7 +71,12 @@ export default NuxtAuthHandler({
   callbacks: {
     /* on before signing */
     async signIn({ user, account, profile, email, credentials }) {
-      return true;
+      console.log({ user: user.name });
+      if (user.name === "Error") {
+        return false;
+      } else {
+        return true;
+      }
     },
     /* on redirect to another url */
     async redirect({ url, baseUrl }) {

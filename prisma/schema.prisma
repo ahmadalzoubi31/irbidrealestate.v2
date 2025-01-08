@@ -13,7 +13,7 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("MONGODB_PROD_URI")
+  url      = env("MONGODB_DEV_URI")
 }
 
 // *** User ***
