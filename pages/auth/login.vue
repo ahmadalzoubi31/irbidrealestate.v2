@@ -27,7 +27,7 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-400 to-gray-300">
+  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-300 to-gray-300">
     <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
       <div class="text-center mb-6">
         <img src="@/assets/logo.svg" alt="Company Logo" class="mx-auto h-16 w-auto mb-4" />
