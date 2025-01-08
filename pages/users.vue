@@ -74,6 +74,11 @@ const deleteSelectedRecord = async () => {
               {{ row.id }}
             </span>
           </template>
+          <template #role-data="{ row }">
+            <span>
+              {{ row.role === "admin" ? "مدير" : "مستخدم" }}
+            </span>
+          </template>
           <template #status-data="{ row }">
             <span>
               {{ useGetStatusName(row.status) }}
