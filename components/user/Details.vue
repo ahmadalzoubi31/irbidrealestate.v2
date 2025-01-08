@@ -5,14 +5,13 @@ import type { User } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
-  payment: {
+  user: {
     type: Object as PropType<User>,
     required: true,
   },
 });
 // Declare Variables
 const heading = [  
-"رقم المستخدم",
  "الاسم الاول",
  "الاسم الثاني",
  "اسم المعرف",
@@ -38,7 +37,7 @@ const keysToExtract = [
 ];
         
 // Extract the desired keys
-const extracted: User = useExtractKeys(props.payment, keysToExtract);
+const extracted: User = useExtractKeys(props.user, keysToExtract);
 
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
@@ -51,6 +50,9 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
           {{ heading[index] }}
         <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
           {{ formatted(entry as Date) }}
+        </dd>
+        <dd v-else-if="key === 'role'" class="font-normal text-primary-500">
+          {{ entry == "admin" ? "مدير" : "مستخدم" }}
         </dd>
         <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
           {{ useGetStatusName(entry as boolean) }}

@@ -46,8 +46,8 @@ const deleteSelectedRecord = async () => {
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/users/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مستخدم" :to="'/users/create'" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مستخدم" @click="deleteSelectedRecord" />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
@@ -65,8 +65,8 @@ const deleteSelectedRecord = async () => {
         >
           <template #expand="{ row }">
             <div class="px-8 py-8">
-              <!-- <UserDetails :user="row" /> -->
-              {{ row }}
+              <UserDetails :user="row" />
+              <!-- {{ row }} -->
             </div>
           </template>
           <template #id-data="{ row }">
