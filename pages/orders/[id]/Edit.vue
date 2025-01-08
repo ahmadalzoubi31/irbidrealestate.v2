@@ -3,21 +3,15 @@
 import type { Order } from "@prisma/client";
 import { format } from "date-fns";
 
-// Validate the id
-onBeforeMount(() => {
-  const paramId: number = Number(useRoute().params.id);
-  // console.log("🚀 ~ onBeforeMount ~ paramId:", paramId);
-  if (!isNaN(paramId)) return;
+const { getOneOrder, editOrder } = useOrderActions();
+const route = useRoute();
 
-  // Redirect to the home page
-  navigateTo("/orders");
-});
+// Extract route parameter
+const selectedOrderId = ref(route.params.id as string);
 
-// *** Define Variables ***
-const selectedPaymentId: string = useRoute().params.id as string;
-const { data: order } = await useAsyncData<Order, any>("getOneOrder", () => $fetch<Order>("/api/orders/" + selectedPaymentId));
-const toast = useToast();
-const state: IEditOrder = reactive({
+const { data: order, status } = await getOneOrder(selectedOrderId.value);
+
+const state = reactive<IEditOrder>({
   type: 0,
   date: new Date(),
   ownerName: "",
@@ -77,46 +71,25 @@ const typeOptions = [
   },
 ];
 
-// *** Declare Methods ***
+// Reactively update the form state when `order` becomes available
+watchEffect(() => {
+  if (order) {
+    state.type = order.type;
+    state.date = order.date;
+    state.ownerName = order.ownerName;
+    state.ownerNumber = order.ownerNumber;
+    state.details = order.details;
+    state.price = order.price;
+    state.firstStep = order.firstStep;
+    state.notes = order.notes;
+  }
+});
+
+// Handle form submission
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("editOrder", () =>
-    $fetch<void>("/api/orders/" + selectedPaymentId, {
-      method: "put",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.remove("saving");
-    refreshNuxtData("getOrders");
-    await navigateTo("/orders");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
-    toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
-    });
-  }
+  useLoadingIndicator().start();
+  await editOrder(selectedOrderId.value, state);
 };
-
-// *** Validate Form Data ***
-if (order.value === null) {
-  await navigateTo("/ads");
-} else {
-  // Fill the field with data
-  state.type = order.value.type;
-  state.date = order.value.date;
-  state.ownerName = order.value.ownerName;
-  state.ownerNumber = order.value.ownerNumber;
-  state.details = order.value.details;
-  state.price = order.value.price;
-  state.firstStep = order.value.firstStep;
-  state.notes = order.value.notes;
-}
 </script>
 
 <template>
