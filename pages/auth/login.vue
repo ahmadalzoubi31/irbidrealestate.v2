@@ -3,6 +3,7 @@ definePageMeta({
   layout: "auth",
 });
 const toast = useToast();
+
 // Reactive State
 const state = reactive({
   username: "",

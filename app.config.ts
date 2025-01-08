@@ -2,18 +2,21 @@ export default defineAppConfig({
   ui: {
     primary: "lime",
     gray: "neutral",
-
+    notification: {
+      background: "bg-gray-800 dark:bg-gray-900",
+      description: "text-white",
+    },
     table: {
       default: {
         loadingState: {
-          label: 'جاري التحميل...',
+          label: "جاري التحميل...",
         },
         emptyState: {
-          label: "لا يوجد معلومات"
+          label: "لا يوجد معلومات",
         },
         progress: {
-          value: 0
-        }
+          value: 0,
+        },
       },
       wrapper: "relative overflow-x-auto",
       divide: "divide-y divide-gray-200",
@@ -45,8 +48,7 @@ export default defineAppConfig({
       width: "sm:max-w-7xl",
     },
     card: {
-      base: 'w-full',
-    }
-
+      base: "w-full",
+    },
   },
 });
