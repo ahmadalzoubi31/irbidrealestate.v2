@@ -2,10 +2,6 @@ export default defineAppConfig({
   ui: {
     primary: "lime",
     gray: "neutral",
-    notification: {
-      background: "bg-gray-800 dark:bg-gray-900",
-      description: "text-white",
-    },
     notifications: {
       // Show toasts at the top right of the screen
       position: "top-0 bottom-[unset]",
