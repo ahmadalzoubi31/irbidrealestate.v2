@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Order } from "@prisma/client";
+const toast = useToast();
 import { format } from "date-fns";
+const { createOrder } = useOrderActions();
 
 // *** Define Variables ***
 const isLoading = ref(false);
@@ -15,7 +16,6 @@ const state: ICreateOrder = reactive({
   firstStep: "",
   notes: "",
 });
-const toast = useToast();
 
 // *** Declare Menus ***
 const typeOptions = [
@@ -66,30 +66,20 @@ const typeOptions = [
   },
 ];
 
-// *** Declare Methods ***
+// *** Define Methods ***
 const submitForm = async () => {
-  const { status, error } = await useAsyncData<void, any>("createOrder", () =>
-    $fetch<void>("/api/orders", {
-      method: "post",
-      body: state,
-    })
-  );
-
-  if (status.value === "success") {
-    toast.remove("saving");
-    refreshNuxtData("getOrders");
-    await navigateTo("/orders");
-  }
-
-  if (status.value === "error") {
-    // console.log(error.value);
+  // Early validation for required fields before making the API call
+  if (!state.type || !state.date || !state.ownerName || !state.ownerNumber || !state.details || !state.price) {
     toast.add({
-      title: "لقد حدث خطأ ما",
-      description: error.value.data.message,
-      color: "rose",
-      timeout: 10000,
+      description: "من فضلك أكمل جميع الحقول المطلوبة.",
+      color: "yellow",
+      timeout: 5000,
     });
+    return;
   }
+
+  useLoadingIndicator().start();
+  await createOrder(state);
 };
 </script>
 
@@ -156,7 +146,7 @@ const submitForm = async () => {
         <!-- price -->
         <div class="col-span-6 sm:col-span-2">
           <label for="price">
-            السعر الملطلوب
+            السعر
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
           <UInput id="price" name="price" type="number" :size="'sm'" :required="true" v-model="state.price" />

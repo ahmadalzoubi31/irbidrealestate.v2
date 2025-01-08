@@ -155,7 +155,7 @@ const submitForm = async () => {
         <!-- price -->
         <div class="col-span-6 sm:col-span-2">
           <label for="price">
-            السعر الملطلوب
+            السعر
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
           <UInput id="price" name="price" type="number" :size="'sm'" :required="true" v-model="state.price" />
