@@ -94,7 +94,7 @@ const submitForm = async () => {
         <div class="col-span-6 sm:col-span-2">
           <label for="type">
             نوع الطلب
-            <span class="text-sm text-primary-500">(اجباري)</span></label
+            <span class="text-xs text-primary-500">(اجباري)</span></label
           >
           <USelectMenu
             id="type"
@@ -131,7 +131,7 @@ const submitForm = async () => {
         <div class="col-span-6 sm:col-span-2">
           <label for="ownerName">
             اسم صاحب الطلب
-            <span class="text-sm text-primary-500">(اجباري)</span></label
+            <span class="text-xs text-primary-500">(اجباري)</span></label
           >
           <UInput id="ownerName" name="ownerName" :size="'sm'" :required="true" v-model="state.ownerName" />
         </div>
@@ -139,7 +139,7 @@ const submitForm = async () => {
         <div class="col-span-6 sm:col-span-2">
           <label for="ownerNumber">
             رقم صاحب الطلب
-            <span class="text-sm text-primary-500">(اجباري)</span></label
+            <span class="text-xs text-primary-500">(اجباري)</span></label
           >
           <UInput id="ownerNumber" name="ownerNumber" :size="'sm'" :required="true" v-model="state.ownerNumber" />
         </div>
@@ -147,7 +147,7 @@ const submitForm = async () => {
         <div class="col-span-6 sm:col-span-2">
           <label for="price">
             السعر
-            <span class="text-sm text-primary-500">(اجباري)</span></label
+            <span class="text-xs text-primary-500">(اجباري)</span></label
           >
           <UInput id="price" name="price" type="number" :size="'sm'" :required="true" v-model="state.price" />
         </div>
@@ -165,7 +165,7 @@ const submitForm = async () => {
         <div class="col-span-6 sm:col-span-8">
           <label for="details">
             تفاصيل الطلب
-            <span class="text-sm text-primary-500">(اجباري)</span></label
+            <span class="text-xs text-primary-500">(اجباري)</span></label
           >
           <UTextarea id="details" name="details" :size="'sm'" :required="true" v-model="state.details" />
         </div>
