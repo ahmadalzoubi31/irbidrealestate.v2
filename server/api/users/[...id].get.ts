@@ -3,16 +3,14 @@ import prisma from "~/lib/prisma";
 export default defineEventHandler(async (event) => {
   const id: string = getRouterParams(event).id;
 
-
-
   try {
-    // Fetch the building by ID
-    const building = await prisma.building.findUnique({
+    // Fetch the user by ID
+    const user = await prisma.user.findUnique({
       where: { id },
     });
 
-    if (!building) {
-      const msg = `ERROR: No building found with ID ${id}`;
+    if (!user) {
+      const msg = `ERROR: No user found with ID ${id}`;
       console.log(msg);
       throw createError({
         statusCode: 404,
@@ -20,14 +18,14 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    return building;
+    return user;
   } catch (error: any) {
-    console.log("Error fetching building:", error);
+    console.log("Error fetching user:", error);
 
     // Handle errors gracefully and log error details
     throw createError({
       statusCode: error.statusCode || 500,
-      message: error.message || "An unexpected error occurred while fetching the building",
+      message: error.message || "An unexpected error occurred while fetching the user",
     });
   }
 });
