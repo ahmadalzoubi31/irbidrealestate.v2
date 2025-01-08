@@ -36,6 +36,7 @@ const deleteSelectedRecord = async () => {
 };
 const generateSharedLinkSelectedRecord = async () => {
   const id = selected.value[0].id;
+  navigator.clipboard.writeText(`/ads/${id}/generate`);
   window.open(`/ads/${id}/generate`, "_blank");
   // await navigateTo(`/ads/${id}/generate`, {
   //   replace: true,
@@ -51,7 +52,7 @@ const generateSharedLinkSelectedRecord = async () => {
         <div id="buttonWrapper">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة اعلان" :to="'/ads/create'" />
           <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" @click="deleteSelectedRecord" />
-          <UButton icon="i-heroicons-arrow-right-on-rectangle-20-solid" label="انشاء رابط مشترك" @click="generateSharedLinkSelectedRecord" />
+          <UButton icon="i-heroicons-arrow-right-on-rectangle-20-solid" label="نشر" @click="generateSharedLinkSelectedRecord" />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
