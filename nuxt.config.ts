@@ -37,8 +37,8 @@ export default defineNuxtConfig({
     storage: {
       customDriver: {
         driver: "mongodb",
-        connectionString: process.env.MONGODB_DEV_URI,
-        databaseName: "irbidrealestate_dev_db",
+        connectionString: process.env.MONGODB_PROD_URI,
+        databaseName: "irbidrealestate_db",
         collectionName: "FileContent",
       },
     },
