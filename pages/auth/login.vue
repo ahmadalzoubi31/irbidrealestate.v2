@@ -16,8 +16,14 @@ const submitForm = async () => {
     isLoading.value = true;
     await useAuth().signIn("credentials", { ...state, redirect: false });
     await navigateTo("/buildings");
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    // Display toast notification on error
+    useToast().add({
+      description: error.message,
+      color: "rose",
+      timeout: 10000,
+    });
   } finally {
     setTimeout(() => {
       isLoading.value = false;
