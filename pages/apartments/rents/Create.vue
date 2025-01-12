@@ -96,7 +96,7 @@ const fillMaintenanceAmount = computed(() => availableBuildings.value?.find((b) 
 
 watch(isOutOfBuilding, (newVal, oldVal) => {
   if (newVal) {
-    state.buildingId = "";
+    state.buildingId = "67805fbae829a8e7a786baa2";
   }
 });
 </script>
@@ -125,7 +125,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             value-attribute="id"
             option-attribute="name"
           />
-          <UInput v-else id="buildingName" name="buildingName" :autofocus="true" :disabled="true" />
+          <UInput v-else id="buildingName" name="buildingName" :autofocus="true" inputClass="bg-gray-300" :disabled="true" model-value="لا يوجد" />
         </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">

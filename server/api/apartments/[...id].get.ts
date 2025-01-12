@@ -5,8 +5,6 @@ export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
   const id: string = getRouterParams(event).id;
 
-
-
   try {
     // Fetch apartment by ID, including related building data
     const apartment = await prisma.apartment.findUnique({
@@ -18,9 +16,9 @@ export default defineEventHandler(async (event) => {
             status: true,
           },
           include: {
-            content: true,
-          }
-        }
+            fileContent: true,
+          },
+        },
       },
     });
 
@@ -37,10 +35,9 @@ export default defineEventHandler(async (event) => {
   } catch (error: any) {
     console.error("Error fetching apartment by ID:", error.message);
 
-
     // Return an appropriate error response
     throw createError({
-      statusCode: error.statusCode || 500,  // Default to 500 if statusCode is not available
+      statusCode: error.statusCode || 500, // Default to 500 if statusCode is not available
       message: error.message || "An unexpected error occurred while fetching the apartment.",
     });
   }

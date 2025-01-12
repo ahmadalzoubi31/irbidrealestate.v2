@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Fetch the building by ID
-    const building = await prisma.building.findUnique({
-      where: { id },
+    const building = await prisma.building.findFirst({
+      where: { AND: [{ id }, { status: true }] },
     });
 
     if (!building) {

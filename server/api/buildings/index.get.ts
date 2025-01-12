@@ -7,7 +7,10 @@ export default defineEventHandler(async () => {
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all buildings
-    const buildings: Building[] = await prisma.building.findMany();
+    const buildings: Building[] = await prisma.building.findMany({
+      where: { status: true },
+    });
+
     return buildings;
   } catch (error: any) {
     // Handle errors gracefully

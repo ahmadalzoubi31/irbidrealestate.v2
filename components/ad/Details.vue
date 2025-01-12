@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type {Ad} from "@prisma/client";
+import type { Ad } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
@@ -11,7 +11,7 @@ const props = defineProps({
   },
 });
 
-console.log(props.ad)
+console.log(props.ad);
 const isModalOpen = ref(false);
 const selectedImage = ref("");
 // Helper to define headings and keys based on `ad.code`
@@ -196,7 +196,7 @@ const extracted: Ad = useExtractKeys(props.ad, keys);
 // Declare Methods
 const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 const openFile = (fileName: string) => {
-  selectedImage.value = props.ad.files.find((file: { name: string }) => file.name === fileName)?.content.value;
+  selectedImage.value = props.ad.files.find((file: { name: string }) => file.name === fileName)?.fileContent.value;
   isModalOpen.value = true;
 };
 const closeModal = () => {
@@ -243,7 +243,7 @@ const closeModal = () => {
             <!-- Render image -->
             <NuxtImg
               :class="el.status ? 'opacity-100' : 'opacity-25'"
-              :src="el.content.value"
+              :src="el.fileContent.value"
               alt="file"
               class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
               preload

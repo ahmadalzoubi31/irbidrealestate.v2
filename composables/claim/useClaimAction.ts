@@ -44,11 +44,15 @@ export function useClaimActions() {
     try {
       // Separate the details and collections from the payload
       const { details, collections, ...claimData } = payload;
+
       // Create the claim
       const newClaim = await $fetch("/api/claims", { method: "POST", body: claimData });
       // Create the details and collections
       // const newClaimCollections = await $fetch("/api/claims/" + newClaim.data.id + "/collections", { method: "POST", body: collections });
-      const newClaimDetails = await $fetch<{ data: ClaimDetail }>("/api/claims/" + newClaim.data.id + "/details", { method: "POST", body: details });
+      const newClaimDetails = await $fetch("/api/claims/details/" + newClaim.data.id, {
+        method: "POST",
+        body: details,
+      });
 
       await refreshNuxtData("getClaims");
       await navigateTo("/claims");

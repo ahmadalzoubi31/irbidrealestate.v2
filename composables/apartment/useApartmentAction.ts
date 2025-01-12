@@ -8,7 +8,7 @@ export function useApartmentActions() {
 
   // Extend the Apartment type to include the files property
   interface ApartmentWithFiles extends Apartment {
-    files: { purpose: string; content: { value: string } }[];
+    files: { purpose: string; fileContent: { value: string } }[];
     Building: Building;
   }
 

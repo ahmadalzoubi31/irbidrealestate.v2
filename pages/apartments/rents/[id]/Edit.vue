@@ -240,10 +240,10 @@ const closeModal = () => {
         <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in apartment?.files" class="relative inline-block">
             <NuxtImg
-              :src="el.content.value"
+              :src="el.fileContent.value"
               alt="file"
               class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
-              @click="openFile(el.content.value, false)"
+              @click="openFile(el.fileContent.value, false)"
               preload
             />
             <UButton
@@ -375,11 +375,11 @@ const closeModal = () => {
           <UInput id="renterIdentificationImage" name="renterIdentificationImage" :type="'file'" :size="'sm'" :required="false" @input="handle2" />
           <NuxtImg
             v-if="existingRenterIdentificationImage"
-            :src="existingRenterIdentificationImage.content?.value.toString()"
+            :src="existingRenterIdentificationImage.fileContent?.value.toString()"
             alt="file"
             class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
             preload
-            @click="openFile(existingRenterIdentificationImage.content?.value.toString(), false)"
+            @click="openFile(existingRenterIdentificationImage.fileContent?.value.toString(), false)"
           />
         </div>
         <!-- contractImage -->
@@ -388,11 +388,11 @@ const closeModal = () => {
           <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
           <NuxtImg
             v-if="existingContractImage"
-            :src="existingContractImage.content?.value.toString()"
+            :src="existingContractImage.fileContent?.value.toString()"
             alt="file"
             class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
             preload
-            @click="openFile(existingContractImage.content?.value.toString(), false)"
+            @click="openFile(existingContractImage.fileContent?.value.toString(), false)"
           />
         </div>
       </div>

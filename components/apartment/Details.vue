@@ -5,7 +5,7 @@ import type { Apartment } from "@prisma/client";
 
 // Extend the Apartment type to include the files property
 interface ApartmentWithFiles extends Apartment {
-  files: { purpose: string; content: { value: string } }[];
+  files: { purpose: string; fileContent: { value: string } }[];
 }
 
 // Declare Props
@@ -119,11 +119,11 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
               <span class="ml-2 w-0 flex-1 truncate">صورة العقد</span>
             </div>
             <div v-if="file.purpose === 'contract'" class="ml-4 flex-shrink-0">
-              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+              <a :href="file.fileContent.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
                 تنزيل
               </a>
-              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <a :href="file.fileContent.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
                 <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
                 مشاهدة
               </a>
@@ -133,11 +133,11 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
               <span class="ml-2 w-0 flex-1 truncate">صورة كشف الاثاث</span>
             </div>
             <div v-if="file.purpose === 'furniture'" class="ml-4 flex-shrink-0">
-              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+              <a :href="file.fileContent.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
                 تنزيل
               </a>
-              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <a :href="file.fileContent.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
                 <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
                 مشاهدة
               </a>
@@ -147,11 +147,11 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
               <span class="ml-2 w-0 flex-1 truncate">صورة الاثبات</span>
             </div>
             <div v-if="file.purpose === 'renter-identification'" class="ml-4 flex-shrink-0">
-              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+              <a :href="file.fileContent.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
                 تنزيل
               </a>
-              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <a :href="file.fileContent.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
                 <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
                 مشاهدة
               </a>
@@ -161,11 +161,11 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
               <span class="ml-2 w-0 flex-1 truncate">صورة المخالصة</span>
             </div>
             <div v-if="file.purpose === 'clearance'" class="ml-4 flex-shrink-0">
-              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+              <a :href="file.fileContent.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
                 تنزيل
               </a>
-              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <a :href="file.fileContent.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
                 <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
                 مشاهدة
               </a>
@@ -175,11 +175,11 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
               <span class="ml-2 w-0 flex-1 truncate">صورة العقد الجديد</span>
             </div>
             <div v-if="file.purpose === 'new-contract'" class="ml-4 flex-shrink-0">
-              <a :href="file.content.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
+              <a :href="file.fileContent.value" download class=" ml-3 font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer ">
                 <UIcon name="i-heroicons-arrow-down-on-square-20-solid" class="h-5 w-5 flex-shrink-0  align-sub" />
                 تنزيل
               </a>
-              <a :href="file.content.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <a :href="file.fileContent.value" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
                 <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
                 مشاهدة
               </a>

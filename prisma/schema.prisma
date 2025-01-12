@@ -197,67 +197,54 @@ model ClaimCollection {
   dateTime DateTime @default(now())
   payment  Float    @default(0.0)
   notes    String?
-
-  claimId String @db.ObjectId
-  Claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId  String   @db.ObjectId
+  Claim    Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
 
 model ClaimDetail {
-  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   item    String
-  price   Float     @default(0.0)
-  files   AppFile[]
-  claimId String    @db.ObjectId
-  Claim   Claim     @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  price   Float    @default(0.0)
+  appFile AppFile?
+  claimId String   @db.ObjectId
+  Claim   Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
 
-// model AdFile {
-//   id        String @id @default(auto()) @map("_id") @db.ObjectId
-//   name      String
-//   status    Boolean  @default(true)
-// createdBy                 String      @default("-")
-//   createdAt DateTime @default(now())
-// updatedBy     String? @default("-")
-//   updatedAt DateTime @updatedAt
-//   Ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
-//   adId      String @db.ObjectId
-// }
-
 model AppFile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  path        String
-  type        String
-  size        String
-  key         String
-  purpose     String
-  relatedId   String
-  relatedType String
-  status      Boolean  @default(true)
-  createdBy   String   @default("-")
-  createdAt   DateTime @default(now())
-  updatedBy   String?  @default("-")
-  updatedAt   DateTime @updatedAt
-
-  Apartment     Apartment?   @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId   String?      @db.ObjectId
-  Payment       Payment?     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  paymentId     String?      @db.ObjectId
-  Ad            Ad?          @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId          String?      @db.ObjectId
-  content       FileContent  @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
-  fileContentId String       @db.ObjectId
-  Claim         Claim?       @relation(fields: [claimId], references: [id])
-  claimId       String?      @db.ObjectId
-  ClaimDetail   ClaimDetail? @relation(fields: [claimDetailId], references: [id])
-  claimDetailId String?      @db.ObjectId
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  path           String
+  type           String
+  size           String
+  key            String       @unique
+  fileCount      Int
+  purpose        String
+  relatedId      String
+  relatedType    String
+  status         Boolean      @default(true)
+  createdBy      String       @default("-")
+  createdAt      DateTime     @default(now())
+  updatedBy      String?      @default("-")
+  updatedAt      DateTime     @updatedAt
+  Apartment      Apartment?   @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId    String?      @db.ObjectId
+  Payment        Payment?     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  paymentId      String?      @db.ObjectId
+  Ad             Ad?          @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId           String?      @db.ObjectId
+  Claim          Claim?       @relation(fields: [claimId], references: [id])
+  claimId        String?      @db.ObjectId
+  fileContent    FileContent  @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
+  fileContentId  String       @unique @db.ObjectId
+  ClaimDetails   ClaimDetail? @relation(fields: [claimDetailsId], references: [id], onDelete: Cascade)
+  claimDetailsId String?      @unique @db.ObjectId
 }
 
 model FileContent {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt  DateTime  @db.Date
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime @db.Date
   key        String
-  modifiedAt DateTime  @db.Date
+  modifiedAt DateTime @db.Date
   value      String
-  AppFile    AppFile[]
+  appFile    AppFile?
 }

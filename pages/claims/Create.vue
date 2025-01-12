@@ -61,7 +61,7 @@ const submitForm = async () => {
   }
   useLoadingIndicator().start();
   debugger;
-  await createClaim(state, files.value);
+  await createClaim(state);
 };
 const addCollectionData = () => {
   state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });

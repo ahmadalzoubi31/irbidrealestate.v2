@@ -211,16 +211,7 @@ watch(
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
-          <UInput
-            id="code"
-            name="code"
-            :size="'sm'"
-            :autofocus="true"
-            :required="true"
-            :disabled="true"
-            inputClass="bg-gray-200"
-            v-model="state.code"
-          />
+          <UInput id="code" name="code" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" v-model="state.code" />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
@@ -321,17 +312,17 @@ watch(
         <!-- governorate -->
         <div class="col-span-6 sm:col-span-2">
           <label for="governorate"> المحافظة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="governorate" name="governorate" :size="'sm'" :autofocus="true" :required="true" v-model="state.governorate" />
+          <UInput id="governorate" name="governorate" :size="'sm'" :required="true" v-model="state.governorate" />
         </div>
         <!-- directorate -->
         <div class="col-span-6 sm:col-span-2">
           <label for="directorate"> المديرية <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="directorate" name="directorate" :size="'sm'" :autofocus="true" :required="true" v-model="state.directorate" />
+          <UInput id="directorate" name="directorate" :size="'sm'" :required="true" v-model="state.directorate" />
         </div>
         <!-- village -->
         <div class="col-span-6 sm:col-span-2">
           <label for="village"> القرية <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="village" name="village" :size="'sm'" :autofocus="true" :required="true" v-model="state.village" />
+          <UInput id="village" name="village" :size="'sm'" :required="true" v-model="state.village" />
         </div>
         <!-- basin -->
         <div class="col-span-6 sm:col-span-2">

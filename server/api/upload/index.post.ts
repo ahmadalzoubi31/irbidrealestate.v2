@@ -9,28 +9,38 @@ export default defineEventHandler(async (event) => {
   const purpose = queryList?.purpose || "";
 
   // Remove all file content related to id
-  await prisma.fileContent.deleteMany({
-    where: {
-      AND: [
-        {
-          key: { contains: relatedType },
-        },
-        {
-          key: { contains: purpose },
-        },
-        {
-          key: { contains: relatedId },
-        },
-      ],
-    },
-  });
+  // await prisma.fileContent.deleteMany({
+  //   where: {
+  //     AND: [
+  //       {
+  //         key: { contains: relatedType },
+  //       },
+  //       {
+  //         key: { contains: purpose },
+  //       },
+  //       {
+  //         key: { contains: relatedId },
+  //       },
+  //     ],
+  //   },
+  // });
 
   // try {
   for (const [index, file] of body.entries()) {
-    const fileCount = index.toString();
+    // const fileCount = index.toString();
+    const result = await prisma.appFile.aggregate({
+      where: { relatedId, relatedType, purpose },
+      _max: { fileCount: true },
+    });
+
+    let fileCount = (result._max.fileCount as number) + 1;
+    if (purpose === "contract" || purpose === "renter-identification") {
+      fileCount = 1;
+    }
+
     // const fileCount: string = (await prisma.appFile.count({ where: { relatedId, relatedType, purpose } })).toString();
     // this will use to update and delete the file like follow format: type:count:id Ex. ad:id:1, contract:id:1, furniture:1:id:1, furniture:1:id:2
-    const key = new String().concat(relatedType, ":", purpose, ":", fileCount, ":", relatedId);
+    const key = new String().concat(relatedType, ":", purpose, ":", fileCount.toString(), ":", relatedId);
 
     // Upload the file content to the server
     await useStorage("customDriver").setItem(key, file.content);
@@ -49,6 +59,7 @@ export default defineEventHandler(async (event) => {
       relatedType,
       relatedId,
       key: key,
+      fileCount: fileCount,
       purpose: purpose,
       adId: relatedType === "ads" ? relatedId : null,
       apartmentId: relatedType === "apartments" ? relatedId : null,
@@ -56,7 +67,15 @@ export default defineEventHandler(async (event) => {
       fileContentId: fileContentId,
     };
 
-    await prisma.appFile.create({ data: fileToSve });
+    await prisma.appFile.upsert({
+      where: {
+        key: key,
+      },
+      update: {},
+      create: {
+        ...fileToSve,
+      },
+    });
   }
 
   return true;

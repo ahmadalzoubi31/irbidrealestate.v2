@@ -40,8 +40,9 @@ const submitForm = async () => {
 <template>
   <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-300 to-gray-300">
     <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-      <div class="text-center mb-6">
-        <img src="@/assets/logo.svg" alt="Company Logo" class="mx-auto h-16 w-auto mb-4" />
+      <div class="text-center mb-6 flex flex-wrap items-center justify-center">
+        <NuxtImg src="logo.svg" alt="Company Logo" width="150" hight="100" sizes="50vw" />
+        <!-- <nuxt-img src="logo.svg" alt="image" sizes="100vw sm:50vw md:400px" /> -->
         <h1 class="text-2xl font-semibold text-gray-800">تسجيل الدخول إلى حسابك</h1>
       </div>
       <form @submit.prevent="submitForm">

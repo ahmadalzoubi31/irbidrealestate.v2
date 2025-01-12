@@ -65,7 +65,7 @@ export default NuxtAuthHandler({
   session: {
     strategy: "jwt",
     // Seconds - How long until an idle session expires and is no longer valid.
-    maxAge: 5 * 60, // 5min
+    maxAge: 15 * 60, // 15min
   },
 
   callbacks: {

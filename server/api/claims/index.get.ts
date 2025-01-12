@@ -10,8 +10,12 @@ export default defineEventHandler(async (event) => {
     const claims: Claim[] = await prisma.claim.findMany({
       include: {
         Apartment: true,
-        collections: true,
-        details: true,
+        claimCollections: true,
+        claimDetails: {
+          include: {
+            files: true,
+          },
+        },
       },
     });
     return claims;

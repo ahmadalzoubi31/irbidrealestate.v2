@@ -15,9 +15,9 @@ export default defineEventHandler(async (event) => {
             status: true,
           },
           include: {
-            content: true,
-          }
-        }
+            fileContent: true,
+          },
+        },
       },
     });
 

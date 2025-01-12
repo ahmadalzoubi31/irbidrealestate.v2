@@ -76,6 +76,7 @@ const submitForm = async () => {
     files: fileList,
   };
   useLoadingIndicator().start();
+  debugger;
   await editAd(selectedAdId.value, payload);
 };
 const openFile = (fileName: string, isNew: boolean) => {
@@ -150,16 +151,7 @@ watchEffect(() => {
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
-          <UInput
-            id="code"
-            name="code"
-            :size="'sm'"
-            :autofocus="true"
-            :required="false"
-            :disabled="true"
-            inputClass="bg-gray-200"
-            :model-value="ad?.code"
-          />
+          <UInput id="code" name="code" :size="'sm'" :required="false" :disabled="true" inputClass="bg-gray-200" :model-value="ad?.code" />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
@@ -274,7 +266,7 @@ watchEffect(() => {
               <!-- Render image -->
               <NuxtImg
                 :class="el.status ? 'opacity-100' : 'opacity-25'"
-                :src="el.content.value"
+                :src="el.fileContent.value"
                 alt="file"
                 class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
                 preload
@@ -377,7 +369,7 @@ watchEffect(() => {
             المحافظة
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
-          <UInput id="governorate" name="governorate" :size="'sm'" :autofocus="true" :required="true" v-model="state.governorate" />
+          <UInput id="governorate" name="governorate" :size="'sm'" :required="true" v-model="state.governorate" />
         </div>
         <!-- directorate -->
         <div class="col-span-6 sm:col-span-2">
@@ -385,12 +377,12 @@ watchEffect(() => {
             المديرية
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
-          <UInput id="directorate" name="directorate" :size="'sm'" :autofocus="true" :required="true" v-model="state.directorate" />
+          <UInput id="directorate" name="directorate" :size="'sm'" :required="true" v-model="state.directorate" />
         </div>
         <!-- village -->
         <div class="col-span-6 sm:col-span-2">
           <label for="village"> القرية <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="village" name="village" :size="'sm'" :autofocus="true" :required="true" v-model="state.village" />
+          <UInput id="village" name="village" :size="'sm'" :required="true" v-model="state.village" />
         </div>
         <!-- basin -->
         <div class="col-span-6 sm:col-span-2">
