@@ -181,7 +181,6 @@ model Claim {
   claimFrom        String
   claimCollections ClaimCollection[]
   claimDetails     ClaimDetail[]
-  files            AppFile[]
   total            Float             @default(0.0)
   status           Boolean           @default(true)
   createdBy        String            @default("-")
@@ -232,8 +231,6 @@ model AppFile {
   paymentId      String?      @db.ObjectId
   Ad             Ad?          @relation(fields: [adId], references: [id], onDelete: Cascade)
   adId           String?      @db.ObjectId
-  Claim          Claim?       @relation(fields: [claimId], references: [id])
-  claimId        String?      @db.ObjectId
   fileContent    FileContent  @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
   fileContentId  String       @unique @db.ObjectId
   ClaimDetails   ClaimDetail? @relation(fields: [claimDetailsId], references: [id], onDelete: Cascade)
