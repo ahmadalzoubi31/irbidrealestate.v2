@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
         claimCollections: true,
         claimDetails: {
           include: {
-            files: true,
+            AppFile: true,
           },
         },
       },

@@ -23,7 +23,7 @@ const collectionData = reactive({
 const detailData = reactive({
   item: "",
   price: 0,
-  billImage: null,
+  billImage: undefined,
 });
 const detailItem = (row: { item: string; price: number }) => [
   [
@@ -60,7 +60,6 @@ const submitForm = async () => {
     return;
   }
   useLoadingIndicator().start();
-  debugger;
   await createClaim(state);
 };
 const addCollectionData = () => {
@@ -75,7 +74,7 @@ const addDetailData = () => {
 
   detailData.item = "";
   detailData.price = 0;
-  detailData.billImage = null;
+  detailData.billImage = undefined;
 };
 const fillModalPropertirs = (rowContent: string) => {
   modalData.value = rowContent;
@@ -201,7 +200,15 @@ watch(
         <!-- billImage -->
         <label for="billImage" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput id="billImage" name="billImage" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" />
+          <UInput
+            id="billImage"
+            name="billImage"
+            :type="'file'"
+            :size="'sm'"
+            :required="false"
+            @input="handleFileInput"
+            v-model="detailData.billImage"
+          />
         </div>
 
         <UButton
@@ -209,7 +216,7 @@ watch(
           :size="'md'"
           class="w-20 text-center place-content-center ml-3"
           @click="addDetailData"
-          :disabled="detailData.item === '' || detailData.price === 0"
+          :disabled="detailData.item === '' || detailData.price === 0 || detailData.billImage === undefined"
         >
           اضافة
         </UButton>

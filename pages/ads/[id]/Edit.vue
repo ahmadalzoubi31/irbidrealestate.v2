@@ -76,7 +76,6 @@ const submitForm = async () => {
     files: fileList,
   };
   useLoadingIndicator().start();
-  debugger;
   await editAd(selectedAdId.value, payload);
 };
 const openFile = (fileName: string, isNew: boolean) => {

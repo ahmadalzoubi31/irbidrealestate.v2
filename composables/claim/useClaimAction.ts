@@ -48,6 +48,7 @@ export function useClaimActions() {
       // Create the claim
       const newClaim = await $fetch("/api/claims", { method: "POST", body: claimData });
       // Create the details and collections
+
       // const newClaimCollections = await $fetch("/api/claims/" + newClaim.data.id + "/collections", { method: "POST", body: collections });
       const newClaimDetails = await $fetch("/api/claims/details/" + newClaim.data.id, {
         method: "POST",

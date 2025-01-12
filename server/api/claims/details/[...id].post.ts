@@ -1,5 +1,4 @@
-import { ClaimDetail, Prisma } from "@prisma/client";
-import { useUpload } from "~/composables/useUpload";
+import { Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
@@ -24,21 +23,22 @@ export default defineEventHandler(async (event) => {
     await prisma.$transaction(async (tx) => {
       // Create an array of promises to create the claim details
       const createOperations = body.map((detail: { item: any; price: any; billImage: any }) => {
+        // upload the bill image and return the file id
+
+
         const newClaimDetails = {
           item: detail.item,
           price: detail.price,
           claimId: id,
+          appFileId: detail.billImage ? detail.billImage.id : null,
         };
 
         // Relate the claim with the related records
         if (detail.billImage) {
-          // use
           // Upload().uploadFile(detail.billImage, "claims", id, "billImage");
-          const data = {
-            ...newClaimDetails,
-            // @ts-ignore
-            appFile: { create: body.billImage },
-          };
+          // const data = {
+          //   ...newClaimDetails
+          // };
           return tx.claimDetail.create({
             data: data,
           });
