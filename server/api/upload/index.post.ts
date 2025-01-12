@@ -64,6 +64,7 @@ export default defineEventHandler(async (event) => {
       adId: relatedType === "ads" ? relatedId : null,
       apartmentId: relatedType === "apartments" ? relatedId : null,
       paymentId: relatedType === "payments" ? relatedId : null,
+      claimDetailsId: relatedType === "claimDetails" ? relatedId : null,
       fileContentId: fileContentId,
     };
 
