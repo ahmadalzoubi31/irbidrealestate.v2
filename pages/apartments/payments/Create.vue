@@ -14,11 +14,12 @@ const state: ICreatePayment = reactive({
   notes: "",
 });
 const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
+const selectedBuildingId = ref("");
 
 // *** Define Methods ***
 const submitForm = async () => {
   // Early validation for required fields before making the API call
-  if (!state.depositAmount || !state.depositDate || !state.nextRentDate || !state.receivedPaymentDate) {
+  if (!selectedBuildingId || !state.apartmentId || !state.depositAmount || !state.depositDate || !state.nextRentDate || !state.receivedPaymentDate) {
     toast.add({
       description: "من فضلك أكمل جميع الحقول المطلوبة.",
       color: "yellow",
@@ -33,7 +34,17 @@ const submitForm = async () => {
 // Get the select menu data
 const { apartments: availableApartments } = useApartments();
 const computedApartments = computed(() =>
-  availableApartments.value?.filter((a) => a.rentStatus === 2 || a.rentStatus === 3).map((a) => ({ id: a.id, name: a.apartmentNumber }))
+  availableApartments.value
+    ?.filter((a) => a.buildingId == selectedBuildingId.value && (a.rentStatus === 2 || a.rentStatus === 3))
+    .map((a) => ({ id: a.id, name: a.apartmentNumber }))
+);
+
+// Get the select menu data
+const { buildings: availableBuildings } = useBuildings();
+const computedBuildings = computed(() =>
+  availableBuildings.value?.map((el) => {
+    return { id: el.id, name: el.name };
+  })
 );
 
 const fillRentAmount = computed(() => availableApartments.value?.find((a) => a.id == state.apartmentId)?.rentAmount);
@@ -59,6 +70,23 @@ watch(fillRentDate, (newVal, oldVal) => {
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+        <!-- buildingName -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="buildingName" class="flex justify-between">
+            <div>اسم البناية <span class="text-xs text-primary-500">(اجباري) </span></div>
+          </label>
+          <USelectMenu
+            id="buildingName"
+            name="buildingName"
+            v-model="selectedBuildingId"
+            :autofocus="true"
+            :required="true"
+            :options="computedBuildings"
+            value-attribute="id"
+            option-attribute="name"
+          />
+        </div>
+
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentNumber">
@@ -71,6 +99,7 @@ watch(fillRentDate, (newVal, oldVal) => {
             name="apartmentNumber"
             v-model="state.apartmentId"
             :autofocus="true"
+            :required="true"
             :options="computedApartments"
             value-attribute="id"
             option-attribute="name"

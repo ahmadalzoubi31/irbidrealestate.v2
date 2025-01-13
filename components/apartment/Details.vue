@@ -104,6 +104,9 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
     <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
       {{ formatted(entry as Date) }}
     </dd>
+    <dd v-else-if="key === 'rentStatus'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
+      {{ useGetContractStatusName(entry as number) }}
+    </dd>
     <dd v-else-if="key === 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
       {{ useGetStatusName(entry as boolean) }}
     </dd>

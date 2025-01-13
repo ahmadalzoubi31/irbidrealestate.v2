@@ -43,6 +43,22 @@ const submitForm = async () => {
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+        <!-- buildingName -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="buildingName" class="flex justify-between">
+            <div>اسم البناية <span class="text-xs text-primary-500">(اجباري) </span></div>
+          </label>
+          <UInput
+            id="buildingName"
+            name="buildingName"
+            inputClass="bg-gray-200"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            :model-value="payment!.Apartment.Building.name"
+          />
+        </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentNumber">
