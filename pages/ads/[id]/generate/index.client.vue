@@ -57,7 +57,7 @@ const extracted = computed(() => (ad ? useExtractKeys(ad, keys) : {}));
 // *** Methods ***
 const openFile = (fileName: string) => {
   // @ts-ignore
-  selectedImage.value = ad?.files.find((file) => file.name === fileName)?.content.value || "";
+  selectedImage.value = ad?.files.find((file) => file.name === fileName)?.fileContent.value || "";
   isModalOpen.value = true;
 };
 const closeModal = () => {
@@ -96,7 +96,7 @@ const closeModal = () => {
           <!--    <NuxtImg
             v-for="file in imageList"
             :key="file.name"
-            :src="file.content.value"
+            :src="file.fileContent.value"
             class="rounded-xl shadow-md h-[200px] w-[200px] hover:opacity-90 transition-opacity duration-300 hover:cursor-pointer transform hover:scale-[1.02] transition-transform"
             @click="openFile(file.name)"
           /> -->
@@ -114,7 +114,7 @@ const closeModal = () => {
           >
             <template #default="{ item }">
               <img
-                :src="item.content.value"
+                :src="item.fileContent.value"
                 class="rounded-xl shadow-md hover:opacity-90 hover:cursor-pointer"
                 draggable="false"
                 @click="openFile(item.name)"

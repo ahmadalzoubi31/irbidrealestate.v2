@@ -51,8 +51,8 @@ export function useClaimActions() {
 
       const data = {
         ...claimData,
-        claimDetails: { create: claimDetails },
-        claimCollections: { create: claimDetailsRest },
+        claimDetails: { create: claimDetailsRest },
+        claimCollections: { create: claimCollections },
       };
       // Create the claim
       const newClaim = await $fetch("/api/claims", { method: "POST", body: data });

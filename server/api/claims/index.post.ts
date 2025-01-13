@@ -24,16 +24,6 @@ export default defineEventHandler(async (event) => {
   try {
     // Validate the incoming data
     validateClaimData(body);
-
-    // Relate the claim with the related records
-    // const data = {
-    //   ...body,
-    //   // @ts-ignore
-    //   collections: { create: body.collections },
-    //   // @ts-ignore
-    //   details: { create: body.details },
-    // }
-
     // Create a new claim entry
     const newClaim: Claim = await prisma.claim.create({
       data: body,
