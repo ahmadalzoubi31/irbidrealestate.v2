@@ -1,7 +1,9 @@
 import { Prisma } from "@prisma/client";
+import { useUpload } from "~/composables/useUpload";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
+  const { uploadFile } = useUpload();
   const body: any = await readBody(event);
   const id: string = getRouterParams(event).id;
 
@@ -25,7 +27,14 @@ export default defineEventHandler(async (event) => {
       const createOperations = body.map((detail: { item: any; price: any; billImage: any }) => {
         // upload the bill image and return the file id
 
+        if (detail.billImage) {
+          uploadFile(detail.billImage, "claims", id, "billImage");
 
+          const res = await $fetch(`/api/upload?relatedType=${relatedType}&relatedId=${relatedId}&purpose=${purpose}`, {
+            method: "POST",
+            body: files,
+          });
+        }
         const newClaimDetails = {
           item: detail.item,
           price: detail.price,
@@ -36,9 +45,9 @@ export default defineEventHandler(async (event) => {
         // Relate the claim with the related records
         if (detail.billImage) {
           // Upload().uploadFile(detail.billImage, "claims", id, "billImage");
-          // const data = {
-          //   ...newClaimDetails
-          // };
+          const data = {
+            ...newClaimDetails,
+          };
           return tx.claimDetail.create({
             data: data,
           });

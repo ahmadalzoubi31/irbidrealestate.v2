@@ -47,13 +47,11 @@ export function useClaimActions() {
 
       // Create the claim
       const newClaim = await $fetch("/api/claims", { method: "POST", body: claimData });
-      // Create the details and collections
 
-      // const newClaimCollections = await $fetch("/api/claims/" + newClaim.data.id + "/collections", { method: "POST", body: collections });
-      const newClaimDetails = await $fetch("/api/claims/details/" + newClaim.data.id, {
-        method: "POST",
-        body: details,
-      });
+      // Create Details
+      const newClaimDetails = await createClaimDetail(newClaim.data.id, details);
+
+      // Create Collections
 
       await refreshNuxtData("getClaims");
       await navigateTo("/claims");
@@ -102,6 +100,53 @@ export function useClaimActions() {
       useLoadingIndicator().finish();
     }
   };
-
+  const createClaimDetail = async (id: string, payload: IDetail[]) => {
+    try {
+      await $fetch("/api/claims/details/" + id, { method: "POST", body: payload });
+      handleSuccess("تم إضافة التفاصيل بنجاح");
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء إضافة التفاصيل");
+    }
+  };
+  const editClaimDetail = async (id: string, payload: ClaimDetail) => {
+    try {
+      await $fetch("/api/claims/details/" + id, { method: "PUT", body: payload });
+      handleSuccess("تم تعديل التفاصيل بنجاح");
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء تعديل التفاصيل");
+    }
+  };
+  const deleteClaimDetail = async (id: string) => {
+    try {
+      await $fetch("/api/claims/details/" + id, { method: "DELETE" });
+      handleSuccess("تم حذف التفاصيل بنجاح");
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء حذف التفاصيل");
+    }
+  };
+  const createClaimCollection = async (id: string, payload: any) => {
+    try {
+      await $fetch("/api/claims/" + id + "/collections", { method: "POST", body: payload });
+      handleSuccess("تم إضافة التحصيل بنجاح");
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء إضافة التحصيل");
+    }
+  };
+  const editClaimCollection = async (id: string, payload: any) => {
+    try {
+      await $fetch("/api/claims/collections/" + id, { method: "PUT", body: payload });
+      handleSuccess("تم تعديل التحصيل بنجاح");
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء تعديل التحصيل");
+    }
+  };
+  const deleteClaimCollection = async (id: string) => {
+    try {
+      await $fetch("/api/claims/collections/" + id, { method: "DELETE" });
+      handleSuccess("تم حذف التحصيل بنجاح");
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء حذف التحصيل");
+    }
+  };
   return { createClaim, editClaim, deleteClaim, getOneClaim };
 }
