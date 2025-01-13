@@ -1,12 +1,20 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Claim } from "@prisma/client";
+import type { Apartment, Claim, ClaimCollection, ClaimDetail } from "@prisma/client";
+import format from "date-fns/format";
+
+// Declare interface
+interface ClaimWithApartment extends Claim {
+  Apartment: Apartment;
+  claimDetails: ClaimDetail[];
+  claimCollections: ClaimCollection[];
+}
 
 // Declare Props
 const props = defineProps({
   claim: {
-    type: Object as PropType<Claim>,
+    type: Object as PropType<ClaimWithApartment>,
     required: true,
   },
 });
@@ -27,14 +35,14 @@ const heading = [
 const keysToExtract = ["Apartment.apartmentNumber", "claimFrom", "claimDate", "total", "status", "createdBy", "createdAt", "updatedBy", "updatedAt"];
 
 // Extract the desired keys
-const extracted: Claim = useExtractKeys(props.claim, keysToExtract);
+const extracted: ClaimWithApartment = useExtractKeys(props.claim, keysToExtract);
 
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, "ddd YYYY-MM-DD hh:mm:ss A").value;
 </script>
 
 <template>
-  <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
+  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
     <template v-for="(entry, key, index) in extracted">
       <div>
         <dt class="font-medium">{{ heading[index] }}</dt>
@@ -55,5 +63,47 @@ const formatted = (r: Date) => useDateFormat(r, "ddd YYYY-MM-DD hh:mm:ss A").val
         </dd>
       </div>
     </template>
+  </dl>
+  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-2 sm:gap-2">
+    <div class="mt-2">
+      <dt class="font-medium">تفاصيل المطالبة</dt>
+      <!-- Handle claim details field -->
+      <dd class="font-normal text-primary-500">
+        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+          <UTable
+            :rows="props.claim.claimDetails as ClaimDetail[] || []"
+            :columns="[
+              { key: 'item', label: 'المادة' },
+              { key: 'price', label: 'السعر' },
+            ]"
+          >
+          </UTable>
+        </div>
+      </dd>
+    </div>
+  </dl>
+  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-2 sm:gap-2">
+    <div class="mt-2">
+      <dt class="font-medium">تفاصيل التحصيل</dt>
+      <!-- Handle claim collections field -->
+      <dd class="font-normal text-primary-500">
+        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+          <UTable
+            :rows="props.claim.claimCollections as ClaimCollection[] || []"
+            :columns="[
+              { key: 'dateTime', label: 'الوقت والتاريخ' },
+              { key: 'payment', label: 'الدفعة' },
+              { key: 'notes', label: 'الملاحظات' },
+            ]"
+          >
+            <template #dateTime-data="{ row }">
+              <span>
+                {{ format(row.dateTime, "dd/MM/yyyy hh:mm:ss") }}
+              </span>
+            </template>
+          </UTable>
+        </div>
+      </dd>
+    </div>
   </dl>
 </template>

@@ -201,13 +201,11 @@ model ClaimCollection {
 }
 
 model ClaimDetail {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  item      String
-  price     Float   @default(0.0)
-  AppFile   AppFile @relation(fields: [appFileId], references: [id], onDelete: Cascade)
-  appFileId String  @unique @db.ObjectId
-  claimId   String  @db.ObjectId
-  Claim     Claim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  item    String
+  price   Float  @default(0.0)
+  claimId String @db.ObjectId
+  Claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
 
 model AppFile {
@@ -234,8 +232,6 @@ model AppFile {
   adId          String?     @db.ObjectId
   fileContent   FileContent @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
   fileContentId String      @unique @db.ObjectId
-
-  ClaimDetail ClaimDetail?
 }
 
 model FileContent {

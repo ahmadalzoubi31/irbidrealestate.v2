@@ -22,11 +22,11 @@ export default defineAppConfig({
       tr: { active: "hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer", selected: "bg-primary-50 dark:bg-primary-800/50" },
       th: {
         base: "text-left rtl:text-right ",
-        padding: "px-4 py-3.5",
+        padding: "px-4 py-2.5",
         color: "text-gray-600 dark:text-white",
       },
       td: {
-        padding: "py-2.5",
+        padding: "py-1.5",
       },
       checkbox: {
         padding: "hidden",

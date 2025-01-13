@@ -220,6 +220,6 @@ declare interface ICreateClaim {
   claimDate: Date;
   claimFrom: string;
   total: number;
-  collections: Array<ICollection>;
-  details: Array<IDetail>;
+  claimCollections: Array<ICollection>;
+  claimDetails: Array<IDetail>;
 }

@@ -1,5 +1,12 @@
-import { Claim, Collection, Detail } from "@prisma/client";
+import { Claim, Apartment, ClaimCollection, ClaimDetail } from "@prisma/client";
 import prisma from "~/lib/prisma";
+
+// Declare interface
+interface ClaimWithApartment extends Claim {
+  Apartment: Apartment;
+  claimDetails: ClaimDetail[];
+  claimCollections: ClaimCollection[];
+}
 
 // Utility function to validate incoming data
 const validateClaimData = (data: Claim) => {
@@ -7,7 +14,7 @@ const validateClaimData = (data: Claim) => {
 };
 
 export default defineEventHandler(async (event) => {
-  const body: any = await readBody(event); // Use any because `body` contains nested objects
+  const body: ClaimWithApartment = await readBody(event); // Use any because `body` contains nested objects
   const id: string = getRouterParams(event).id;
 
   if (!body) {
@@ -23,18 +30,17 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateClaimData(body);
 
-    // Remove billImage form body.details object.
-    //@ts-ignore
-    body.details.forEach((detail) => {
-      delete detail.billImage;
-    });
+    // Remove billImage form body.claimDetails object.
+    // body.claimDetails.forEach((detail) => {
+    //   delete detail.billImage;
+    // });
 
-    // Separate `collections, details` from the main body
-    const { collections, details, ...claimData } = body;
+    // Separate `claimCollections, claimDetails` from the main body
+    const { claimCollections, claimDetails, Apartment, ...claimData } = body;
     // Validate claim existence
     const claim = await prisma.claim.findUnique({
       where: { id },
-      include: { collections: true, details: true },
+      include: { claimCollections: true, claimDetails: true },
     });
 
     if (!claim) {
@@ -51,35 +57,35 @@ export default defineEventHandler(async (event) => {
       await tx.claim.update({ where: { id }, data: claimData });
 
       // Fetch existing related records
-      const existingCollection = await tx.collection.findMany({
+      const existingCollection = await tx.claimCollection.findMany({
         where: { claimId: id },
       });
-      const existingDetail = await tx.detail.findMany({
+      const existingDetail = await tx.claimDetail.findMany({
         where: { claimId: id },
       });
 
       // Extract IDs from the incoming request
-      const incomingCollectionIds = collections
-        .filter((c: Collection) => c.id) // Only include those with IDs
-        .map((c: Collection) => c.id);
+      const incomingCollectionIds = claimCollections
+        .filter((c: ClaimCollection) => c.id) // Only include those with IDs
+        .map((c: ClaimCollection) => c.id);
 
-      const incomingDetailIds = details
-        .filter((d: Detail) => d.id) // Only include those with IDs
-        .map((d: Detail) => d.id);
+      const incomingDetailIds = claimDetails
+        .filter((d: ClaimDetail) => d.id) // Only include those with IDs
+        .map((d: ClaimDetail) => d.id);
 
       // Find IDs to delete (existing IDs not in the incoming list)
       const idsCollectionToDelete = existingCollection.filter((c) => !incomingCollectionIds.includes(c.id)).map((c) => c.id);
       const idsDetailToDelete = existingDetail.filter((d) => !incomingDetailIds.includes(d.id)).map((d) => d.id);
 
       // Perform deletions
-      const deleteCollectionOperations = idsCollectionToDelete.map((id) => tx.collection.delete({ where: { id: id } }));
+      const deleteCollectionOperations = idsCollectionToDelete.map((id) => tx.claimCollection.delete({ where: { id: id } }));
       // Perform deletions
-      const deleteDetailOperations = idsDetailToDelete.map((id) => tx.detail.delete({ where: { id: id } }));
+      const deleteDetailOperations = idsDetailToDelete.map((id) => tx.claimDetail.delete({ where: { id: id } }));
 
       // Handle updates and creations
-      const upsertCollectionOperations = collections.map((c: Collection) =>
+      const upsertCollectionOperations = claimCollections.map((c: ClaimCollection) =>
         c.id
-          ? tx.collection.update({
+          ? tx.claimCollection.update({
             where: { id: c.id },
             data: {
               dateTime: c.dateTime,
@@ -87,7 +93,7 @@ export default defineEventHandler(async (event) => {
               notes: c.notes,
             },
           })
-          : tx.collection.create({
+          : tx.claimCollection.create({
             data: {
               dateTime: c.dateTime,
               payment: c.payment,
@@ -98,16 +104,16 @@ export default defineEventHandler(async (event) => {
       );
 
       // Handle updates and creations
-      const upsertDetailOperations = details.map((d: Detail) =>
+      const upsertDetailOperations = claimDetails.map((d: ClaimDetail) =>
         d.id
-          ? tx.detail.update({
+          ? tx.claimDetail.update({
             where: { id: d.id },
             data: {
               item: d.item,
               price: d.price,
             },
           })
-          : tx.detail.create({
+          : tx.claimDetail.create({
             data: {
               item: d.item,
               price: d.price,

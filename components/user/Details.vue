@@ -45,7 +45,7 @@ const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').val
 </script>
 
 <template>
-    <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
+   <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
         <dt v-for="(entry, key, index) in extracted" class="font-medium ">
           {{ heading[index] }}
         <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">

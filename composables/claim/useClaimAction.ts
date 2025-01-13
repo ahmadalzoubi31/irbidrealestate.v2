@@ -1,9 +1,10 @@
-import type { Claim, ClaimDetail } from "@prisma/client";
+import type { Claim, ClaimCollection, ClaimDetail, Apartment } from "@prisma/client";
 
 // Extend the Claim type to include the files property
 interface ClaimWithApartment extends Claim {
-  Apartment: { apartmentNumber: string; ownerName: string };
-  files: { purpose: string; content: { value: string } }[];
+  Apartment: Apartment;
+  claimDetails: ClaimDetail[];
+  claimCollections: ClaimCollection[];
 }
 
 // composables/useClaimActions.ts
@@ -43,13 +44,22 @@ export function useClaimActions() {
   const createClaim = async (payload: ICreateClaim) => {
     try {
       // Separate the details and collections from the payload
-      const { details, collections, ...claimData } = payload;
+      const { claimDetails, claimCollections, ...claimData } = payload;
 
+      const billImage = claimDetails.map(detail => detail.billImage);
+      const claimDetailsRest = claimDetails.map(({ billImage, ...rest }) => rest);
+
+      const data = {
+        ...claimData,
+        claimDetails: { create: claimDetails },
+        claimCollections: { create: claimDetailsRest },
+      };
       // Create the claim
-      const newClaim = await $fetch("/api/claims", { method: "POST", body: claimData });
+      const newClaim = await $fetch("/api/claims", { method: "POST", body: data });
+      console.log("🚀 ~ createClaim ~ newClaim:", newClaim)
 
       // Create Details
-      const newClaimDetails = await createClaimDetail(newClaim.data.id, details);
+      // const newClaimDetails = await createClaimDetail(newClaim.data.id, details);
 
       // Create Collections
 
@@ -62,20 +72,20 @@ export function useClaimActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editClaim = async (id: string, payload: ICreateClaim, billImage: any) => {
+  const editClaim = async (id: string, payload: ICreateClaim) => {
     try {
       // update the claim
       await $fetch("/api/claims/" + id, { method: "PUT", body: payload });
 
       // Upload the bill image with the new claim's ID as the related ID
-      if (billImage.length > 0) {
-        const res: boolean = await uploadFile(billImage, "claims", id, "bill");
-        if (!res) {
-          // Optionally, you can delete the created claim if file upload fails
-          await $fetch("/api/claims/" + id, { method: "DELETE" });
-          throw new Error("تم إنشاء المطالبة ولكن فشل رفع الملفات. تم حذف المطالبة.");
-        }
-      }
+      // if (billImage.length > 0) {
+      //   const res: boolean = await uploadFile(billImage, "claims", id, "bill");
+      //   if (!res) {
+      //     // Optionally, you can delete the created claim if file upload fails
+      //     await $fetch("/api/claims/" + id, { method: "DELETE" });
+      //     throw new Error("تم إنشاء المطالبة ولكن فشل رفع الملفات. تم حذف المطالبة.");
+      //   }
+      // }
       await refreshNuxtData("getClaims");
       await navigateTo("/claims");
 

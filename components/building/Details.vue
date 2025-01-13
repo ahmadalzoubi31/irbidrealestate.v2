@@ -58,7 +58,7 @@ const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A
 
 <template>
   <!-- Display the extracted information in a grid layout -->
-  <dl class="sm:grid sm:grid-cols-4 sm:gap-2">
+  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
     <template v-for="(entry, key, index) in extracted">
       <div>
         <dt class="font-medium">{{ heading[index] }}</dt>

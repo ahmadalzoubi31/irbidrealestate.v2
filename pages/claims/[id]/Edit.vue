@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Claim } from "@prisma/client";
 import { format } from "date-fns";
 
 const { getOneClaim, editClaim } = useClaimActions();
@@ -19,13 +18,14 @@ const collectionData = reactive({
 const detailData = reactive({
   item: "",
   price: 0,
+  billImage: undefined,
 });
 const detailItem = (row: { item: string; price: number }) => [
   [
     {
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
-      click: () => (state.details = state.details.filter((item) => !(item.item === row.item && item.price === row.price))),
+      click: () => (state.claimDetails = state.claimDetails.filter((item) => !(item.item === row.item && item.price === row.price))),
     },
   ],
 ];
@@ -35,7 +35,7 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
       click: () =>
-        (state.collections = state.collections.filter(
+        (state.claimCollections = state.claimCollections.filter(
           (item) => !(item.dateTime === row.dateTime && item.payment === row.payment && item.notes === row.notes)
         )),
     },
@@ -47,39 +47,43 @@ const state: ICreateClaim = reactive({
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
-  collections: [],
-  details: [],
+  claimCollections: [],
+  claimDetails: [],
 });
 
 // Handle form submission
 const submitForm = async () => {
   useLoadingIndicator().start();
-  await editClaim(selectedClaimId.value, state, files.value);
+  await editClaim(selectedClaimId.value, state);
 };
 const addCollectionData = () => {
-  state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
+  state.claimCollections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
 
-  detailData.item = "";
-  detailData.price = 0;
+  collectionData.dateTime = new Date();
+  collectionData.payment = 0;
+  collectionData.notes = "";
 };
 const addDetailData = () => {
-  state.details.push({ item: detailData.item, price: detailData.price });
+  state.claimDetails.push({ item: detailData.item, price: detailData.price, billImage: files.value[0] });
 
   detailData.item = "";
   detailData.price = 0;
+  detailData.billImage = undefined;
 };
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
   if (claim) {
+    console.log(claim);
+
     state.apartmentId = claim.apartmentId;
     state.claimDate = claim.claimDate;
     state.claimFrom = claim.claimFrom;
     state.total = claim.total;
     // @ts-ignore
-    state.collections = claim.collections;
+    state.claimCollections = claim.claimCollections;
     // @ts-ignore
-    state.details = claim.details;
+    state.claimDetails = claim.claimDetails;
   }
 });
 
@@ -97,10 +101,10 @@ watch(
 );
 
 watch(
-  () => state.details,
+  () => state.claimDetails,
   (newDetails) => {
     const totalDetails = newDetails.reduce((sum, detail) => sum + detail.price, 0);
-    const totalCollections = state.collections.reduce((sum, collection) => sum + collection.payment, 0);
+    const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
     state.total = totalDetails - totalCollections;
   },
   { deep: true }
@@ -221,7 +225,7 @@ watch(
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
         <UTable
           class=""
-          :rows="state.details"
+          :rows="state.claimDetails"
           :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'billImage', label: 'الفاتورة' }, { key: 'actions' }]"
         >
           <template #actions-data="{ row }">
@@ -279,7 +283,7 @@ watch(
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
         <UTable
-          :rows="state.collections"
+          :rows="state.claimCollections"
           :columns="[
             { key: 'dateTime', label: 'الوقت والتاريخ' },
             { key: 'payment', label: 'الدفعة' },

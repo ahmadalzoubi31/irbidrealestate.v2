@@ -11,11 +11,7 @@ export default defineEventHandler(async (event) => {
       include: {
         Apartment: true,
         claimCollections: true,
-        claimDetails: {
-          include: {
-            AppFile: true,
-          },
-        },
+        claimDetails: true
       },
     });
     return claims;

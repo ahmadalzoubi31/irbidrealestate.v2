@@ -12,8 +12,8 @@ const state: ICreateClaim = reactive({
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
-  collections: [],
-  details: [],
+  claimCollections: [],
+  claimDetails: [],
 });
 const collectionData = reactive({
   dateTime: new Date(),
@@ -30,7 +30,7 @@ const detailItem = (row: { item: string; price: number }) => [
     {
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
-      click: () => (state.details = state.details.filter((item) => !(item.item === row.item && item.price === row.price))),
+      click: () => (state.claimDetails = state.claimDetails.filter((item) => !(item.item === row.item && item.price === row.price))),
     },
   ],
 ];
@@ -40,7 +40,7 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
       click: () =>
-        (state.collections = state.collections.filter(
+        (state.claimCollections = state.claimCollections.filter(
           (item) => !(item.dateTime === row.dateTime && item.payment === row.payment && item.notes === row.notes)
         )),
     },
@@ -63,14 +63,14 @@ const submitForm = async () => {
   await createClaim(state);
 };
 const addCollectionData = () => {
-  state.collections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
+  state.claimCollections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
 
   collectionData.dateTime = new Date();
   collectionData.payment = 0;
   collectionData.notes = "";
 };
 const addDetailData = () => {
-  state.details.push({ item: detailData.item, price: detailData.price, billImage: files.value[0] });
+  state.claimDetails.push({ item: detailData.item, price: detailData.price, billImage: files.value[0] });
 
   detailData.item = "";
   detailData.price = 0;
@@ -94,18 +94,18 @@ watch(
   }
 );
 watch(
-  () => state.details,
+  () => state.claimDetails,
   (newDetails) => {
     const totalDetails = newDetails.reduce((sum, detail) => sum + detail.price, 0);
-    const totalCollections = state.collections.reduce((sum, collection) => sum + collection.payment, 0);
+    const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
     state.total = totalDetails - totalCollections;
   },
   { deep: true }
 );
 watch(
-  () => state.collections,
+  () => state.claimCollections,
   (newCollections) => {
-    const totalDetails = state.details.reduce((sum, detail) => sum + detail.price, 0);
+    const totalDetails = state.claimDetails.reduce((sum, detail) => sum + detail.price, 0);
     const totalCollections = newCollections.reduce((sum, collection) => sum + collection.payment, 0);
     state.total = totalDetails - totalCollections;
   },
@@ -224,7 +224,7 @@ watch(
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
         <UTable
           class=""
-          :rows="state.details"
+          :rows="state.claimDetails"
           :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'billImage', label: 'الفاتورة' }, { key: 'actions' }]"
         >
           <template #billImage-data="{ row }">
@@ -292,7 +292,7 @@ watch(
       </div>
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
         <UTable
-          :rows="state.collections"
+          :rows="state.claimCollections"
           :columns="[
             { key: 'dateTime', label: 'الوقت والتاريخ' },
             { key: 'payment', label: 'الدفعة' },
