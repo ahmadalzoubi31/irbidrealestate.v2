@@ -56,7 +56,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment!.Apartment.Building.name"
+            :model-value="payment?.Apartment.Building.name"
           />
         </div>
         <!-- apartmentNumber -->
@@ -74,7 +74,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment!.Apartment.apartmentNumber"
+            :model-value="payment?.Apartment.apartmentNumber"
           />
         </div>
         <!-- nextRentDate -->
@@ -88,7 +88,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="format(payment!.nextRentDate, 'dd/MM/yyyy')"
+            :model-value="format(payment?.nextRentDate, 'dd/MM/yyyy')"
           />
         </div>
         <!-- rentDate -->
