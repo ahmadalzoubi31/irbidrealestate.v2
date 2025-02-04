@@ -1,8 +1,7 @@
 // composables/useTableColumns.ts
 export function useUserTableColumns() {
   const columns = [
-    { key: 'select', class: 'w-2' },
-    { key: "id", label: "رقم المستخدم", sortable: true },
+    { key: "select", class: "w-2" },
     { key: "firstName", label: "الاسم الاول", sortable: false },
     { key: "lastName", label: "الاسم الثاني", sortable: false },
     { key: "username", label: "اسم المعرف", sortable: false },
