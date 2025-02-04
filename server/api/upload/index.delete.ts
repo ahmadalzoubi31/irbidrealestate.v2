@@ -4,9 +4,9 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   await prisma.$transaction(async (tx) => {
-    const deleteOperations = body.files.map((idToDelete: string) => tx.appFile.delete({ where: { id: idToDelete } }));
+    const deleteOperations = body.files.map((idToDelete: number) => tx.appFile.delete({ where: { id: idToDelete } }));
 
-    const appFileList = body.files.map(async (appFileId: string) => {
+    const appFileList = body.files.map(async (appFileId: number) => {
       console.log({ appFileId });
       const t = await tx.appFile.findFirst({ where: { id: appFileId } });
       return t;
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     // from appFileList, get the id of the fileContent and delete it
     const fileContentIds = await Promise.all(appFileList).then((files) => files.map((file) => file?.fileContentId));
 
-    const deleteContentOperations = fileContentIds.map((idToDelete: string) => tx.fileContent.delete({ where: { id: idToDelete } }));
+    const deleteContentOperations = fileContentIds.map((idToDelete: number) => tx.fileContent.delete({ where: { id: idToDelete } }));
 
     // Execute deletions, updates, and creations
     await Promise.all([...deleteOperations, ...deleteContentOperations]);

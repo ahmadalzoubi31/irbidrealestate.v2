@@ -11,7 +11,7 @@ const validateOrderData = (data: Order) => {
 
 export default defineEventHandler(async (event) => {
   const body: Order = await readBody(event);
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -56,7 +56,6 @@ export default defineEventHandler(async (event) => {
       message: "Order updated successfully",
       data: updatedOrder,
     };
-
   } catch (error: any) {
     console.log({ prisma_code: error.code });
 

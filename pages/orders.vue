@@ -28,7 +28,7 @@ const select = (row: Order) => {
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: string) => {
+const editSelectedRecord = async (id: number) => {
   await navigateTo(`/orders/${id}/edit`);
 };
 

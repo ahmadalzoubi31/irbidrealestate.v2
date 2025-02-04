@@ -36,7 +36,7 @@ declare interface IEditBuilding {
 }
 
 declare interface ICreateApartment {
-  buildingId: string;
+  buildingId: number;
   apartmentNumber: string;
   ownerName: string;
   ownerNumber: string;
@@ -97,7 +97,7 @@ declare interface IRenewApartment {
 }
 
 declare interface ICreatePayment {
-  apartmentId: string;
+  apartmentId: number;
   nextRentDate: Date;
   receivedPaymentDate: Date;
   depositAmount: number;
@@ -169,11 +169,11 @@ declare interface IAppFile {
   url: string;
   key: string;
   purpose: string;
-  relatedId: string;
+  relatedId: number;
   relatedType: string;
-  adId: string | null;
-  paymentId: string | null;
-  apartmentId: string | null;
+  adId: number | null;
+  paymentId: number | null;
+  apartmentId: number | null;
 }
 
 declare interface IInterestedPeople {
@@ -216,7 +216,7 @@ declare interface IDetail {
 }
 
 declare interface ICreateClaim {
-  apartmentId: string;
+  apartmentId: number;
   claimDate: Date;
   claimFrom: string;
   total: number;

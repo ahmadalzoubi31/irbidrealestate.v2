@@ -17,7 +17,7 @@ export const useUpload = () => {
     });
   };
 
-  const uploadFile = async (files: any[], relatedType: string, relatedId: string, purpose: string) => {
+  const uploadFile = async (files: any[], relatedType: string, relatedId: number, purpose: string) => {
     try {
       // Validate file types and sizes
       const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];

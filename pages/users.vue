@@ -29,7 +29,7 @@ const select = (row: User) => {
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: string) => {
+const editSelectedRecord = async (id: number) => {
   await navigateTo(`/users/${id}/edit`);
 };
 

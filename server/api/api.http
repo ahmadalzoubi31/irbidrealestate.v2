@@ -1,0 +1,98 @@
+POST http://localhost:3000/api/buildings
+Content-Type: application/json
+
+{
+    "name": "name3",
+    "apartmentsCount": 15,
+    "basinName": "basinName",
+    "basinNumber": "basinNumber",
+    "landNumber": "landNumber",
+    "serviceAmount": 20,
+    "maintenanceAmount": 10
+}
+
+###
+PUT http://localhost:3000/api/flats/maintenances/update/5
+Content-Type: application/json
+
+{
+   "id":49,
+   "counter":1,
+   "buildingId":5,
+   "services":[
+      {
+         "isPaid":false,
+         "month":1,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":2,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":3,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":4,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "id":193,
+         "isPaid":false,
+         "month":5,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":6,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":7,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "id":196,
+         "isPaid":false,
+         "month":8,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":9,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":10,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":11,
+         "year":2025,
+         "flatId":49
+      },
+      {
+         "isPaid":false,
+         "month":12,
+         "year":2025,
+         "flatId":49
+      }
+   ]
+}

@@ -1,8 +1,7 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: string = getRouterParams(event).id;
-
+  const id: number = Number(getRouterParams(event).id);
 
   try {
     // Check if the building exists
@@ -29,13 +28,12 @@ export default defineEventHandler(async (event) => {
       success: true,
       message: `Building with ID ${id} successfully deleted.`,
     };
-
   } catch (error: any) {
     // Log error and return it
     console.error("Error deleting building:", error.message);
 
     throw createError({
-      statusCode: error.statusCode || 500,  // Default to 500 if statusCode is not available
+      statusCode: error.statusCode || 500, // Default to 500 if statusCode is not available
       message: error.message || "An unexpected error occurred while deleting the building.",
     });
   }

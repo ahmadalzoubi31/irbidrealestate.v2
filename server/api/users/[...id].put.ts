@@ -12,7 +12,7 @@ const validateUserData = (data: User) => {
 
 export default defineEventHandler(async (event) => {
   const body: User = await readBody(event);
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";

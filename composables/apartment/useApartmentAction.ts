@@ -28,7 +28,7 @@ export function useApartmentActions() {
     });
   };
 
-  const getOneApartment = async (id: string) => {
+  const getOneApartment = async (id: number) => {
     const { data, status, error } = await useFetch<ApartmentWithFiles>("/api/apartments/" + id, {
       key: "getApartmentById",
       server: true,
@@ -48,7 +48,7 @@ export function useApartmentActions() {
 
       // Upload the furniture images with the new apartment's ID as the related ID
       if (furnitureImages.length > 0) {
-        const res: boolean = await uploadFile(furnitureImages, "apartments", newApartment.data.id.toString(), "furniture");
+        const res: boolean = await uploadFile(furnitureImages, "apartments", newApartment.data.id, "furniture");
         if (!res) {
           // Optionally, you can delete the created apartment if file upload fails
           await $fetch("/api/apartments/" + newApartment.data.id, { method: "DELETE" });
@@ -57,7 +57,7 @@ export function useApartmentActions() {
       }
       // Upload the renter identification image with the new apartment's ID as the related ID
       if (renterIdentificationImage.length > 0) {
-        const res: boolean = await uploadFile(renterIdentificationImage, "apartments", newApartment.data.id.toString(), "renter-identification");
+        const res: boolean = await uploadFile(renterIdentificationImage, "apartments", newApartment.data.id, "renter-identification");
         if (!res) {
           // Optionally, you can delete the created apartment if file upload fails
           await $fetch("/api/apartments/" + newApartment.data.id, { method: "DELETE" });
@@ -66,7 +66,7 @@ export function useApartmentActions() {
       }
       // Upload the contract image with the new apartment's ID as the related ID
       if (contractImage.length > 0) {
-        const res: boolean = await uploadFile(contractImage, "apartments", newApartment.data.id.toString(), "contract");
+        const res: boolean = await uploadFile(contractImage, "apartments", newApartment.data.id, "contract");
         if (!res) {
           // Optionally, you can delete the created apartment if file upload fails
           await $fetch("/api/apartments/" + newApartment.data.id, { method: "DELETE" });
@@ -83,7 +83,7 @@ export function useApartmentActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editApartment = async (id: string, payload: IEditApartment, furnitureImages: any[], renterIdentificationImage: any, contractImage: any) => {
+  const editApartment = async (id: number, payload: IEditApartment, furnitureImages: any[], renterIdentificationImage: any, contractImage: any) => {
     try {
       // update the apartment
       await $fetch("/api/apartments/" + id, { method: "PUT", body: payload });
@@ -125,7 +125,7 @@ export function useApartmentActions() {
       useLoadingIndicator().finish();
     }
   };
-  const deleteApartment = async (id: string) => {
+  const deleteApartment = async (id: number) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
@@ -139,7 +139,7 @@ export function useApartmentActions() {
       useLoadingIndicator().finish();
     }
   };
-  const getDropdownItems = (row: { id: string }, openModal: (type: string) => void) => [
+  const getDropdownItems = (row: { id: number }, openModal: (type: string) => void) => [
     [
       {
         label: "تعديل",
@@ -160,7 +160,7 @@ export function useApartmentActions() {
     //   },
     // ],
   ];
-  const expireApartment = async (id: string, clearanceImages: any) => {
+  const expireApartment = async (id: number, clearanceImages: any) => {
     try {
       // update the apartment
       await $fetch("/api/apartments/" + id, { method: "PUT", body: { rentStatus: 0 } });
@@ -184,7 +184,7 @@ export function useApartmentActions() {
       useLoadingIndicator().finish();
     }
   };
-  const brokeApartment = async (id: string, payload: IBrokeApartment, contractImages: any) => {
+  const brokeApartment = async (id: number, payload: IBrokeApartment, contractImages: any) => {
     try {
       // get the apartment
       const { data: apartment } = await useFetch<Apartment>("/api/apartments/" + id, {
@@ -229,7 +229,7 @@ export function useApartmentActions() {
       });
       // Upload the furniture images with the new apartment's ID as the related ID
       if (contractImages.length > 0) {
-        const res: boolean = await uploadFile(contractImages, "apartments", result.data.id as string, "contract");
+        const res: boolean = await uploadFile(contractImages, "apartments", result.data.id, "contract");
         if (!res) {
           // Optionally, you can delete the created apartment if file upload fails
           await $fetch("/api/apartments/" + id, { method: "PUT", body: { rentStatus: 3 } });
@@ -247,7 +247,7 @@ export function useApartmentActions() {
       useLoadingIndicator().finish();
     }
   };
-  const renewApartment = async (id: string, contractImages: any) => {
+  const renewApartment = async (id: number, contractImages: any) => {
     try {
       // update the apartment
       await $fetch("/api/apartments/" + id, { method: "PUT", body: { rentStatus: 2 } });

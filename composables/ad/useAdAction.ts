@@ -20,7 +20,7 @@ export function useAdActions() {
     });
   };
 
-  const getOneAd = async (id: string) => {
+  const getOneAd = async (id: number) => {
     const { data, status, error } = await useFetch<Ad>("/api/ads/" + id, {
       key: "getAdById",
       server: true,
@@ -41,7 +41,7 @@ export function useAdActions() {
 
       // Upload the files with the new ad's ID as the related ID
       if (files.length > 0) {
-        const res: boolean = await uploadFile(files, "ads", newAd.data.id.toString(), "ad");
+        const res: boolean = await uploadFile(files, "ads", newAd.data.id, "ad");
 
         if (!res) {
           // Optionally, you can delete the created ad if file upload fails
@@ -60,7 +60,7 @@ export function useAdActions() {
     }
   };
 
-  const editAd = async (id: string, payload: IEditAd) => {
+  const editAd = async (id: number, payload: IEditAd) => {
     try {
       // Separate the body form the files
       const { files, ...adData } = payload;
@@ -99,7 +99,7 @@ export function useAdActions() {
     }
   };
 
-  const deleteAd = async (id: string) => {
+  const deleteAd = async (id: number) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 

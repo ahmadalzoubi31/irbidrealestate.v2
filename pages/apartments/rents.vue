@@ -35,7 +35,7 @@ const select = (row: Apartment) => {
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: string) => {
+const editSelectedRecord = async (id: number) => {
   await navigateTo(`/apartments/rents/${id}/edit`);
 };
 

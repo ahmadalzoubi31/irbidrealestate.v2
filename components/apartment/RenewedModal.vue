@@ -11,7 +11,7 @@ const state: IRenewApartment = reactive({
 // Define props
 const props = defineProps({
   selectedApartmentId: {
-    type: String,
+    type: Number,
     required: true,
   },
 });

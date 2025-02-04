@@ -9,6 +9,7 @@ export default defineEventHandler(async () => {
     // Fetch all buildings
     const buildings: Building[] = await prisma.building.findMany({
       where: { status: true },
+      orderBy: { id: "asc" },
     });
 
     return buildings;

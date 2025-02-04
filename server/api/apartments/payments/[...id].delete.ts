@@ -3,7 +3,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   try {
     // Check if the payment exists
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
       console.log(msg);
       throw createError({
         statusCode: 404,
-        message: msg
+        message: msg,
       });
     }
 

@@ -1,16 +1,16 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   try {
     // Fetch the claim by ID
     const claim = await prisma.claim.findUnique({
       where: { id },
       include: {
-        Apartment: true,
+        apartment: true,
         claimCollections: true,
-        claimDetails: true
+        claimDetails: true,
       },
     });
 

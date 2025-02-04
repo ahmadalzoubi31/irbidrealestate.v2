@@ -3,14 +3,14 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   try {
     // Fetch apartment by ID, including related building data
     const apartment = await prisma.apartment.findUnique({
       where: { id },
       include: {
-        Building: true,
+        building: true,
         files: {
           where: {
             status: true,

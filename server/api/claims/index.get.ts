@@ -9,9 +9,9 @@ export default defineEventHandler(async (event) => {
     // Fetch all claims
     const claims: Claim[] = await prisma.claim.findMany({
       include: {
-        Apartment: true,
+        apartment: true,
         claimCollections: true,
-        claimDetails: true
+        claimDetails: true,
       },
     });
     return claims;

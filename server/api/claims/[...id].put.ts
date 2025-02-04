@@ -15,7 +15,7 @@ const validateClaimData = (data: Claim) => {
 
 export default defineEventHandler(async (event) => {
   const body: ClaimWithApartment = await readBody(event); // Use any because `body` contains nested objects
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   if (!body) {
     var msg = "ERROR: Argument data is missing";
@@ -86,40 +86,40 @@ export default defineEventHandler(async (event) => {
       const upsertCollectionOperations = claimCollections.map((c: ClaimCollection) =>
         c.id
           ? tx.claimCollection.update({
-            where: { id: c.id },
-            data: {
-              dateTime: c.dateTime,
-              payment: c.payment,
-              notes: c.notes,
-            },
-          })
+              where: { id: c.id },
+              data: {
+                dateTime: c.dateTime,
+                payment: c.payment,
+                notes: c.notes,
+              },
+            })
           : tx.claimCollection.create({
-            data: {
-              dateTime: c.dateTime,
-              payment: c.payment,
-              notes: c.notes,
-              claimId: id,
-            },
-          })
+              data: {
+                dateTime: c.dateTime,
+                payment: c.payment,
+                notes: c.notes,
+                claimId: id,
+              },
+            })
       );
 
       // Handle updates and creations
       const upsertDetailOperations = claimDetails.map((d: ClaimDetail) =>
         d.id
           ? tx.claimDetail.update({
-            where: { id: d.id },
-            data: {
-              item: d.item,
-              price: d.price,
-            },
-          })
+              where: { id: d.id },
+              data: {
+                item: d.item,
+                price: d.price,
+              },
+            })
           : tx.claimDetail.create({
-            data: {
-              item: d.item,
-              price: d.price,
-              claimId: id,
-            },
-          })
+              data: {
+                item: d.item,
+                price: d.price,
+                claimId: id,
+              },
+            })
       );
 
       // Execute deletions, updates, and creations

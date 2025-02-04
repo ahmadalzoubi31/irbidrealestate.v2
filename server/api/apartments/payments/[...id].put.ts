@@ -11,7 +11,7 @@ const validatePaymentData = (data: Payment) => {
 
 export default defineEventHandler(async (event) => {
   const body: Payment = await readBody(event);
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   // Check if body data is provided
   if (!body) {
@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
       message: msg,
     });
   }
-
 
   try {
     validatePaymentData(body); // Custom validation for required fields
@@ -51,7 +50,6 @@ export default defineEventHandler(async (event) => {
       message: "Payment updated successfully",
       data: body,
     };
-
   } catch (error: any) {
     console.error("Error updating payment:", error.message);
 

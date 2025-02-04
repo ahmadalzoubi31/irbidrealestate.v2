@@ -7,32 +7,32 @@ async function seed() {
   const hashedPassword = await bcrypt.hash("P@ssw0rd", bcrypt.genSaltSync(10));
 
   await prisma.user.upsert({
-    where:{
-      username: "appadmin"
+    where: {
+      username: "appadmin",
     },
-    update:{},
-    create:{
+    update: {},
+    create: {
       firstName: "app",
       lastName: "admin",
       username: "appadmin",
       role: "admin",
       password: hashedPassword,
-    }
+    },
   });
 
   await prisma.building.upsert({
     where: {
-      name: "---"
+      name: "---",
     },
-    update:{},
+    update: {},
     create: {
-      id: "67805fbae829a8e7a786baa2",
+      id: 1,
       name: "---",
       apartmentsCount: 0,
       basinName: "-",
       basinNumber: "-",
       landNumber: "-",
-      status: false
+      status: false,
     },
   });
 }

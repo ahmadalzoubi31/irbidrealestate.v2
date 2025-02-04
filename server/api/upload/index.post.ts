@@ -2,11 +2,11 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   const body: any[] = await readBody(event);
-  const queryList = getQuery<{ relatedType: string; relatedId: string; purpose: string }>(event);
+  const queryList = getQuery<{ relatedType: string; relatedId: number; purpose: string }>(event);
 
-  const relatedType = queryList?.relatedType || "";
-  const relatedId = queryList?.relatedId || "";
-  const purpose = queryList?.purpose || "";
+  const relatedType = queryList?.relatedType;
+  const relatedId = queryList?.relatedId;
+  const purpose = queryList?.purpose;
 
   // Remove all file content related to id
   // await prisma.fileContent.deleteMany({
@@ -61,9 +61,9 @@ export default defineEventHandler(async (event) => {
       key: key,
       fileCount: fileCount,
       purpose: purpose,
-      adId: relatedType === "ads" ? relatedId : null,
-      apartmentId: relatedType === "apartments" ? relatedId : null,
-      paymentId: relatedType === "payments" ? relatedId : null,
+      adId: relatedType === "ads" ? Number(relatedId) : null,
+      apartmentId: relatedType === "apartments" ? Number(relatedId) : null,
+      paymentId: relatedType === "payments" ? Number(relatedId) : null,
       fileContentId: fileContentId,
     };
 

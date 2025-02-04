@@ -28,7 +28,7 @@ export function useClaimActions() {
     });
   };
 
-  const getOneClaim = async (id: string) => {
+  const getOneClaim = async (id: number) => {
     const { data, status, error } = await useFetch<ClaimWithApartment>("/api/claims/" + id, {
       key: "getClaimById",
       server: true,
@@ -46,7 +46,7 @@ export function useClaimActions() {
       // Separate the details and collections from the payload
       const { claimDetails, claimCollections, ...claimData } = payload;
 
-      const billImage = claimDetails.map(detail => detail.billImage);
+      const billImage = claimDetails.map((detail) => detail.billImage);
       const claimDetailsRest = claimDetails.map(({ billImage, ...rest }) => rest);
 
       const data = {
@@ -56,7 +56,7 @@ export function useClaimActions() {
       };
       // Create the claim
       const newClaim = await $fetch("/api/claims", { method: "POST", body: data });
-      console.log("🚀 ~ createClaim ~ newClaim:", newClaim)
+      console.log("🚀 ~ createClaim ~ newClaim:", newClaim);
 
       // Create Details
       // const newClaimDetails = await createClaimDetail(newClaim.data.id, details);
@@ -72,7 +72,7 @@ export function useClaimActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editClaim = async (id: string, payload: ICreateClaim) => {
+  const editClaim = async (id: number, payload: ICreateClaim) => {
     try {
       // update the claim
       await $fetch("/api/claims/" + id, { method: "PUT", body: payload });
@@ -96,7 +96,7 @@ export function useClaimActions() {
       useLoadingIndicator().finish();
     }
   };
-  const deleteClaim = async (id: string) => {
+  const deleteClaim = async (id: number) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
@@ -110,7 +110,7 @@ export function useClaimActions() {
       useLoadingIndicator().finish();
     }
   };
-  const createClaimDetail = async (id: string, payload: IDetail[]) => {
+  const createClaimDetail = async (id: number, payload: IDetail[]) => {
     try {
       await $fetch("/api/claims/details/" + id, { method: "POST", body: payload });
       handleSuccess("تم إضافة التفاصيل بنجاح");
@@ -118,7 +118,7 @@ export function useClaimActions() {
       handleError(error, "حدث خطأ أثناء إضافة التفاصيل");
     }
   };
-  const editClaimDetail = async (id: string, payload: ClaimDetail) => {
+  const editClaimDetail = async (id: number, payload: ClaimDetail) => {
     try {
       await $fetch("/api/claims/details/" + id, { method: "PUT", body: payload });
       handleSuccess("تم تعديل التفاصيل بنجاح");
@@ -126,7 +126,7 @@ export function useClaimActions() {
       handleError(error, "حدث خطأ أثناء تعديل التفاصيل");
     }
   };
-  const deleteClaimDetail = async (id: string) => {
+  const deleteClaimDetail = async (id: number) => {
     try {
       await $fetch("/api/claims/details/" + id, { method: "DELETE" });
       handleSuccess("تم حذف التفاصيل بنجاح");
@@ -134,7 +134,7 @@ export function useClaimActions() {
       handleError(error, "حدث خطأ أثناء حذف التفاصيل");
     }
   };
-  const createClaimCollection = async (id: string, payload: any) => {
+  const createClaimCollection = async (id: number, payload: any) => {
     try {
       await $fetch("/api/claims/" + id + "/collections", { method: "POST", body: payload });
       handleSuccess("تم إضافة التحصيل بنجاح");
@@ -142,7 +142,7 @@ export function useClaimActions() {
       handleError(error, "حدث خطأ أثناء إضافة التحصيل");
     }
   };
-  const editClaimCollection = async (id: string, payload: any) => {
+  const editClaimCollection = async (id: number, payload: any) => {
     try {
       await $fetch("/api/claims/collections/" + id, { method: "PUT", body: payload });
       handleSuccess("تم تعديل التحصيل بنجاح");
@@ -150,7 +150,7 @@ export function useClaimActions() {
       handleError(error, "حدث خطأ أثناء تعديل التحصيل");
     }
   };
-  const deleteClaimCollection = async (id: string) => {
+  const deleteClaimCollection = async (id: number) => {
     try {
       await $fetch("/api/claims/collections/" + id, { method: "DELETE" });
       handleSuccess("تم حذف التحصيل بنجاح");

@@ -9,7 +9,7 @@ const validateApartmentData = (data: Apartment) => {
 
 export default defineEventHandler(async (event) => {
   const body: Apartment = await readBody(event);
-  const id: string = getRouterParams(event).id;
+  const id: number = Number(getRouterParams(event).id);
 
   // Check if body data is provided
   if (!body) {

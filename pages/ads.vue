@@ -26,7 +26,7 @@ const select = (row: Ad) => {
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: string) => {
+const editSelectedRecord = async (id: number) => {
   await navigateTo(`/ads/${id}/edit`);
 };
 const deleteSelectedRecord = async () => {

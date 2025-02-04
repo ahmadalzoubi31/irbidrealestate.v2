@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     // Fetch all apartments
     const apartments: Apartment[] = await prisma.apartment.findMany({
       include: {
-        Building: true,
+        building: true,
         files: {
           where: {
             status: true,

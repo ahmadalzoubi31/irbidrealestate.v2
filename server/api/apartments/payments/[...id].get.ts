@@ -3,17 +3,16 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: string = getRouterParams(event).id;
-
+  const id: number = Number(getRouterParams(event).id);
 
   try {
     // Fetch the payment record along with related apartment and building details
     const payment = await prisma.payment.findUnique({
       where: { id },
       include: {
-        Apartment: {
+        apartment: {
           include: {
-            Building: true,
+            building: true,
           },
         },
       },
