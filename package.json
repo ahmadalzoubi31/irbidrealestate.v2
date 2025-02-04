@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "vercel-build": "bunx prisma generate && bunx prisma migrate deploy && nuxt build"
+    "vercel-build": "bunx prisma generate && bunx prisma push db && nuxt build"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
