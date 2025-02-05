@@ -7,7 +7,7 @@ const { getOneOrder, editOrder } = useOrderActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedOrderId = ref(route.params.id as string);
+const selectedOrderId = ref(Number(route.params.id));
 
 const { data: order, status } = await getOneOrder(selectedOrderId.value);
 

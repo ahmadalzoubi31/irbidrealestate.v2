@@ -6,7 +6,7 @@ const { editPayment } = usePaymentActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedPaymentId = ref(route.params.id as string);
+const selectedPaymentId = ref(Number(route.params.id));
 
 // Access the shared state for payments
 const payments = useState<Payment[]>("paymentList");

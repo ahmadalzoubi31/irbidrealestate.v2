@@ -157,7 +157,7 @@ export default defineEventHandler(async (event) => {
         // 3. Update building record
         const updatedBuilding = await tx.building.update({
           where: { id: buildingId },
-          data: { apartmentsCount: newCount },
+          data: { ...body, apartmentsCount: newCount },
           include: { flats: true },
         });
 

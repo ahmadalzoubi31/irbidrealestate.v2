@@ -5,7 +5,7 @@ const { getOneApartment, editApartment } = useApartmentActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedApartmentId = ref(route.params.id as string);
+const selectedApartmentId = ref(Number(route.params.id));
 
 const { data: apartment } = await getOneApartment(selectedApartmentId.value);
 

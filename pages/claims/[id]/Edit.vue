@@ -6,7 +6,7 @@ const { getOneClaim, editClaim } = useClaimActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedClaimId = ref(route.params.id as string);
+const selectedClaimId = ref(Number(route.params.id));
 
 const { data: claim } = await getOneClaim(selectedClaimId.value);
 

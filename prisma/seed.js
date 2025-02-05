@@ -14,27 +14,28 @@ async function seed() {
     create: {
       firstName: "app",
       lastName: "admin",
+      fullName: "app admin",
       username: "appadmin",
       role: "admin",
       password: hashedPassword,
     },
   });
 
-  await prisma.building.upsert({
-    where: {
-      name: "---",
-    },
-    update: {},
-    create: {
-      id: 1,
-      name: "---",
-      apartmentsCount: 0,
-      basinName: "-",
-      basinNumber: "-",
-      landNumber: "-",
-      status: false,
-    },
-  });
+  // await prisma.building.upsert({
+  //   where: {
+  //     name: "---",
+  //   },
+  //   update: {},
+  //   create: {
+  //     id: 1,
+  //     name: "---",
+  //     apartmentsCount: 0,
+  //     basinName: "-",
+  //     basinNumber: "-",
+  //     landNumber: "-",
+  //     status: false,
+  //   },
+  // });
 }
 
 try {

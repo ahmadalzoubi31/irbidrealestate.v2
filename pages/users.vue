@@ -69,9 +69,9 @@ const deleteSelectedRecord = async () => {
               <!-- {{ row }} -->
             </div>
           </template>
-          <template #id-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
-              {{ row.id }}
+          <template #fullName-data="{ row }">
+            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.fullName)">
+              {{ row.fullName }}
             </span>
           </template>
           <template #role-data="{ row }">

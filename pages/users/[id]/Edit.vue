@@ -6,7 +6,7 @@ const { editUser } = useUserActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedUserId = ref(route.params.id as string);
+const selectedUserId = ref(Number(route.params.id));
 
 // Access the shared state for users
 const users = useState<User[]>("userList");

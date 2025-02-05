@@ -5,7 +5,7 @@ const { getOneBuilding, editBuilding } = useBuildingActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedBuildingId = ref(route.params.id as string);
+const selectedBuildingId = ref(Number(route.params.id));
 
 const { data: building, status } = await getOneBuilding(selectedBuildingId.value);
 

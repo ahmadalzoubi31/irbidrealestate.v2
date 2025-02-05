@@ -29,9 +29,19 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateUserData(body);
 
+    // Create new user entry
+    const payload = {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      fullName: `${body.firstName} ${body.lastName}`,
+      username: body.username,
+      role: body.role,
+      password: hashedPassword,
+    };
+
     // Create a new user entry
     const newUser: User = await prisma.user.create({
-      data: { ...body, password: hashedPassword },
+      data: payload,
     });
 
     // Return success response

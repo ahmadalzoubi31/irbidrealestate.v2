@@ -5,7 +5,7 @@ const { getOneAd, editAd } = useAdActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedAdId = ref(route.params.id as string);
+const selectedAdId = ref(Number(route.params.id));
 
 const { data: ad, status } = await getOneAd(selectedAdId.value);
 
