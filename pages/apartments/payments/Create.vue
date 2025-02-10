@@ -6,7 +6,7 @@ const { createPayment } = usePaymentActions();
 
 // *** Define Variables ***
 const state: ICreatePayment = reactive({
-  apartmentId: "",
+  apartmentId: 0,
   nextRentDate: new Date(),
   receivedPaymentDate: new Date(),
   depositAmount: 0,
@@ -14,7 +14,7 @@ const state: ICreatePayment = reactive({
   notes: "",
 });
 const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
-const selectedBuildingId = ref("");
+const selectedBuildingId = ref(0);
 
 // *** Define Methods ***
 const submitForm = async () => {
@@ -254,10 +254,10 @@ watch(fillRentDate, (newVal, oldVal) => {
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
       <UButton
         to="/apartments/payments"
-        :size="'md'"
+        :size="'sm'"
         class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
       >
         الغاء

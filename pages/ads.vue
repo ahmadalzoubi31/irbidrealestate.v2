@@ -51,8 +51,13 @@ const generateSharedLinkSelectedRecord = async () => {
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة اعلان" :to="'/ads/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" @click="deleteSelectedRecord" />
-          <UButton icon="i-heroicons-arrow-right-on-rectangle-20-solid" label="نشر" @click="generateSharedLinkSelectedRecord" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
+          <UButton
+            icon="i-heroicons-arrow-right-on-rectangle-20-solid"
+            label="نشر"
+            :disabled="selected.length === 0"
+            @click="generateSharedLinkSelectedRecord"
+          />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>

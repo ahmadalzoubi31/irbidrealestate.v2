@@ -11,8 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  // Uses connection pooling
+  provider  = "postgres"
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
@@ -92,7 +91,6 @@ model Apartment {
   updatedBy            String?   @default("-")
   updatedAt            DateTime  @updatedAt
   payments             Payment[]
-  claims               Claim[]
   building             Building? @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   buildingId           Int?
 }
@@ -179,6 +177,8 @@ model Order {
 // *** Claims ***
 model Claim {
   id               Int               @id @default(autoincrement())
+  apartmentName    String
+  claimNumber      String
   claimDate        DateTime          @default(now())
   claimFrom        String
   claimCollections ClaimCollection[]
@@ -189,8 +189,6 @@ model Claim {
   createdAt        DateTime          @default(now())
   updatedBy        String?           @default("-")
   updatedAt        DateTime          @updatedAt
-  apartmentId      Int
-  apartment        Apartment         @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
 }
 
 model ClaimCollection {
@@ -203,11 +201,12 @@ model ClaimCollection {
 }
 
 model ClaimDetail {
-  id      Int    @id @default(autoincrement())
-  item    String
-  price   Float  @default(0.0)
-  claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
-  claimId Int
+  id       Int      @id @default(autoincrement())
+  item     String
+  price    Float    @default(0.0)
+  dateTime DateTime @default(now())
+  claim    Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId  Int
 }
 
 model AppFile {
@@ -238,11 +237,11 @@ model AppFile {
 
 model FileContent {
   id         Int      @id @default(autoincrement())
-  createdAt  DateTime @db.Date
   key        String
-  modifiedAt DateTime @db.Date
   value      String
   appFile    AppFile?
+  createdAt  DateTime
+  modifiedAt DateTime
 }
 
 model Flat {

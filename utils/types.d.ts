@@ -212,11 +212,13 @@ declare interface ICollection {
 declare interface IDetail {
   item: string;
   price: number;
+  dateTime: Date;
   billImage: any;
 }
 
 declare interface ICreateClaim {
-  apartmentId: number;
+  apartmentName: string;
+  claimNumber: string;
   claimDate: Date;
   claimFrom: string;
   total: number;

@@ -60,7 +60,7 @@ const submitForm = async () => {
 
         <template #footer>
           <div class="text-left">
-            <UButton :type="'submit'" :size="'md'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+            <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
           </div>
         </template>
       </UCard>

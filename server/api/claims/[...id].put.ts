@@ -2,8 +2,7 @@ import { Claim, Apartment, ClaimCollection, ClaimDetail } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 // Declare interface
-interface ClaimWithApartment extends Claim {
-  Apartment: Apartment;
+interface ClaimWithDetailsAndCollections extends Claim {
   claimDetails: ClaimDetail[];
   claimCollections: ClaimCollection[];
 }
@@ -14,7 +13,7 @@ const validateClaimData = (data: Claim) => {
 };
 
 export default defineEventHandler(async (event) => {
-  const body: ClaimWithApartment = await readBody(event); // Use any because `body` contains nested objects
+  const body: ClaimWithDetailsAndCollections = await readBody(event); // Use any because `body` contains nested objects
   const id: number = Number(getRouterParams(event).id);
 
   if (!body) {
@@ -36,7 +35,7 @@ export default defineEventHandler(async (event) => {
     // });
 
     // Separate `claimCollections, claimDetails` from the main body
-    const { claimCollections, claimDetails, Apartment, ...claimData } = body;
+    const { claimCollections, claimDetails, ...claimData } = body;
     // Validate claim existence
     const claim = await prisma.claim.findUnique({
       where: { id },

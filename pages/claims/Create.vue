@@ -8,7 +8,8 @@ const { createClaim } = useClaimActions();
 const isLoading = ref(false);
 const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 const state: ICreateClaim = reactive({
-  apartmentId: "",
+  apartmentName: "",
+  claimNumber: "",
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
@@ -23,6 +24,7 @@ const collectionData = reactive({
 const detailData = reactive({
   item: "",
   price: 0,
+  dateTime: new Date(),
   billImage: undefined,
 });
 const detailItem = (row: { item: string; price: number }) => [
@@ -70,10 +72,11 @@ const addCollectionData = () => {
   collectionData.notes = "";
 };
 const addDetailData = () => {
-  state.claimDetails.push({ item: detailData.item, price: detailData.price, billImage: files.value[0] });
+  state.claimDetails.push({ item: detailData.item, price: detailData.price, dateTime: detailData.dateTime, billImage: files.value[0] });
 
   detailData.item = "";
   detailData.price = 0;
+  detailData.dateTime = new Date();
   detailData.billImage = undefined;
 };
 const fillModalPropertirs = (rowContent: string) => {
@@ -81,18 +84,6 @@ const fillModalPropertirs = (rowContent: string) => {
   isOpen.value = true;
 };
 
-// Get the select menu data
-const { apartments: availableApartments } = useApartments();
-const computedApartments = computed(() =>
-  availableApartments.value?.filter((a) => a.rentStatus === 2 || a.rentStatus === 3).map((a) => ({ id: a.id, name: a.apartmentNumber }))
-);
-watch(
-  () => state.apartmentId,
-  () => {
-    const ownerName = availableApartments.value?.filter((a) => a.id === state.apartmentId).map((a) => a.ownerName)[0];
-    state.claimFrom = ownerName as string;
-  }
-);
 watch(
   () => state.claimDetails,
   (newDetails) => {
@@ -120,21 +111,18 @@ watch(
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
-        <!-- apartmentId -->
+        <!-- claimNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="apartmentId">
+          <label for="claimNumber"> رقم المطالبة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <UInput id="claimNumber" name="claimNumber" :size="'sm'" :required="true" v-model="state.claimNumber" />
+        </div>
+        <!-- apartmentName -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="apartmentName">
             رقم الشقة
             <span class="text-sm text-primary-500">(اجباري)</span>
           </label>
-          <USelectMenu
-            id="apartmentId"
-            name="apartmentId"
-            :required="true"
-            v-model="state.apartmentId"
-            :options="computedApartments"
-            value-attribute="id"
-            option-attribute="name"
-          />
+          <UInput id="apartmentName" name="apartmentName" :size="'sm'" :required="true" v-model="state.apartmentName" />
         </div>
         <!-- claimDate -->
         <div class="col-span-6 sm:col-span-2">
@@ -197,6 +185,24 @@ watch(
         <div class="col-span-6 sm:col-span-2">
           <UInput id="price" name="price" type="number" :size="'sm'" :required="false" v-model="detailData.price" />
         </div>
+        <!-- dateTime -->
+        <label for="dateTime" class="col-span-6 sm:col-span-1"> الوقت والتاريخ :</label>
+        <div class="col-span-6 sm:col-span-2">
+          <UPopover :popper="{ placement: 'bottom-start' }">
+            <UInput
+              icon="i-heroicons-calendar-days-20-solid"
+              nam="dateTime"
+              :size="'sm'"
+              class="w-full"
+              :model-value="format(detailData.dateTime, 'dd/MM/yyyy')"
+            />
+
+            <template #panel="{ close }">
+              <AppDatePicker v-model="detailData.dateTime" is-required @close="close" />
+            </template>
+          </UPopover>
+          <!-- <UInput id="dateTime" name="dateTime" :size="'sm'" :required="false" v-model="collectionData.dateTime" /> -->
+        </div>
         <!-- billImage -->
         <label for="billImage" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
         <div class="col-span-6 sm:col-span-2">
@@ -213,10 +219,10 @@ watch(
 
         <UButton
           :type="'button'"
-          :size="'md'"
+          :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addDetailData"
-          :disabled="detailData.item === '' || detailData.price === 0 || detailData.billImage === undefined"
+          :disabled="detailData.item === '' || detailData.price === 0 || detailData.dateTime === undefined"
         >
           اضافة
         </UButton>
@@ -225,13 +231,22 @@ watch(
         <UTable
           class=""
           :rows="state.claimDetails"
-          :columns="[{ key: 'item', label: 'المادة' }, { key: 'price', label: 'السعر' }, { key: 'billImage', label: 'الفاتورة' }, { key: 'actions' }]"
+          :columns="[
+            { key: 'item', label: 'المادة' },
+            { key: 'price', label: 'السعر' },
+            { key: 'dateTime', label: 'الوقت والتاريخ' },
+            { key: 'billImage', label: 'الفاتورة' },
+            { key: 'actions' },
+          ]"
         >
           <template #billImage-data="{ row }">
             <div @click="fillModalPropertirs(row.billImage.content)" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
               <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
               مشاهدة
             </div>
+          </template>
+          <template #dateTime-data="{ row }">
+            <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
           </template>
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
@@ -282,7 +297,7 @@ watch(
         </div>
         <UButton
           :type="'button'"
-          :size="'md'"
+          :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addCollectionData"
           :disabled="!collectionData.dateTime || collectionData.payment === 0"
@@ -314,10 +329,10 @@ watch(
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'md'" :disabled="isLoading" :loading="isLoading" class="w-20 text-center place-content-center ml-3">
+      <UButton :type="'submit'" :size="'sm'" :disabled="isLoading" :loading="isLoading" class="w-20 text-center place-content-center ml-3">
         حفظ
       </UButton>
-      <UButton to="/claims" :size="'md'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton to="/claims" :size="'sm'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
         الغاء
       </UButton>
     </div>

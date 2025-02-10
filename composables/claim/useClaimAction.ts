@@ -1,8 +1,7 @@
 import type { Claim, ClaimCollection, ClaimDetail, Apartment } from "@prisma/client";
 
 // Extend the Claim type to include the files property
-interface ClaimWithApartment extends Claim {
-  Apartment: Apartment;
+interface ClaimWithDetailsAndCollections extends Claim {
   claimDetails: ClaimDetail[];
   claimCollections: ClaimCollection[];
 }
@@ -29,7 +28,7 @@ export function useClaimActions() {
   };
 
   const getOneClaim = async (id: number) => {
-    const { data, status, error } = await useFetch<ClaimWithApartment>("/api/claims/" + id, {
+    const { data, status, error } = await useFetch<ClaimWithDetailsAndCollections>("/api/claims/" + id, {
       key: "getClaimById",
       server: true,
     });

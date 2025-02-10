@@ -36,6 +36,14 @@ const deleteSelectedRecord = async () => {
   if (!selected.value.length) return;
   await deleteClaim(selected.value[0].id);
 };
+const generateSharedLinkSelectedRecord = async () => {
+  const id = selected.value[0].id;
+  navigator.clipboard.writeText(`/claims/${id}/generate`);
+  window.open(`/claims/${id}/generate`, "_blank");
+  // await navigateTo(`/ads/${id}/generate`, {
+  //   replace: true,
+  // });
+};
 </script>
 
 <template>
@@ -45,7 +53,13 @@ const deleteSelectedRecord = async () => {
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
           <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مطالبة" :to="'/claims/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مطالبة" @click="deleteSelectedRecord" />
+          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مطالبة" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
+          <UButton
+            icon="i-heroicons-arrow-right-on-rectangle-20-solid"
+            label="نشر"
+            :disabled="selected.length === 0"
+            @click="generateSharedLinkSelectedRecord"
+          />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
@@ -71,9 +85,9 @@ const deleteSelectedRecord = async () => {
               {{ format(row.claimDate, "dd/MM/yyyy") }}
             </span>
           </template>
-          <template #id-data="{ row }">
+          <template #claimNumber-data="{ row }">
             <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
-              {{ row.id }}
+              {{ row.claimNumber }}
             </span>
           </template>
           <template #status-data="{ row }">

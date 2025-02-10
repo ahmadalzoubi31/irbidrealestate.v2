@@ -3,6 +3,7 @@ CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
+    "fullName" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" TEXT NOT NULL,
@@ -156,6 +157,7 @@ CREATE TABLE "Order" (
 -- CreateTable
 CREATE TABLE "Claim" (
     "id" SERIAL NOT NULL,
+    "apartmentName" TEXT NOT NULL,
     "claimDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "claimFrom" TEXT NOT NULL,
     "total" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
@@ -164,7 +166,6 @@ CREATE TABLE "Claim" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedBy" TEXT DEFAULT '-',
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "apartmentId" INTEGER NOT NULL,
 
     CONSTRAINT "Claim_pkey" PRIMARY KEY ("id")
 );
@@ -200,7 +201,7 @@ CREATE TABLE "AppFile" (
     "key" TEXT NOT NULL,
     "fileCount" INTEGER NOT NULL,
     "purpose" TEXT NOT NULL,
-    "relatedId" TEXT NOT NULL,
+    "relatedId" INTEGER NOT NULL,
     "relatedType" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createdBy" TEXT NOT NULL DEFAULT '-',
@@ -218,10 +219,10 @@ CREATE TABLE "AppFile" (
 -- CreateTable
 CREATE TABLE "FileContent" (
     "id" SERIAL NOT NULL,
-    "createdAt" DATE NOT NULL,
     "key" TEXT NOT NULL,
-    "modifiedAt" DATE NOT NULL,
     "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "modifiedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "FileContent_pkey" PRIMARY KEY ("id")
 );
@@ -230,11 +231,6 @@ CREATE TABLE "FileContent" (
 CREATE TABLE "Flat" (
     "id" SERIAL NOT NULL,
     "counter" INTEGER NOT NULL,
-    "status" BOOLEAN NOT NULL DEFAULT true,
-    "createdBy" TEXT NOT NULL DEFAULT '-',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedBy" TEXT DEFAULT '-',
-    "updatedAt" TIMESTAMP(3) NOT NULL,
     "buildingId" INTEGER NOT NULL,
 
     CONSTRAINT "Flat_pkey" PRIMARY KEY ("id")
@@ -246,11 +242,6 @@ CREATE TABLE "Service" (
     "isPaid" BOOLEAN NOT NULL DEFAULT false,
     "month" INTEGER NOT NULL,
     "year" INTEGER NOT NULL,
-    "status" BOOLEAN NOT NULL DEFAULT true,
-    "createdBy" TEXT NOT NULL DEFAULT '-',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedBy" TEXT DEFAULT '-',
-    "updatedAt" TIMESTAMP(3) NOT NULL,
     "flatId" INTEGER,
 
     CONSTRAINT "Service_pkey" PRIMARY KEY ("id")
@@ -262,11 +253,6 @@ CREATE TABLE "Maintenance" (
     "isPaid" BOOLEAN NOT NULL DEFAULT false,
     "month" INTEGER NOT NULL,
     "year" INTEGER NOT NULL,
-    "status" BOOLEAN NOT NULL DEFAULT true,
-    "createdBy" TEXT NOT NULL DEFAULT '-',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedBy" TEXT DEFAULT '-',
-    "updatedAt" TIMESTAMP(3) NOT NULL,
     "flatId" INTEGER,
 
     CONSTRAINT "Maintenance_pkey" PRIMARY KEY ("id")
@@ -295,9 +281,6 @@ ALTER TABLE "Payment" ADD CONSTRAINT "Payment_apartmentId_fkey" FOREIGN KEY ("ap
 
 -- AddForeignKey
 ALTER TABLE "InterestedPeople" ADD CONSTRAINT "InterestedPeople_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Claim" ADD CONSTRAINT "Claim_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ClaimCollection" ADD CONSTRAINT "ClaimCollection_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES "Claim"("id") ON DELETE CASCADE ON UPDATE CASCADE;

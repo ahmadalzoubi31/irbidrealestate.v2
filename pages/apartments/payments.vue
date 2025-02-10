@@ -47,7 +47,7 @@ const deleteSelectedRecord = async () => {
         <div class="flex my-3 justify-between">
           <div id="buttonWrapper">
             <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة دفعة" :to="'/apartments/payments/create'" />
-            <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف دفعة" @click="deleteSelectedRecord" />
+            <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف دفعة" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
           </div>
           <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
         </div>

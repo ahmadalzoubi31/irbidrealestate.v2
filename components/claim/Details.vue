@@ -1,12 +1,11 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Apartment, Claim, ClaimCollection, ClaimDetail } from "@prisma/client";
+import type { Claim, ClaimCollection, ClaimDetail } from "@prisma/client";
 import format from "date-fns/format";
 
 // Declare interface
-interface ClaimWithApartment extends Claim {
-  Apartment: Apartment;
+interface ClaimWithDetailsAndCollections extends Claim {
   claimDetails: ClaimDetail[];
   claimCollections: ClaimCollection[];
 }
@@ -14,12 +13,13 @@ interface ClaimWithApartment extends Claim {
 // Declare Props
 const props = defineProps({
   claim: {
-    type: Object as PropType<ClaimWithApartment>,
+    type: Object as PropType<ClaimWithDetailsAndCollections>,
     required: true,
   },
 });
 // Declare Variables
 const heading = [
+  "رقم المطالبة",
   "رقم الشقة",
   "المطلوب منه",
   "تاريخ المطالبة",
@@ -32,17 +32,28 @@ const heading = [
 ];
 
 // Specify the keys you want to extract
-const keysToExtract = ["Apartment.apartmentNumber", "claimFrom", "claimDate", "total", "status", "createdBy", "createdAt", "updatedBy", "updatedAt"];
+const keysToExtract = [
+  "claimNumber",
+  "apartmentName",
+  "claimFrom",
+  "claimDate",
+  "total",
+  "status",
+  "createdBy",
+  "createdAt",
+  "updatedBy",
+  "updatedAt",
+];
 
 // Extract the desired keys
-const extracted: ClaimWithApartment = useExtractKeys(props.claim, keysToExtract);
+const extracted: ClaimWithDetailsAndCollections = useExtractKeys(props.claim, keysToExtract);
 
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, "ddd YYYY-MM-DD hh:mm:ss A").value;
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
+  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-5 sm:gap-2">
     <template v-for="(entry, key, index) in extracted">
       <div>
         <dt class="font-medium">{{ heading[index] }}</dt>
@@ -75,8 +86,12 @@ const formatted = (r: Date) => useDateFormat(r, "ddd YYYY-MM-DD hh:mm:ss A").val
             :columns="[
               { key: 'item', label: 'المادة' },
               { key: 'price', label: 'السعر' },
+              { key: 'dateTime', label: 'الوقت والتاريخ' },
             ]"
           >
+            <template #dateTime-data="{ row }">
+              <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
+            </template>
           </UTable>
         </div>
       </dd>

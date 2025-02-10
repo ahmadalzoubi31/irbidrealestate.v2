@@ -47,5 +47,9 @@ export default defineAppConfig({
     card: {
       base: "w-full",
     },
+    notification: {
+      background: "bg-gray-100 dark:bg-gray-900",
+      ring: "ring-1 ring-gray-200 dark:ring-gray-800",
+    },
   },
 });
