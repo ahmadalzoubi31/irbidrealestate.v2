@@ -13,6 +13,7 @@ const state: ICreateClaim = reactive({
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
+  clearanceNotes: "",
   claimCollections: [],
   claimDetails: [],
 });
@@ -326,12 +327,23 @@ watch(
         </UTable>
       </div>
     </div>
+    <!-- More Info Section -->
+    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">تفاصيل المخالصة</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <div class="grid grid-cols-12 gap-x-6 gap-y-4 items-center">
+        <!-- clearanceNotes -->
+        <!-- <label for="clearanceNotes" class="col-span-6 sm:col-span-1"> الملاحظات :</label> -->
+        <div class="col-span-12 sm:col-span-12">
+          <UTextarea id="clearanceNotes" name="clearanceNotes" :size="'sm'" :required="false" v-model="state.clearanceNotes" />
+        </div>
+      </div>
+    </div>
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'sm'" :disabled="isLoading" :loading="isLoading" class="w-20 text-center place-content-center ml-3">
-        حفظ
-      </UButton>
+      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
       <UButton to="/claims" :size="'sm'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
         الغاء
       </UButton>

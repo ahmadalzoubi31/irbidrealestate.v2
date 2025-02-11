@@ -222,6 +222,7 @@ declare interface ICreateClaim {
   claimDate: Date;
   claimFrom: string;
   total: number;
+  clearanceNotes: string;
   claimCollections: Array<ICollection>;
   claimDetails: Array<IDetail>;
 }

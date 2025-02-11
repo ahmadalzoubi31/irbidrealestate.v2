@@ -20,7 +20,6 @@ Anchor color: #3689cc
 
 html {
   font-family: "Cairo", "Readex Pro", sans-serif;
-  zoom: 0.9;
 }
 
 body {
@@ -33,6 +32,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   direction: rtl;
+  
 }
 
 #buttonWrapper button,

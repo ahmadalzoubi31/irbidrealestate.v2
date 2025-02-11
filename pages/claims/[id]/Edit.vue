@@ -49,9 +49,12 @@ const state: ICreateClaim = reactive({
   claimDate: new Date(),
   claimFrom: "",
   total: 0.0,
+  clearanceNotes: "",
   claimCollections: [],
   claimDetails: [],
 });
+const isOpen = ref(false);
+const modalData = ref("");
 
 // Handle form submission
 const submitForm = async () => {
@@ -73,16 +76,20 @@ const addDetailData = () => {
   collectionData.dateTime = new Date();
   detailData.billImage = undefined;
 };
+const fillModalPropertirs = (rowContent: string) => {
+  modalData.value = rowContent;
+  isOpen.value = true;
+};
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
   if (claim) {
-    console.log(claim);
-
     state.apartmentName = claim.apartmentName;
+    state.claimNumber = claim.claimNumber;
     state.claimDate = claim.claimDate;
     state.claimFrom = claim.claimFrom;
     state.total = claim.total;
+    state.clearanceNotes = claim.clearanceNotes as string;
     // @ts-ignore
     state.claimCollections = claim.claimCollections;
     // @ts-ignore
@@ -111,37 +118,28 @@ watch(
         <!-- claimNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="claimNumber"> رقم المطالبة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="claimNumber" name="claimNumber" :required="true" :disabled="true" inputClass="bg-gray-200" :modelValue="claim?.claimNumber" />
+          <UInput id="claimNumber" name="claimNumber" :size="'sm'" :required="true" v-model="state.claimNumber" />
         </div>
         <!-- apartmentName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentName">
             رقم الشقة
-            <span class="text-xs text-primary-500">(اجباري)</span>
+            <span class="text-sm text-primary-500">(اجباري)</span>
           </label>
-          <UInput
-            id="apartmentName"
-            name="apartmentName"
-            :required="true"
-            :disabled="true"
-            inputClass="bg-gray-200"
-            :modelValue="claim?.apartmentName"
-          />
+          <UInput id="apartmentName" name="apartmentName" :size="'sm'" :required="true" v-model="state.apartmentName" />
         </div>
         <!-- claimDate -->
         <div class="col-span-6 sm:col-span-2">
           <label for="claimDate">
             تاريخ المطالبة
-            <span class="text-xs text-primary-500">(اجباري)</span>
-          </label>
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
           <UPopover :popper="{ placement: 'bottom-start' }">
             <UInput
               icon="i-heroicons-calendar-days-20-solid"
               name="claimDate"
               :size="'sm'"
               class="w-full"
-              :disabled="true"
-              inputClass="bg-gray-200"
               :model-value="format(state.claimDate, 'dd/MM/yyyy')"
             />
 
@@ -156,28 +154,17 @@ watch(
             مطالبة مالية من السيد/السيدة
             <span class="text-sm text-primary-500">(اجباري)</span></label
           >
-          <UInput
-            id="claimFrom"
-            name="claimFrom"
-            :size="'sm'"
-            :required="true"
-            :disabled="true"
-            inputClass="bg-gray-200"
-            :modelValue="claim?.claimFrom"
-          />
+          <UInput id="claimFrom" name="claimFrom" :size="'sm'" :required="true" v-model="state.claimFrom" />
         </div>
         <!-- total -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="total">
-            المبلغ الكلي
-            <span class="text-sm text-primary-500">(اجباري)</span></label
-          >
+          <label for="total"> المبلغ الكلي </label>
           <UInput
             id="total"
             name="total"
-            type="number"
+            type="text"
             :size="'sm'"
-            :required="true"
+            :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
             v-model="state.total"
@@ -223,14 +210,23 @@ watch(
         <!-- billImage -->
         <label for="billImage" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput id="billImage" name="billImage" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" />
+          <UInput
+            id="billImage"
+            name="billImage"
+            :type="'file'"
+            :size="'sm'"
+            :required="false"
+            @input="handleFileInput"
+            v-model="detailData.billImage"
+          />
         </div>
+
         <UButton
           :type="'button'"
           :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addDetailData"
-          :disabled="detailData.item === '' || detailData.price === 0"
+          :disabled="detailData.item === '' || detailData.price === 0 || detailData.dateTime === undefined"
         >
           اضافة
         </UButton>
@@ -247,8 +243,14 @@ watch(
             { key: 'actions' },
           ]"
         >
+          <template #billImage-data="{ row }">
+            <div @click="fillModalPropertirs(row.billImage.content)" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+              <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+              مشاهدة
+            </div>
+          </template>
           <template #dateTime-data="{ row }">
-            <span>{{ format(row.dateTime, "hh:mm - dd/MM/yyy") }}</span>
+            <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
           </template>
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
@@ -258,7 +260,11 @@ watch(
         </UTable>
       </div>
     </div>
-
+    <UModal v-model="isOpen">
+      <div class="p-4 w-full">
+        <NuxtImg :src="modalData" sizes="100vw" />
+      </div>
+    </UModal>
     <!-- More Info Section -->
     <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
       <h3 class="text-center font-semibold text-xl mb-1">تفاصيل التحصيل</h3>
@@ -322,6 +328,19 @@ watch(
             </UDropdown>
           </template>
         </UTable>
+      </div>
+    </div>
+    <!-- More Info Section -->
+    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">تفاصيل المخالصة</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <div class="grid grid-cols-12 gap-x-6 gap-y-4 items-center">
+        <!-- clearanceNotes -->
+        <!-- <label for="clearanceNotes" class="col-span-6 sm:col-span-1"> الملاحظات :</label> -->
+        <div class="col-span-12 sm:col-span-12">
+          <UTextarea id="clearanceNotes" name="clearanceNotes" :size="'sm'" :required="false" v-model="state.clearanceNotes" />
+        </div>
       </div>
     </div>
 
