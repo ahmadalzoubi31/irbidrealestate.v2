@@ -1,11 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// generator client {
-//   provider      = "prisma-client-js"
-//   binaryTargets = ["native", "darwin-arm64"]
-//   output        = "../node_modules/.prisma/client"
-// }
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,6 +6,8 @@ datasource db {
   provider  = "postgres"
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
+  // url       = env("DATABASE_URL")
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // *** User ***
@@ -43,7 +37,12 @@ model Building {
   landNumber                String
   electricBill              String?     @default("-")
   serviceAmount             Float       @default(0.0)
+  servicePaidBy             String
+  serviceTerm               String
   maintenanceAmount         Float       @default(0.0)
+  maintenancePaidBy         String
+  maintenanceTerm           String
+  realLocation              String?
   registeredApartmentsCount Int         @default(0)
   apartments                Apartment[]
   status                    Boolean     @default(true)

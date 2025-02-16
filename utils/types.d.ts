@@ -20,19 +20,30 @@ declare interface ICreateBuilding {
   basinNumber: string;
   landNumber: string;
   electricBill: string;
-  serviceAmount: number;
-  maintenanceAmount: number;
+  serviceAmount: number,
+  servicePaidBy: string,
+  serviceTerm: string,
+  maintenanceAmount: number,
+  maintenancePaidBy: string,
+  maintenanceTerm: string,
+  realLocation: string;
 }
 
 declare interface IEditBuilding {
+  name: string;
   apartmentsCount: number;
   storeCount: number;
   basinName: string;
   basinNumber: string;
   landNumber: string;
   electricBill: string;
-  serviceAmount: number;
-  maintenanceAmount: number;
+  serviceAmount: number,
+  servicePaidBy: string,
+  serviceTerm: string,
+  maintenanceAmount: number,
+  maintenancePaidBy: string,
+  maintenanceTerm: string,
+  realLocation: string;
 }
 
 declare interface ICreateApartment {

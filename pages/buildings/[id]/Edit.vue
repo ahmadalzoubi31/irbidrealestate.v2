@@ -9,7 +9,8 @@ const selectedBuildingId = ref(Number(route.params.id));
 
 const { data: building, status } = await getOneBuilding(selectedBuildingId.value);
 
-const state = reactive<IEditBuilding>({
+const state: IEditBuilding = reactive({
+  name: "",
   apartmentsCount: 0,
   storeCount: 0,
   basinName: "",
@@ -17,20 +18,31 @@ const state = reactive<IEditBuilding>({
   landNumber: "",
   electricBill: "",
   serviceAmount: 0,
+  servicePaidBy: "المالك",
+  serviceTerm: "شهري",
   maintenanceAmount: 0,
+  maintenancePaidBy: "المالك",
+  maintenanceTerm: "شهري",
+  realLocation: "",
 });
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
   if (building) {
+    state.name = building.name;
     state.apartmentsCount = building.apartmentsCount;
     state.storeCount = building.storeCount;
     state.basinName = building.basinName;
     state.basinNumber = building.basinNumber;
     state.landNumber = building.landNumber;
     state.serviceAmount = building.serviceAmount;
+    state.servicePaidBy = building.servicePaidBy;
+    state.serviceTerm = building.serviceTerm;
     state.maintenanceAmount = building.maintenanceAmount;
+    state.maintenancePaidBy = building.maintenancePaidBy;
+    state.maintenanceTerm = building.maintenanceTerm;
     state.electricBill = building.electricBill ?? "";
+    state.realLocation = building.realLocation ?? "";
   }
 });
 
@@ -54,15 +66,7 @@ const submitForm = async () => {
         <!-- Building Name (readonly) -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName">اسم البناية</label>
-          <UInput
-            id="buildingName"
-            inputClass="bg-gray-200"
-            name="buildingName"
-            :size="'sm'"
-            :required="false"
-            :disabled="true"
-            :modelValue="building?.name"
-          />
+          <UInput id="buildingName" name="buildingName" :size="'sm'" :required="true" v-model="state.name" />
         </div>
 
         <!-- Apartments Count -->
@@ -95,26 +99,114 @@ const submitForm = async () => {
           <UInput id="landNumber" name="landNumber" :size="'sm'" :required="false" v-model="state.landNumber" />
         </div>
 
-        <!-- Service Amount -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="serviceAmount">قيمة الصيانة</label>
-          <UInput id="serviceAmount" name="serviceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.serviceAmount" />
-        </div>
-
-        <!-- Maintenance Amount -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="maintenanceAmount">قيمة الخدمات</label>
-          <UInput id="maintenanceAmount" name="maintenanceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceAmount" />
-        </div>
-
         <!-- Electric Bill -->
         <div class="col-span-6 sm:col-span-2">
           <label for="electricBill">رقم اشتراك الكهرباء</label>
           <UInput id="electricBill" name="electricBill" :size="'sm'" :required="false" v-model="state.electricBill" />
         </div>
+        <!-- realLocation -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="realLocation"> موقع البناية الفعلي </label>
+          <UInput id="realLocation" name="realLocation" :size="'sm'" :required="false" v-model="state.electricBill" />
+        </div>
       </div>
     </div>
 
+    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">صيانة البناية</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
+        <!-- serviceAmount -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="serviceAmount"> قيمة الصيانة </label>
+          <UInput id="serviceAmount" name="serviceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.serviceAmount" />
+        </div>
+        <!-- servicePaidBy -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="servicePaidBy"> الدفع من قبل؟ </label>
+          <!-- <UInput id="servicePaidBy" name="servicePaidBy" :type="'number'" :size="'sm'" :required="false" v-model="state.service.paidBy" /> -->
+          <USelectMenu
+            id="servicePaidBy"
+            name="servicePaidBy"
+            :size="'sm'"
+            :required="false"
+            v-model="state.servicePaidBy"
+            :options="[
+              { name: 'المالك', value: 'المالك' },
+              { name: 'المستأجر', value: 'المستأجر' },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div>
+        <!-- serviceTerm -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="serviceTerm"> مدة الدفع </label>
+          <!-- <UInput id="serviceTerm" name="serviceTerm" :type="'number'" :size="'sm'" :required="false" v-model="state.service.term" /> -->
+          <USelectMenu
+            id="serviceTerm"
+            name="serviceTerm"
+            :size="'sm'"
+            :required="false"
+            v-model="state.serviceTerm"
+            :options="[
+              { name: 'شهري', value: 'شهري' },
+              { name: 'سنوي', value: 'سنوي' },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">خدمات البناية</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
+        <!-- maintenanceAmount -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="maintenanceAmount"> قيمة الخدمات </label>
+          <UInput id="maintenanceAmount" name="maintenanceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceAmount" />
+        </div>
+        <!-- maintenancePaidBy -->
+        <!-- <div class="col-span-6 sm:col-span-2">
+          <label for="maintenancePaidBy"> الدفع من قبل؟ </label>
+          <USelectMenu
+            id="maintenancePaidBy"
+            name="maintenancePaidBy"
+            :size="'sm'"
+            :required="false"
+            v-model="state.maintenancePaidBy"
+            :options="[
+              { name: 'المالك', value: 'المالك' },
+              { name: 'المستأجر', value: 'المستأجر' },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div> -->
+        <!-- maintenanceTerm -->
+        <!-- <div class="col-span-6 sm:col-span-2">
+          <label for="maintenanceTerm"> مدة الدفع </label>
+          <USelectMenu
+            id="maintenanceTerm"
+            name="maintenanceTerm"
+            :size="'sm'"
+            :required="false"
+            v-model="state.maintenanceTerm"
+            :options="[
+              { name: 'شهري', value: 'شهري' },
+              { name: 'سنوي', value: 'سنوي' },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div> -->
+      </div>
+    </div>
     <!-- Form Action Buttons -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3">حفظ</UButton>
