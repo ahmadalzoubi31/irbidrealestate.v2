@@ -37,11 +37,11 @@ model Building {
   landNumber                String
   electricBill              String?     @default("-")
   serviceAmount             Float       @default(0.0)
-  servicePaidBy             String
-  serviceTerm               String
+  servicePaidBy             String      @default("المالك")
+  serviceTerm               String      @default("شهري")
   maintenanceAmount         Float       @default(0.0)
-  maintenancePaidBy         String
-  maintenanceTerm           String
+  maintenancePaidBy         String      @default("المالك")
+  maintenanceTerm           String      @default("شهري")
   realLocation              String?
   registeredApartmentsCount Int         @default(0)
   apartments                Apartment[]
