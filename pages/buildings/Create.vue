@@ -88,7 +88,7 @@ const submitForm = async () => {
         <!-- realLocation -->
         <div class="col-span-6 sm:col-span-2">
           <label for="realLocation"> موقع البناية الفعلي </label>
-          <UInput id="realLocation" name="realLocation" :size="'sm'" :required="false" v-model="state.electricBill" />
+          <UInput id="realLocation" name="realLocation" :size="'sm'" :required="false" v-model="state.realLocation" />
         </div>
       </div>
     </div>
@@ -153,7 +153,7 @@ const submitForm = async () => {
           <UInput id="maintenanceAmount" name="maintenanceAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.maintenanceAmount" />
         </div>
         <!-- maintenancePaidBy -->
-        <!-- <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-2">
           <label for="maintenancePaidBy"> الدفع من قبل؟ </label>
           <USelectMenu
             id="maintenancePaidBy"
@@ -168,9 +168,9 @@ const submitForm = async () => {
             value-attribute="value"
             option-attribute="name"
           />
-        </div> -->
+        </div>
         <!-- maintenanceTerm -->
-        <!-- <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-2">
           <label for="maintenanceTerm"> مدة الدفع </label>
           <USelectMenu
             id="maintenanceTerm"
@@ -185,7 +185,7 @@ const submitForm = async () => {
             value-attribute="value"
             option-attribute="name"
           />
-        </div> -->
+        </div>
       </div>
     </div>
 
