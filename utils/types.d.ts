@@ -20,6 +20,7 @@ declare interface ICreateBuilding {
   basinNumber: string;
   landNumber: string;
   electricBill: string;
+  waterBill: string;
   serviceAmount: number,
   servicePaidBy: string,
   serviceTerm: string,
@@ -37,6 +38,7 @@ declare interface IEditBuilding {
   basinNumber: string;
   landNumber: string;
   electricBill: string;
+  waterBill: string;
   serviceAmount: number,
   servicePaidBy: string,
   serviceTerm: string,
@@ -236,4 +238,21 @@ declare interface ICreateClaim {
   clearanceNotes: string;
   claimCollections: Array<ICollection>;
   claimDetails: Array<IDetail>;
+}
+
+declare interface ICreateBuildingFlat {
+  buildingId: number;
+  flatNumber: string;
+  ownerName: string;
+  ownerNumber: string | null;
+  electricSub: string | null;
+  electricCounter: string | null;
+  waterSub: string | null;
+  waterCounter: string | null;
+  renterName: string;
+  renterNumber: string | null;
+}
+
+declare interface BuildingWithFlats extends Building {
+  buildingFlat: BuildingFlat[];
 }

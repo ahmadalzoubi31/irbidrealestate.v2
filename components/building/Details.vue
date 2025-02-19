@@ -1,91 +1,90 @@
 <script setup lang="ts">
-// Import necessary dependencies
-import { useDateFormat } from "@vueuse/core";
-import type { Building } from "@prisma/client";
+import type { Building, BuildingFlat } from "@prisma/client";
+
+// interface
+interface BuildingWithFlats extends Building {
+  buildingFlat: BuildingFlat[];
+}
 
 // Declare Props
 const props = defineProps({
   building: {
-    type: Object as PropType<Building>,
+    type: Object as PropType<BuildingWithFlats>,
     required: true,
   },
 });
 
-// Define table headers
-const heading = [
-  "اسم البناية",
-  "عدد الشقق",
-  "عدد المخازن ",
-  "اسم الحوض",
-  "رقم الحوض",
-  "رقم قطعة الأرض",
-  "رقم اشتراك الكهرباء",
-  "قيمة الصيانة",
-  "يتم دفع الصيانة بواسطة؟",
-  "مدة الصيانة",
-  "قيمة الخدمات",
-  "يتم دفع الخدمات بواسطة؟",
-  "مدة الخدمات",
-  "عدد الشقق المسجلة",
-  "الحالة",
-  "تم الإنشاء بواسطة",
-  "تاريخ الإنشاء",
-  "تم التعديل بواسطة",
-  "تاريخ التعديل",
+const items = [
+  {
+    slot: "buildingInfo",
+    label: "معلومات البناية",
+    icon: "i-heroicons-information-circle",
+  },
+  {
+    slot: "buildingOwnersAndRenters",
+    label: "معلومات الملاك والمستأجرين",
+    icon: "i-heroicons-users",
+  },
+  {
+    slot: "buildingFlatsInfo",
+    label: "معلومات الشقق",
+    icon: "i-heroicons-building-office-2",
+  },
 ];
-
-// Define the keys you want to extract from the building object
-const keysToExtract = [
-  "name",
-  "apartmentsCount",
-  "storeCount",
-  "basinName",
-  "basinNumber",
-  "landNumber",
-  "electricBill",
-  "serviceAmount",
-  "servicePaidBy",
-  "serviceTerm",
-  "maintenanceAmount",
-  "maintenancePaidBy",
-  "maintenanceTerm",
-  "registeredApartmentsCount",
-  "status",
-  "createdBy",
-  "createdAt",
-  "updatedBy",
-  "updatedAt",
-];
-
-// Extract the desired keys from the building object
-const extracted: Building = useExtractKeys(props.building, keysToExtract);
-
-// Format date using the useDateFormat function
-const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 </script>
 
 <template>
-  <!-- Display the extracted information in a grid layout -->
-  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
-    <template v-for="(entry, key, index) in extracted">
-      <div>
-        <dt class="font-medium">{{ heading[index] }}</dt>
+  <UTabs :items="items" class="w-full">
+    <template #buildingInfo="{ item }">
+      <UCard>
+        <template #header>
+          <p class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            {{ item.label }}
+          </p>
+          <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Make changes to your account here. Click save when you're done.</p> -->
+        </template>
 
-        <!-- Handle formatted date fields -->
-        <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
-          {{ formatted(entry as Date) }}
-        </dd>
+        <!-- <BuildingDetailsInfo /> -->
+        <BuildingDetailsInfo :building="building" />
 
-        <!-- Handle status field -->
-        <dd v-else-if="key === 'status'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
-          {{ useGetStatusName(entry as boolean) }}
-        </dd>
-
-        <!-- Handle other fields, including null or empty values -->
-        <dd v-else class="font-normal text-primary-500">
-          {{ entry == null || entry === "" ? "-" : entry }}
-        </dd>
-      </div>
+        <!-- <template #footer>
+          <UButton type="submit" color="black"> Save account </UButton>
+        </template> -->
+      </UCard>
     </template>
-  </dl>
+
+    <template #buildingOwnersAndRenters="{ item }">
+      <UCard>
+        <template #header>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            {{ item.label }}
+          </h3>
+          <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->
+        </template>
+
+        <BuildingDetailsOwnersAndRentersInfo :building="building" />
+
+        <!-- <template #footer>
+           <UButton type="submit" color="black"> Save password </UButton>
+        </template> -->
+      </UCard>
+    </template>
+
+    <template #buildingFlatsInfo="{ item }">
+      <UCard>
+        <template #header>
+          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+            {{ item.label }}
+          </h3>
+          <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->
+        </template>
+
+        <BuildingDetailsFlatsInfo :building="building" />
+
+        <!-- <template #footer>
+          <UButton type="submit" color="black"> Save password </UButton>
+        </template> -->
+      </UCard>
+    </template>
+  </UTabs>
 </template>

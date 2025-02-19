@@ -21,17 +21,13 @@ export default defineEventHandler(async (event) => {
   try {
     validateBuildingData(body);
 
-    const registeredApartmentsCount = await prisma.apartment.count({
-      where: { buildingId: body.id },
-    });
-
     await prisma.$transaction(
       async (tx) => {
         // Create the building and capture its ID
         const createdBuilding = await tx.building.create({
           data: {
             ...body,
-            registeredApartmentsCount,
+            registeredApartmentsCount: 0,
             flats: {
               createMany: {
                 data: Array.from({ length: body.apartmentsCount }, (_, i) => ({ counter: i + 1 })),

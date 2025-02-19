@@ -17,6 +17,7 @@ const state: IEditBuilding = reactive({
   basinNumber: "",
   landNumber: "",
   electricBill: "",
+  waterBill: "",
   serviceAmount: 0,
   servicePaidBy: "المالك",
   serviceTerm: "شهري",
@@ -63,47 +64,54 @@ const submitForm = async () => {
     <!-- Form Fields -->
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
-        <!-- Building Name (readonly) -->
+        <!-- buildingName (readonly) -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName">اسم البناية</label>
           <UInput id="buildingName" name="buildingName" :size="'sm'" :required="true" v-model="state.name" />
         </div>
 
-        <!-- Apartments Count -->
+        <!-- apartmentsCount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentsCount">عدد الشقق في البناية <span class="text-sm text-primary-500">(اجباري)</span></label>
           <UInput id="apartmentsCount" name="apartmentsCount" :type="'number'" :size="'sm'" :required="true" v-model="state.apartmentsCount" />
         </div>
 
-        <!-- Store Count -->
+        <!-- storeCount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="storeCount">عدد المخازن <span class="text-sm text-primary-500">(إن وجدت)</span></label>
           <UInput id="storeCount" name="storeCount" :type="'number'" :size="'sm'" :required="false" v-model="state.storeCount" />
         </div>
 
-        <!-- Basin Name -->
+        <!-- basinName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinName">اسم الحوض</label>
           <UInput id="basinName" name="basinName" :size="'sm'" :required="false" v-model="state.basinName" />
         </div>
 
-        <!-- Basin Number -->
+        <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="basinNumber">رقم الحوض</label>
           <UInput id="basinNumber" name="basinNumber" :size="'sm'" :required="false" v-model="state.basinNumber" />
         </div>
 
-        <!-- Land Number -->
+        <!-- landNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="landNumber">رقم قطعة الأرض</label>
           <UInput id="landNumber" name="landNumber" :size="'sm'" :required="false" v-model="state.landNumber" />
         </div>
 
-        <!-- Electric Bill -->
+        <!-- electricBill -->
         <div class="col-span-6 sm:col-span-2">
           <label for="electricBill">رقم اشتراك الكهرباء</label>
           <UInput id="electricBill" name="electricBill" :size="'sm'" :required="false" v-model="state.electricBill" />
         </div>
+
+        <!-- waterBill -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="waterBill">رقم اشتراك الماء</label>
+          <UInput id="waterBill" name="waterBill" :size="'sm'" :required="false" v-model="state.waterBill" />
+        </div>
+
         <!-- realLocation -->
         <div class="col-span-6 sm:col-span-2">
           <label for="realLocation"> موقع البناية الفعلي </label>
@@ -207,6 +215,21 @@ const submitForm = async () => {
         </div>
       </div>
     </div>
+
+    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">شقق البناية</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <BuildingFlats />
+    </div>
+
+    <!-- <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+      <h3 class="text-center font-semibold text-xl mb-1">مخازن البناية</h3>
+    </div>
+    <div class="pt-6 pb-8 space-y-2">
+      <BuildingStores />
+    </div> -->
+
     <!-- Form Action Buttons -->
     <div class="text-left mb-5">
       <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3">حفظ</UButton>
@@ -215,8 +238,9 @@ const submitForm = async () => {
         to="/buildings"
         :size="'sm'"
         class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
-        >إلغاء</UButton
       >
+        إلغاء
+      </UButton>
     </div>
   </form>
 </template>

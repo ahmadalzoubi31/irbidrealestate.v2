@@ -9,6 +9,7 @@ import { Analytics } from "@vercel/analytics/nuxt";
     <div class="px-4 sm:px-6 lg:px-8">
       <slot />
     </div>
+    <!-- TODO: Add the following components to the layout -->
     <!-- <SpeedInsights />
     <Analytics /> -->
   </div>

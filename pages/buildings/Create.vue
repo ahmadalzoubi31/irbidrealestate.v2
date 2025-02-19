@@ -12,6 +12,7 @@ const state: ICreateBuilding = reactive({
   basinNumber: "",
   landNumber: "",
   electricBill: "",
+  waterBill: "",
   serviceAmount: 0,
   servicePaidBy: "المالك",
   serviceTerm: "شهري",
@@ -84,6 +85,11 @@ const submitForm = async () => {
         <div class="col-span-6 sm:col-span-2">
           <label for="electricBill"> رقم اشتراك الكهرباء </label>
           <UInput id="electricBill" name="electricBill" :size="'sm'" :required="false" v-model="state.electricBill" />
+        </div>
+        <!-- waterBill -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="waterBill"> رقم اشتراك الماء </label>
+          <UInput id="waterBill" name="waterBill" :size="'sm'" :required="false" v-model="state.waterBill" />
         </div>
         <!-- realLocation -->
         <div class="col-span-6 sm:col-span-2">

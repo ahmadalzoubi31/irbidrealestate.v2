@@ -71,9 +71,12 @@ export default defineEventHandler(async (event) => {
         }
 
         // 3. Update building record
+        const registeredApartmentsCount = await prisma.buildingFlat.count({
+          where: { buildingId: body.id },
+        });
         const updatedBuilding = await tx.building.update({
           where: { id: buildingId },
-          data: { ...body, apartmentsCount: newCount },
+          data: { ...body, apartmentsCount: newCount, registeredApartmentsCount },
           include: { flats: true },
         });
 

@@ -28,30 +28,72 @@ model User {
 
 // *** Building ***
 model Building {
-  id                        Int         @id @default(autoincrement())
-  name                      String      @unique
-  apartmentsCount           Int         @default(0)
-  storeCount                Int         @default(0)
+  id                        Int            @id @default(autoincrement())
+  name                      String         @unique
+  apartmentsCount           Int            @default(0)
+  storeCount                Int            @default(0)
   basinName                 String
   basinNumber               String
   landNumber                String
-  electricBill              String?     @default("-")
-  serviceAmount             Float       @default(0.0)
-  servicePaidBy             String      @default("المالك")
-  serviceTerm               String      @default("شهري")
-  maintenanceAmount         Float       @default(0.0)
-  maintenancePaidBy         String      @default("المالك")
-  maintenanceTerm           String      @default("شهري")
+  electricBill              String?        @default("-")
+  waterBill                 String?        @default("-")
+  serviceAmount             Float          @default(0.0)
+  servicePaidBy             String         @default("المالك")
+  serviceTerm               String         @default("شهري")
+  maintenanceAmount         Float          @default(0.0)
+  maintenancePaidBy         String         @default("المالك")
+  maintenanceTerm           String         @default("شهري")
   realLocation              String?
-  registeredApartmentsCount Int         @default(0)
+  registeredApartmentsCount Int            @default(0)
   apartments                Apartment[]
-  status                    Boolean     @default(true)
-  createdBy                 String      @default("-")
-  createdAt                 DateTime    @default(now())
-  updatedBy                 String?     @default("-")
-  updatedAt                 DateTime    @updatedAt
   flats                     Flat[]
+  buildingFlat              BuildingFlat[]
+  status                    Boolean        @default(true)
+  createdBy                 String         @default("-")
+  createdAt                 DateTime       @default(now())
+  updatedBy                 String?        @default("-")
+  updatedAt                 DateTime       @updatedAt
 }
+
+model BuildingFlat {
+  id              Int      @id @default(autoincrement())
+  flatNumber      String
+  ownerName       String
+  ownerNumber     String?  @default("###")
+  electricSub     String?
+  electricCounter String?
+  waterSub        String?
+  waterCounter    String?
+  renterName      String
+  renterNumber    String?  @default("###")
+  status          Boolean  @default(true)
+  createdBy       String   @default("-")
+  createdAt       DateTime @default(now())
+  updatedBy       String?  @default("-")
+  updatedAt       DateTime @updatedAt
+  building        Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  buildingId      Int
+}
+
+// model BuildingStore {
+//   id              Int      @id @default(autoincrement())
+//   flatNumber      String
+//   ownerName       String
+//   ownerNumber     String?  @default("###")
+//   electricSub     String?
+//   electricCounter String?
+//   waterSub        String?
+//   waterCounter    String?
+//   renterName      String
+//   renterNumber    String?  @default("###")
+//   status          Boolean  @default(true)
+//   createdBy       String   @default("-")
+//   createdAt       DateTime @default(now())
+//   updatedBy       String?  @default("-")
+//   updatedAt       DateTime @updatedAt
+//   building        Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+//   buildingId      Int
+// }
 
 // *** Apartment ***
 model Apartment {
@@ -83,12 +125,12 @@ model Apartment {
   isServiceIncluded    String    @default("لا")
   insurance            Float     @default(0)
   commissionAmount     Float     @default(0)
-  files                AppFile[]
   status               Boolean   @default(true)
   createdBy            String    @default("-")
   createdAt            DateTime  @default(now())
   updatedBy            String?   @default("-")
   updatedAt            DateTime  @updatedAt
+  files                AppFile[]
   payments             Payment[]
   building             Building? @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   buildingId           Int?

@@ -1,21 +1,18 @@
 import prisma from "~/lib/prisma";
-import type { Building } from "@prisma/client";
+import type { BuildingFlat } from "@prisma/client";
 
 export default defineEventHandler(async () => {
   try {
     // Simulate delay (e.g., fetching huge data)
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
-    // Fetch all buildings
-    const buildings: Building[] = await prisma.building.findMany({
+    // Fetch all flats
+    const buildingFlats: BuildingFlat[] = await prisma.buildingFlat.findMany({
       where: { status: true },
       orderBy: { id: "asc" },
-      include: {
-        buildingFlat: true,
-      }
     });
 
-    return buildings;
+    return buildingFlats;
   } catch (error: any) {
     // Handle errors gracefully
     throw createError({
