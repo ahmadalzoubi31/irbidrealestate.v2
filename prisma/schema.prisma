@@ -224,6 +224,7 @@ model Claim {
   claimFrom        String
   claimCollections ClaimCollection[]
   claimDetails     ClaimDetail[]
+  clearanceNotes   String
   total            Float             @default(0.0)
   status           Boolean           @default(true)
   createdBy        String            @default("-")

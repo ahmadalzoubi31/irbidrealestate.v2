@@ -11,7 +11,6 @@
     "vercel-build": "bunx prisma generate && nuxt build",
     "gen": "bunx prisma generate",
     "push": "bunx prisma db push"
-
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -42,7 +41,7 @@
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.2",
-    "@prisma/client": "6.3.1",
+    "@prisma/client": "6.4.1",
     "nuxt-file-storage": "^0.2.9"
   }
 }

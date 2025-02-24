@@ -106,6 +106,13 @@ watch(
   },
   { deep: true }
 );
+
+const totalPayments = computed(() => {
+  return state.claimCollections.reduce((sum, c) => sum + c.payment, 0);
+});
+const totalPrices = computed(() => {
+  return state.claimDetails.reduce((sum, d) => sum + d.price, 0);
+});
 </script>
 
 <template>
@@ -249,6 +256,9 @@ watch(
               مشاهدة
             </div>
           </template>
+          <template #price-data="{ row }">
+            <span>{{ row.price + " دينار" }}</span>
+          </template>
           <template #dateTime-data="{ row }">
             <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
           </template>
@@ -258,6 +268,9 @@ watch(
             </UDropdown>
           </template>
         </UTable>
+      </div>
+      <div class="text-right font-semibold">
+        <span>المجموع الكلي للمواد: {{ totalPrices }} دينار</span>
       </div>
     </div>
     <UModal v-model="isOpen">
@@ -322,12 +335,18 @@ watch(
           <template #dateTime-data="{ row }">
             <span>{{ format(row.dateTime, "hh:mm - dd/MM/yyy") }}</span>
           </template>
+          <template #payment-data="{ row }">
+            <span>{{ row.payment + " دينار" }}</span>
+          </template>
           <template #actions-data="{ row }">
             <UDropdown :items="collectionItem(row)" class="align-middle">
               <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
             </UDropdown>
           </template>
         </UTable>
+      </div>
+      <div class="text-right font-semibold">
+        <span>المجموع الكلي للدفعات: {{ totalPayments }} دينار</span>
       </div>
     </div>
     <!-- More Info Section -->

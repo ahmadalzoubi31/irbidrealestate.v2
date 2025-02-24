@@ -85,6 +85,11 @@ const generateSharedLinkSelectedRecord = async () => {
               {{ format(row.claimDate, "dd/MM/yyyy") }}
             </span>
           </template>
+          <template #total-data="{ row }">
+            <span>
+              {{ row.total + " دينار" }}
+            </span>
+          </template>
           <template #claimNumber-data="{ row }">
             <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
               {{ row.claimNumber }}

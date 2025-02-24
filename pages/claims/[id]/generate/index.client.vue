@@ -69,6 +69,9 @@ const extracted = computed(() => (claim ? useExtractKeys(claim, keys) : {}));
                       {{ format(row.dateTime, "dd/MM/yyyy hh:mm:ss") }}
                     </span>
                   </template>
+                  <template #price-data="{ row }">
+                    <span>{{ row.price + " دينار" }}</span>
+                  </template>
                 </UTable>
               </div>
             </dd>
@@ -96,6 +99,9 @@ const extracted = computed(() => (claim ? useExtractKeys(claim, keys) : {}));
                     <span>
                       {{ format(row.dateTime, "dd/MM/yyyy hh:mm:ss") }}
                     </span>
+                  </template>
+                  <template #payment-data="{ row }">
+                    <span>{{ row.payment + " دينار" }}</span>
                   </template>
                 </UTable>
               </div>

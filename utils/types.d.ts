@@ -21,12 +21,12 @@ declare interface ICreateBuilding {
   landNumber: string;
   electricBill: string;
   waterBill: string;
-  serviceAmount: number,
-  servicePaidBy: string,
-  serviceTerm: string,
-  maintenanceAmount: number,
-  maintenancePaidBy: string,
-  maintenanceTerm: string,
+  serviceAmount: number;
+  servicePaidBy: string;
+  serviceTerm: string;
+  maintenanceAmount: number;
+  maintenancePaidBy: string;
+  maintenanceTerm: string;
   realLocation: string;
 }
 
@@ -39,12 +39,12 @@ declare interface IEditBuilding {
   landNumber: string;
   electricBill: string;
   waterBill: string;
-  serviceAmount: number,
-  servicePaidBy: string,
-  serviceTerm: string,
-  maintenanceAmount: number,
-  maintenancePaidBy: string,
-  maintenanceTerm: string,
+  serviceAmount: number;
+  servicePaidBy: string;
+  serviceTerm: string;
+  maintenanceAmount: number;
+  maintenancePaidBy: string;
+  maintenanceTerm: string;
   realLocation: string;
 }
 
@@ -255,4 +255,9 @@ declare interface ICreateBuildingFlat {
 
 declare interface BuildingWithFlats extends Building {
   buildingFlat: BuildingFlat[];
+}
+
+declare interface ClaimWithDetailsAndCollections extends Claim {
+  claimDetails: ClaimDetail[];
+  claimCollections: ClaimCollection[];
 }

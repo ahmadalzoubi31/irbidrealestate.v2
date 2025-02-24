@@ -2,6 +2,10 @@
 // Import necessary dependencies
 import type { Building, BuildingFlat } from "@prisma/client";
 
+// interface
+interface BuildingWithFlats extends Building {
+  buildingFlat: BuildingFlat[];
+}
 // Declare Props
 const props = defineProps({
   building: {
@@ -15,13 +19,13 @@ const columns = [
   { key: "flatNumber", label: "رقم الشقة", sortable: true },
   { key: "ownerName", label: "اسم المالك", sortable: false },
   { key: "ownerNumber", label: "رقم المالك", sortable: false },
+  { key: "electricSub", label: "رقم اشتراك الكهرباء", sortable: false },
+  { key: "electricSub", label: "رقم عداد الكهرباء", sortable: false },
+  { key: "waterSub", label: "رقم اشتراك الماء", sortable: false },
+  { key: "waterSub", label: "رقم عداد الماء", sortable: false },
   { key: "renterName", label: "اسم المستأجر", sortable: false },
   { key: "renterNumber", label: "رقم المستأجر", sortable: false },
 ];
-
-// Extract the desired keys from the building object
-console.log(props.building.buildingFlat);
-
 const selectedColumns = ref([...columns]);
 </script>
 

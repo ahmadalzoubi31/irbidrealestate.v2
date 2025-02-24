@@ -44,8 +44,7 @@ const items = [
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Make changes to your account here. Click save when you're done.</p> -->
         </template>
 
-        <!-- <BuildingDetailsInfo /> -->
-        <BuildingDetailsInfo :building="building" />
+        <BuildingTab1 :building="building" />
 
         <!-- <template #footer>
           <UButton type="submit" color="black"> Save account </UButton>
@@ -62,7 +61,7 @@ const items = [
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->
         </template>
 
-        <BuildingDetailsOwnersAndRentersInfo :building="building" />
+        <BuildingTab2 :building="building" />
 
         <!-- <template #footer>
            <UButton type="submit" color="black"> Save password </UButton>
@@ -79,7 +78,7 @@ const items = [
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->
         </template>
 
-        <BuildingDetailsFlatsInfo :building="building" />
+        <BuildingTab3 :building="building" />
 
         <!-- <template #footer>
           <UButton type="submit" color="black"> Save password </UButton>
