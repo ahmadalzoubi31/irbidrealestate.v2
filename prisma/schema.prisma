@@ -226,6 +226,12 @@ model Claim {
   claimDetails     ClaimDetail[]
   clearanceNotes   String?
   total            Float             @default(0.0)
+  /**
+   * 1 ==> "نشط"
+   * 2 ==> "جاهزه للتحصيل"
+   * 3 ==> "تمت المخالصة"
+   */
+  claimStatus      Int               @default(1)
   status           Boolean           @default(true)
   createdBy        String            @default("-")
   createdAt        DateTime          @default(now())

@@ -238,6 +238,7 @@ declare interface ICreateClaim {
   clearanceNotes: string;
   claimCollections: Array<ICollection>;
   claimDetails: Array<IDetail>;
+  claimStatus: number;
 }
 
 declare interface ICreateBuildingFlat {

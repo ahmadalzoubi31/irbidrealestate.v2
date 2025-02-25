@@ -9,7 +9,7 @@ const isModalOpen = ref(false);
 const selectedImage = ref("");
 
 // *** Fetch Data ***
-const selectedAdId = useRoute().params.id as string;
+const selectedAdId = Number(useRoute().params.id) as number;
 const { getOneAd } = useAdActions();
 const { data: ad } = await getOneAd(selectedAdId);
 

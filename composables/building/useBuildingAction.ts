@@ -56,7 +56,7 @@ export function useBuildingActions() {
       toast.add({
         description: "تم انشاء البناية بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({
@@ -77,7 +77,7 @@ export function useBuildingActions() {
       toast.add({
         description: "تم تعديل البناية بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({
@@ -99,7 +99,7 @@ export function useBuildingActions() {
       toast.add({
         description: "تم حذف البناية بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({

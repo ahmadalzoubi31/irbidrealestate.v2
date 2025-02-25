@@ -49,7 +49,7 @@ const { data: buildingFlats, status } = useFetch<BuildingFlat[]>("/api/buildings
   key: "getBuildingFlats",
   server: false,
   lazy: true,
-  getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+  query: { buildingId: selectedBuildingId.value },
 });
 
 if (status.value === "error") {
@@ -90,7 +90,7 @@ const deleteSelectedRecord = async (id: number) => {
     toast.add({
       description: "تم مسح الشقة بنجاح",
       color: "primary",
-      timeout: 5000,
+      timeout: 1000,
     });
   } catch (error: any) {
     toast.add({

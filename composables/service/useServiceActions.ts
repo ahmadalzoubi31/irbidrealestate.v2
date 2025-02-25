@@ -15,7 +15,7 @@ export const useUseServiceActions = () => {
       toast.add({
         description: "تم تعديل الجدول بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({

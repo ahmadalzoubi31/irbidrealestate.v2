@@ -31,7 +31,7 @@ export function usePaymentActions() {
       toast.add({
         description: "تم انشاء الدفعة بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({
@@ -52,7 +52,7 @@ export function usePaymentActions() {
       toast.add({
         description: "تم تعديل الدفعة بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({
@@ -74,7 +74,7 @@ export function usePaymentActions() {
       toast.add({
         description: "تم حذف الدفعة بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({

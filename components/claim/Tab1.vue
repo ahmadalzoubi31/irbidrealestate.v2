@@ -32,7 +32,7 @@ const keysToExtract = [
   "claimFrom",
   "claimDate",
   "total",
-  "status",
+  "claimStatus",
   "createdBy",
   "createdAt",
   "updatedBy",
@@ -58,8 +58,8 @@ const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A
         </dd>
 
         <!-- Handle status field -->
-        <dd v-else-if="key === 'status'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
-          {{ useGetStatusName(entry as boolean) }}
+        <dd v-else-if="key === 'claimStatus'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
+          {{ useGetClaimStatusName(entry as number) }}
         </dd>
 
         <!-- Handle total field -->

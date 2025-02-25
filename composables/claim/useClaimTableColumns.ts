@@ -7,7 +7,7 @@ export function useClaimTableColumns() {
     { key: "claimFrom", label: "المطلوب منه", sortable: false },
     { key: "claimDate", label: "تاريخ المطالبة", sortable: false },
     { key: "total", label: "مجموع المبلغ", sortable: false },
-    { key: "status", label: "الحالة", sortable: true },
+    { key: "claimStatus", label: "الحالة", sortable: true },
   ];
   const selectedColumns = ref([...columns]);
 

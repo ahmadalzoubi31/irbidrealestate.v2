@@ -52,10 +52,28 @@ const state: ICreateClaim = reactive({
   clearanceNotes: "",
   claimCollections: [],
   claimDetails: [],
+  claimStatus: 0,
 });
 const isOpen = ref(false);
 const modalData = ref("");
-
+// *** Declare Menus ***
+const claimStatusOptions = [
+  {
+    id: 1,
+    name: "جاهزه للتحصيل",
+    value: 1,
+  },
+  {
+    id: 2,
+    name: "تمت المخالصة",
+    value: 2,
+  },
+  {
+    id: 3,
+    name: "نشط",
+    value: 3,
+  },
+];
 // Handle form submission
 const submitForm = async () => {
   useLoadingIndicator().start();
@@ -175,6 +193,19 @@ const totalPrices = computed(() => {
             :disabled="true"
             inputClass="bg-gray-200"
             v-model="state.total"
+          />
+        </div>
+        <!-- claimStatus -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="claimStatus">حالة المطالبة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <USelectMenu
+            id="claimStatus"
+            name="claimStatus"
+            :required="true"
+            v-model:model-value="state.claimStatus"
+            :options="claimStatusOptions"
+            option-attribute="name"
+            value-attribute="value"
           />
         </div>
       </div>

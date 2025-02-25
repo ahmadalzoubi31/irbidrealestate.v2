@@ -79,33 +79,78 @@ const propertyTypeOptions = [
   },
   {
     id: 4,
-    name: "ارض للبيع",
+    name: "شقة طلابية للايجار",
     value: 4,
   },
   {
     id: 5,
-    name: "ارض للايجار",
+    name: "ارض للبيع",
     value: 5,
   },
   {
     id: 6,
-    name: "فيلا للبيع",
+    name: "ارض للايجار",
     value: 6,
   },
   {
     id: 7,
-    name: "فيلا للايجار",
+    name: "فيلا للبيع",
     value: 7,
   },
   {
     id: 8,
-    name: "مزرعة للبيع",
+    name: "فيلا للايجار",
     value: 8,
   },
   {
     id: 9,
-    name: "مزرعة للايجار",
+    name: "مزرعة للبيع",
     value: 9,
+  },
+  {
+    id: 10,
+    name: "مزرعة للايجار",
+    value: 10,
+  },
+  {
+    id: 11,
+    name: "مخزن للبيع",
+    value: 11,
+  },
+  {
+    id: 12,
+    name: "مخزن للايجار",
+    value: 12,
+  },
+  {
+    id: 13,
+    name: "بيت مستقل للبيع",
+    value: 13,
+  },
+  {
+    id: 14,
+    name: "بيت مستقل للايجار",
+    value: 14,
+  },
+  {
+    id: 15,
+    name: "مجمع تجاري للبيع",
+    value: 15,
+  },
+  {
+    id: 16,
+    name: "مجمع تجاري للايجار",
+    value: 16,
+  },
+  {
+    id: 17,
+    name: "مكاتب للبيع",
+    value: 17,
+  },
+  {
+    id: 18,
+    name: "مكاتب للايجار",
+    value: 18,
   },
 ];
 
@@ -177,25 +222,52 @@ watch(
         state.code = "AR" + index;
         return "AR" + index;
       case 4:
+        state.code = "ARS" + index;
+        return "ARS" + index;
+      case 5:
         state.code = "LS" + index;
         return "LS" + index;
-      case 5:
+      case 6:
         state.code = "LR" + index;
         return "LR" + index;
-      case 6:
+      case 7:
         state.code = "VS" + index;
         return "VS" + index;
-      case 7:
+      case 8:
         state.code = "VR" + index;
         return "VR" + index;
-      case 8:
+      case 9:
         state.code = "FS" + index;
         return "FS" + index;
-      case 9:
+      case 10:
         state.code = "FR" + index;
         return "FR" + index;
+      case 11:
+        state.code = "SS" + index;
+        return "SS" + index;
+      case 12:
+        state.code = "SR" + index;
+        return "SR" + index;
+      case 13:
+        state.code = "BS" + index;
+        return "BS" + index;
+      case 14:
+        state.code = "BR" + index;
+        return "BR" + index;
+      case 15:
+        state.code = "CS" + index;
+        return "CS" + index;
+      case 16:
+        state.code = "CR" + index;
+        return "CR" + index;
+      case 17:
+        state.code = "OS" + index;
+        return "OS" + index;
+      case 18:
+        state.code = "OR" + index;
+        return "OR" + index;
       default:
-        break;
+        return "";
     }
   }
 );

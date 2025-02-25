@@ -90,7 +90,7 @@ const deleteSelectedRecord = async (id: number) => {
     toast.add({
       description: "تم مسح الشقة بنجاح",
       color: "primary",
-      timeout: 5000,
+      timeout: 1000,
     });
   } catch (error: any) {
     toast.add({

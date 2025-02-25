@@ -16,6 +16,7 @@ const state: ICreateClaim = reactive({
   clearanceNotes: "",
   claimCollections: [],
   claimDetails: [],
+  claimStatus: 1,
 });
 const collectionData = reactive({
   dateTime: new Date(),
@@ -51,6 +52,25 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
 ];
 const isOpen = ref(false);
 const modalData = ref("");
+// *** Declare Menus ***
+const claimStatusOptions = [
+  {
+    id: 1,
+    name: "نشط",
+    value: 1,
+  },
+  {
+    id: 2,
+    name: "جاهزه للتحصيل",
+    value: 2,
+  },
+  {
+    id: 3,
+    name: "تمت المخالصة",
+    value: 3,
+  },
+];
+
 // *** Define Methods ***
 const submitForm = async () => {
   // TODO: Early validation for required fields before making the API call
@@ -172,6 +192,19 @@ const totalPrices = computed(() => {
             :disabled="true"
             inputClass="bg-gray-200"
             v-model="state.total"
+          />
+        </div>
+        <!-- claimStatus -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="claimStatus">حالة المطالبة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <USelectMenu
+            id="claimStatus"
+            name="claimStatus"
+            :required="true"
+            v-model="state.claimStatus"
+            :options="claimStatusOptions"
+            option-attribute="name"
+            value-attribute="value"
           />
         </div>
       </div>

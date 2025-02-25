@@ -16,9 +16,14 @@ const { claims, status } = useClaims();
 
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
+const activeClaims = computed(() => (claims.value ? claims.value.filter((claim) => claim.claimStatus === 1) : []));
+const readyClaims = computed(() => (claims.value ? claims.value.filter((claim) => claim.claimStatus === 2) : []));
+const completedClaims = computed(() => (claims.value ? claims.value.filter((claim) => claim.claimStatus === 3) : []));
 
 // Filtering
-const filteredRows = useFilteredRows<Claim>(claims, q, ["createdAt", "updatedAt"]);
+const filteredRows_active = useFilteredRows<Claim>(activeClaims, q, ["createdAt", "updatedAt"]);
+const filteredRows_ready = useFilteredRows<Claim>(readyClaims, q, ["createdAt", "updatedAt"]);
+const filteredRows_completed = useFilteredRows<Claim>(completedClaims, q, ["createdAt", "updatedAt"]);
 
 // Actions
 const { deleteClaim } = useClaimActions();
@@ -64,10 +69,10 @@ const generateSharedLinkSelectedRecord = async () => {
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
 
-      <!-- Table -->
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+      <!-- Active Table -->
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-12">
         <UTable
-          :rows="filteredRows"
+          :rows="filteredRows_active"
           :columns="selectedColumns"
           v-model="selected"
           v-model:expand="expand"
@@ -75,6 +80,11 @@ const generateSharedLinkSelectedRecord = async () => {
           @select="select"
           :loading="isLoading"
         >
+          <template #caption>
+            <caption>
+              <h3 class="py-2 font-bold">المطالبات النشطة</h3>
+            </caption>
+          </template>
           <template #expand="{ row }">
             <div class="px-8 py-8">
               <ClaimDetails :claim="row" />
@@ -95,9 +105,97 @@ const generateSharedLinkSelectedRecord = async () => {
               {{ row.claimNumber }}
             </span>
           </template>
-          <template #status-data="{ row }">
+          <template #claimStatus-data="{ row }">
             <span>
-              {{ useGetStatusName(row.status) }}
+              {{ useGetClaimStatusName(row.claimStatus) }}
+            </span>
+          </template>
+        </UTable>
+      </div>
+
+      <!-- Ready Table -->
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-12">
+        <UTable
+          :rows="filteredRows_ready"
+          :columns="selectedColumns"
+          v-model="selected"
+          v-model:expand="expand"
+          :single-select="true"
+          @select="select"
+          :loading="isLoading"
+        >
+          <template #caption>
+            <caption>
+              <h3 class="py-2 font-bold">المطالبات الجاهزة للتحصيل</h3>
+            </caption>
+          </template>
+          <template #expand="{ row }">
+            <div class="px-8 py-8">
+              <ClaimDetails :claim="row" />
+            </div>
+          </template>
+          <template #claimDate-data="{ row }">
+            <span>
+              {{ format(row.claimDate, "dd/MM/yyyy") }}
+            </span>
+          </template>
+          <template #total-data="{ row }">
+            <span>
+              {{ row.total + " دينار" }}
+            </span>
+          </template>
+          <template #claimNumber-data="{ row }">
+            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+              {{ row.claimNumber }}
+            </span>
+          </template>
+          <template #claimStatus-data="{ row }">
+            <span>
+              {{ useGetClaimStatusName(row.claimStatus) }}
+            </span>
+          </template>
+        </UTable>
+      </div>
+
+      <!-- Completed Table -->
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-12">
+        <UTable
+          :rows="filteredRows_completed"
+          :columns="selectedColumns"
+          v-model="selected"
+          v-model:expand="expand"
+          :single-select="true"
+          @select="select"
+          :loading="isLoading"
+        >
+          <template #caption>
+            <caption>
+              <h3 class="py-2 font-bold">المطالبات المكتملة</h3>
+            </caption>
+          </template>
+          <template #expand="{ row }">
+            <div class="px-8 py-8">
+              <ClaimDetails :claim="row" />
+            </div>
+          </template>
+          <template #claimDate-data="{ row }">
+            <span>
+              {{ format(row.claimDate, "dd/MM/yyyy") }}
+            </span>
+          </template>
+          <template #total-data="{ row }">
+            <span>
+              {{ row.total + " دينار" }}
+            </span>
+          </template>
+          <template #claimNumber-data="{ row }">
+            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+              {{ row.claimNumber }}
+            </span>
+          </template>
+          <template #claimStatus-data="{ row }">
+            <span>
+              {{ useGetClaimStatusName(row.claimStatus) }}
             </span>
           </template>
         </UTable>

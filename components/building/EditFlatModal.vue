@@ -64,7 +64,7 @@ const submitForm = async () => {
     toast.add({
       description: message,
       color: "primary",
-      timeout: 5000,
+      timeout: 1000,
     });
   };
 

@@ -31,7 +31,7 @@ export function useUserActions() {
       toast.add({
         description: "تم انشاء المستخدم بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({
@@ -52,7 +52,7 @@ export function useUserActions() {
       toast.add({
         description: "تم تعديل المستخدم بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({
@@ -74,7 +74,7 @@ export function useUserActions() {
       toast.add({
         description: "تم حذف المستخدم بنجاح",
         color: "primary",
-        timeout: 5000,
+        timeout: 1000,
       });
     } catch (error: any) {
       toast.add({

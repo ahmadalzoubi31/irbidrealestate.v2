@@ -1,34 +1,42 @@
-const useGetPropertyTypeName = (s: number) => {
+export const useGetPropertyTypeName = (s: number) => {
   switch (s) {
     case 1:
       return "شقة سكنية للبيع";
-      break;
     case 2:
       return "شقة استثمارية للبيع";
-      break;
     case 3:
       return "شقة سكنية للايجار";
-      break;
     case 4:
-      return "ارض للبيع";
-      break;
+      return "شقة طلابية للايجار";
     case 5:
-      return "ارض للايجار";
-      break;
+      return "ارض للبيع";
     case 6:
-      return "فيلا للبيع";
-      break;
+      return "ارض للايجار";
     case 7:
-      return "فيلا للايجار";
-      break;
+      return "فيلا للبيع";
     case 8:
-      return "مزرعة للبيع";
-      break;
+      return "فيلا للايجار";
     case 9:
+      return "مزرعة للبيع";
+    case 10:
       return "مزرعة للايجار";
-      break;
+    case 11:
+      return "مخزن للبيع";
+    case 12:
+      return "مخزن للايجار";
+    case 13:
+      return "بيت مستقل للبيع";
+    case 14:
+      return "بيت مستقل للايجار";
+    case 15:
+      return "مجمع تجاري للبيع";
+    case 16:
+      return "مجمع تجاري للايجار";
+    case 17:
+      return "مكاتب للبيع";
+    case 18:
+      return "مكاتب للايجار";
     default:
-      break;
+      return "غير معروف";
   }
 };
-export default useGetPropertyTypeName;

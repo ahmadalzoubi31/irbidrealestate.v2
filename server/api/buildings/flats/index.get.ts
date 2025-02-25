@@ -1,14 +1,17 @@
 import prisma from "~/lib/prisma";
 import type { BuildingFlat } from "@prisma/client";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
+  const { buildingId } = getQuery(event);
+  console.log("🚀 ~ defineEventHandler ~ qy:", buildingId);
+
   try {
     // Simulate delay (e.g., fetching huge data)
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all flats
     const buildingFlats: BuildingFlat[] = await prisma.buildingFlat.findMany({
-      where: { status: true },
+      where: { status: true, buildingId: parseInt(buildingId as string) },
       orderBy: { id: "asc" },
     });
 

@@ -1,4 +1,4 @@
-const getContractStatusName = (s: number) => {
+export const useGetContractStatusName = (s: number) => {
   if (s === 0) {
     return "منتهي";
   } else if (s === 1) {
@@ -9,5 +9,3 @@ const getContractStatusName = (s: number) => {
     return "قائم";
   }
 };
-
-export default getContractStatusName;
