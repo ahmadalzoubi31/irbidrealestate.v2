@@ -252,6 +252,7 @@ declare interface ICreateBuildingFlat {
   waterCounter: string | null;
   renterName: string;
   renterNumber: string | null;
+  flatStatus: number;
 }
 
 declare interface BuildingWithFlats extends Building {

@@ -16,6 +16,7 @@ const state: ICreateBuildingFlat = reactive({
   waterCounter: "",
   renterName: "",
   renterNumber: "",
+  flatStatus: 0,
 });
 
 // Define props
@@ -43,6 +44,7 @@ watchEffect(() => {
     state.waterCounter = buildingFlat.value.waterCounter;
     state.renterName = buildingFlat.value.renterName;
     state.renterNumber = buildingFlat.value.renterNumber;
+    state.flatStatus = buildingFlat.value.flatStatus;
   }
 });
 
@@ -83,6 +85,20 @@ const submitForm = async () => {
     useLoadingIndicator().finish();
   }
 };
+
+// *** Declare Menus ***
+const flatStatusOptions = [
+  {
+    id: 1,
+    name: "متوفرة",
+    value: 1,
+  },
+  {
+    id: 2,
+    name: "مؤجرة",
+    value: 2,
+  },
+];
 </script>
 
 <template>
@@ -144,6 +160,19 @@ const submitForm = async () => {
           <div class="col-span-6 sm:col-span-2">
             <label for="renterNumber"> رقم المستأجر </label>
             <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="false" v-model="state.renterNumber!" />
+          </div>
+          <!-- flatStatus -->
+          <div class="col-span-6 sm:col-span-2">
+            <label for="flatStatus">حالة الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
+            <USelectMenu
+              id="flatStatus"
+              name="flatStatus"
+              :required="true"
+              v-model:model-value="state.flatStatus"
+              :options="flatStatusOptions"
+              value-attribute="value"
+              option-attribute="name"
+            />
           </div>
         </div>
 

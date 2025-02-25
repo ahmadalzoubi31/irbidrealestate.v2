@@ -19,10 +19,6 @@ const columns = [
   { key: "flatNumber", label: "رقم الشقة", sortable: true },
   { key: "ownerName", label: "اسم المالك", sortable: false },
   { key: "ownerNumber", label: "رقم المالك", sortable: false },
-  { key: "electricSub", label: "رقم اشتراك الكهرباء", sortable: false },
-  { key: "electricSub", label: "رقم عداد الكهرباء", sortable: false },
-  { key: "waterSub", label: "رقم اشتراك الماء", sortable: false },
-  { key: "waterSub", label: "رقم عداد الماء", sortable: false },
   { key: "renterName", label: "اسم المستأجر", sortable: false },
   { key: "renterNumber", label: "رقم المستأجر", sortable: false },
 ];
