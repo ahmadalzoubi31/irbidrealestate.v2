@@ -90,7 +90,7 @@ const submitForm = async () => {
 const flatStatusOptions = [
   {
     id: 1,
-    name: "متوفرة",
+    name: "فارغة",
     value: 1,
   },
   {
@@ -151,16 +151,6 @@ const flatStatusOptions = [
             <label for="waterCounter"> رقم عداد الماء </label>
             <UInput id="waterCounter" name="waterCounter" :size="'sm'" :required="false" v-model="state.waterCounter!" />
           </div>
-          <!-- renterName -->
-          <div class="col-span-6 sm:col-span-2">
-            <label for="renterName"> الاسم المستأجر <span class="text-xs text-primary-500">(اجباري)</span></label>
-            <UInput id="renterName" name="renterName" :size="'sm'" :required="true" v-model="state.renterName" />
-          </div>
-          <!-- renterNumber -->
-          <div class="col-span-6 sm:col-span-2">
-            <label for="renterNumber"> رقم المستأجر </label>
-            <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="false" v-model="state.renterNumber!" />
-          </div>
           <!-- flatStatus -->
           <div class="col-span-6 sm:col-span-2">
             <label for="flatStatus">حالة الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
@@ -173,6 +163,16 @@ const flatStatusOptions = [
               value-attribute="value"
               option-attribute="name"
             />
+          </div>
+          <!-- renterName -->
+          <div class="col-span-6 sm:col-span-2" v-if="state.flatStatus === 2">
+            <label for="renterName"> الاسم المستأجر <span class="text-xs text-primary-500">(اجباري)</span></label>
+            <UInput id="renterName" name="renterName" :size="'sm'" :required="true" v-model="state.renterName" />
+          </div>
+          <!-- renterNumber -->
+          <div class="col-span-6 sm:col-span-2" v-if="state.flatStatus === 2">
+            <label for="renterNumber"> رقم المستأجر </label>
+            <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="false" v-model="state.renterNumber!" />
           </div>
         </div>
 

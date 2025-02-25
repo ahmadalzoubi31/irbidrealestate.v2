@@ -22,6 +22,7 @@ const columns = [
   { key: "electricSub", label: "رقم عداد الكهرباء", sortable: false },
   { key: "waterSub", label: "رقم اشتراك الماء", sortable: false },
   { key: "waterSub", label: "رقم عداد الماء", sortable: false },
+  { key: "flatStatus", label: "حالة الشقة", sortable: false },
   { key: "renterName", label: "اسم المستأجر", sortable: false },
   { key: "renterNumber", label: "رقم المستأجر", sortable: false },
   { key: "actions" },
@@ -120,6 +121,9 @@ const deleteSelectedRecord = async (id: number) => {
   <!-- Table -->
   <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
     <UTable :rows="filteredRows" :columns="selectedColumns" :loading="isLoading" @select="select" v-model="selected">
+      <template #flatStatus-data="{ row }">
+        {{ useGetFlatStatusName(row.flatStatus) }}
+      </template>
       <template #actions-data="{ row }">
         <UDropdown :items="items(row.id)" class="align-middle">
           <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />

@@ -17,14 +17,15 @@ const props = defineProps({
 // Columns
 const columns = [
   { key: "flatNumber", label: "رقم الشقة", sortable: true },
-  { key: "ownerName", label: "اسم المالك", sortable: false },
-  { key: "ownerNumber", label: "رقم المالك", sortable: false },
+  { key: "flatStatus", label: "حالة الشقة", sortable: false },
+  // { key: "ownerName", label: "اسم المالك", sortable: false },
+  // { key: "ownerNumber", label: "رقم المالك", sortable: false },
   { key: "electricSub", label: "رقم اشتراك الكهرباء", sortable: false },
   { key: "electricSub", label: "رقم عداد الكهرباء", sortable: false },
   { key: "waterSub", label: "رقم اشتراك الماء", sortable: false },
   { key: "waterSub", label: "رقم عداد الماء", sortable: false },
-  { key: "renterName", label: "اسم المستأجر", sortable: false },
-  { key: "renterNumber", label: "رقم المستأجر", sortable: false },
+  // { key: "renterName", label: "اسم المستأجر", sortable: false },
+  // { key: "renterNumber", label: "رقم المستأجر", sortable: false },
 ];
 const selectedColumns = ref([...columns]);
 </script>
@@ -34,7 +35,11 @@ const selectedColumns = ref([...columns]);
     <div class="col-span-4">
       <dd class="font-normal text-primary-500">
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="props.building.buildingFlat" :columns="selectedColumns" />
+          <UTable :rows="props.building.buildingFlat" :columns="selectedColumns">
+            <template #flatStatus-data="{ row }">
+              <span :class="row.flatStatus === 2 ? 'text-red-500' : ''">{{ useGetFlatStatusName(row.flatStatus) }}</span>
+            </template>
+          </UTable>
         </div>
       </dd>
     </div>
