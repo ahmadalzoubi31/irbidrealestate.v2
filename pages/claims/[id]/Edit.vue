@@ -114,7 +114,6 @@ watchEffect(() => {
     // @ts-ignore
     state.claimDetails = claim.claimDetails;
     state.claimStatus = claim.claimStatus;
-    state.year = claim.year;
   }
 });
 
@@ -210,11 +209,6 @@ const totalPrices = computed(() => {
             option-attribute="name"
             value-attribute="value"
           />
-        </div>
-        <!-- year -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="year"> السنة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="year" name="year" type="number" :size="'sm'" :required="true" v-model:model-value="state.year" />
         </div>
       </div>
     </div>
