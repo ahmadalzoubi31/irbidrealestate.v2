@@ -233,7 +233,7 @@ model Claim {
    * 3 ==> "تمت المخالصة"
    */
   claimStatus      Int               @default(1)
-  // year             Int               @default(0)
+  year             Int               @default(0)
   status           Boolean           @default(true)
   createdBy        String            @default("-")
   createdAt        DateTime          @default(now())
