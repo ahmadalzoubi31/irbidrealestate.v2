@@ -239,6 +239,7 @@ declare interface ICreateClaim {
   claimCollections: Array<ICollection>;
   claimDetails: Array<IDetail>;
   claimStatus: number;
+  year: number;
 }
 
 declare interface ICreateBuildingFlat {

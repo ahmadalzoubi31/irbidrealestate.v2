@@ -17,6 +17,7 @@ const state: ICreateClaim = reactive({
   claimCollections: [],
   claimDetails: [],
   claimStatus: 1,
+  year: new Date().getFullYear(),
 });
 const collectionData = reactive({
   dateTime: new Date(),
@@ -206,6 +207,11 @@ const totalPrices = computed(() => {
             option-attribute="name"
             value-attribute="value"
           />
+        </div>
+        <!-- year -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="year"> السنة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <UInput id="year" name="year" type="number" :size="'sm'" :required="true" v-model="state.year" />
         </div>
       </div>
     </div>

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Claim" ADD COLUMN     "year" INTEGER NOT NULL DEFAULT 0;

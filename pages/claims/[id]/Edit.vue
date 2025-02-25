@@ -53,6 +53,7 @@ const state: ICreateClaim = reactive({
   claimCollections: [],
   claimDetails: [],
   claimStatus: 0,
+  year: new Date().getFullYear(),
 });
 const isOpen = ref(false);
 const modalData = ref("");
@@ -60,17 +61,17 @@ const modalData = ref("");
 const claimStatusOptions = [
   {
     id: 1,
-    name: "جاهزه للتحصيل",
+    name: "نشط",
     value: 1,
   },
   {
     id: 2,
-    name: "تمت المخالصة",
+    name: "جاهزه للتحصيل",
     value: 2,
   },
   {
     id: 3,
-    name: "نشط",
+    name: "تمت المخالصة",
     value: 3,
   },
 ];
@@ -207,6 +208,11 @@ const totalPrices = computed(() => {
             option-attribute="name"
             value-attribute="value"
           />
+        </div>
+        <!-- year -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="year"> السنة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <UInput id="year" name="year" type="number" :size="'sm'" :required="true" v-model="state.year" />
         </div>
       </div>
     </div>
