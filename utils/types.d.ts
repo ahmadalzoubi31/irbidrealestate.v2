@@ -263,3 +263,9 @@ declare interface ClaimWithDetailsAndCollections extends Claim {
   claimDetails: ClaimDetail[];
   claimCollections: ClaimCollection[];
 }
+
+declare interface ICreateInterestedPeople {
+  name: string;
+  number: string;
+  adId: number;
+}
