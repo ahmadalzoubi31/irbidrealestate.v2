@@ -16,9 +16,19 @@ const { claims, status } = useClaims();
 
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
-const activeClaims = computed(() => (claims.value ? claims.value.filter((claim) => claim.claimStatus === 1) : []));
-const readyClaims = computed(() => (claims.value ? claims.value.filter((claim) => claim.claimStatus === 2) : []));
-const completedClaims = computed(() => (claims.value ? claims.value.filter((claim) => claim.claimStatus === 3) : []));
+const activeClaims = computed(() =>
+  claims.value ? claims.value.filter((claim) => claim.claimStatus === 1 && new Date(claim.claimDate).getFullYear() == selectedYear.value) : []
+);
+const readyClaims = computed(() =>
+  claims.value ? claims.value.filter((claim) => claim.claimStatus === 2 && new Date(claim.claimDate).getFullYear() == selectedYear.value) : []
+);
+const completedClaims = computed(() =>
+  claims.value ? claims.value.filter((claim) => claim.claimStatus === 3 && new Date(claim.claimDate).getFullYear() == selectedYear.value) : []
+);
+
+// Year Filter
+const selectedYear = ref(new Date().getFullYear());
+const years = ref([2023, 2024, 2025, 2026]);
 
 // Filtering
 const filteredRows_active = useFilteredRows<Claim>(activeClaims, q, ["createdAt", "updatedAt"]);
@@ -66,7 +76,10 @@ const generateSharedLinkSelectedRecord = async () => {
             @click="generateSharedLinkSelectedRecord"
           />
         </div>
-        <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
+        <div class="flex justify-between">
+          <UInput v-model="q" placeholder="البحث ..." class="ml-3" />
+          <USelect :options="years" v-model="selectedYear" />
+        </div>
       </div>
 
       <!-- Active Table -->
