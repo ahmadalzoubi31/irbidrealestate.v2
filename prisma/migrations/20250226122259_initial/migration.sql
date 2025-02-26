@@ -26,8 +26,14 @@ CREATE TABLE "Building" (
     "basinNumber" TEXT NOT NULL,
     "landNumber" TEXT NOT NULL,
     "electricBill" TEXT DEFAULT '-',
+    "waterBill" TEXT DEFAULT '-',
     "serviceAmount" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "servicePaidBy" TEXT NOT NULL DEFAULT 'المالك',
+    "serviceTerm" TEXT NOT NULL DEFAULT 'شهري',
     "maintenanceAmount" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "maintenancePaidBy" TEXT NOT NULL DEFAULT 'المالك',
+    "maintenanceTerm" TEXT NOT NULL DEFAULT 'شهري',
+    "realLocation" TEXT,
     "registeredApartmentsCount" INTEGER NOT NULL DEFAULT 0,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createdBy" TEXT NOT NULL DEFAULT '-',
@@ -36,6 +42,29 @@ CREATE TABLE "Building" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Building_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BuildingFlat" (
+    "id" SERIAL NOT NULL,
+    "flatNumber" TEXT NOT NULL,
+    "ownerName" TEXT NOT NULL,
+    "ownerNumber" TEXT DEFAULT '###',
+    "electricSub" TEXT,
+    "electricCounter" TEXT,
+    "waterSub" TEXT,
+    "waterCounter" TEXT,
+    "renterName" TEXT NOT NULL,
+    "renterNumber" TEXT DEFAULT '###',
+    "flatStatus" INTEGER NOT NULL DEFAULT 0,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createdBy" TEXT NOT NULL DEFAULT '-',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedBy" TEXT DEFAULT '-',
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "buildingId" INTEGER NOT NULL,
+
+    CONSTRAINT "BuildingFlat_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -114,6 +143,9 @@ CREATE TABLE "Ad" (
     "classification" TEXT,
     "neighborhood" TEXT,
     "expectedRentAmount" TEXT,
+    "area" TEXT,
+    "price" TEXT,
+    "isFurnished" BOOLEAN NOT NULL,
     "notes" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createdBy" TEXT NOT NULL DEFAULT '-',
@@ -129,7 +161,7 @@ CREATE TABLE "InterestedPeople" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "number" TEXT NOT NULL DEFAULT '###',
-    "adId" INTEGER,
+    "adId" INTEGER NOT NULL,
 
     CONSTRAINT "InterestedPeople_pkey" PRIMARY KEY ("id")
 );
@@ -158,9 +190,12 @@ CREATE TABLE "Order" (
 CREATE TABLE "Claim" (
     "id" SERIAL NOT NULL,
     "apartmentName" TEXT NOT NULL,
+    "claimNumber" TEXT NOT NULL,
     "claimDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "claimFrom" TEXT NOT NULL,
+    "clearanceNotes" TEXT,
     "total" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "claimStatus" INTEGER NOT NULL DEFAULT 1,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createdBy" TEXT NOT NULL DEFAULT '-',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -186,6 +221,7 @@ CREATE TABLE "ClaimDetail" (
     "id" SERIAL NOT NULL,
     "item" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "dateTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "claimId" INTEGER NOT NULL,
 
     CONSTRAINT "ClaimDetail_pkey" PRIMARY KEY ("id")
@@ -274,13 +310,16 @@ CREATE UNIQUE INDEX "AppFile_key_key" ON "AppFile"("key");
 CREATE UNIQUE INDEX "AppFile_fileContentId_key" ON "AppFile"("fileContentId");
 
 -- AddForeignKey
+ALTER TABLE "BuildingFlat" ADD CONSTRAINT "BuildingFlat_buildingId_fkey" FOREIGN KEY ("buildingId") REFERENCES "Building"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Apartment" ADD CONSTRAINT "Apartment_buildingId_fkey" FOREIGN KEY ("buildingId") REFERENCES "Building"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_apartmentId_fkey" FOREIGN KEY ("apartmentId") REFERENCES "Apartment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "InterestedPeople" ADD CONSTRAINT "InterestedPeople_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "InterestedPeople" ADD CONSTRAINT "InterestedPeople_adId_fkey" FOREIGN KEY ("adId") REFERENCES "Ad"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ClaimCollection" ADD CONSTRAINT "ClaimCollection_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES "Claim"("id") ON DELETE CASCADE ON UPDATE CASCADE;

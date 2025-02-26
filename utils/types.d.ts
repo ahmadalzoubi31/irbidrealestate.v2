@@ -146,6 +146,10 @@ declare interface ICreateAd {
   classification: string | null;
   neighborhood: string | null;
   expectedRentAmount: string | null;
+  area: string | null;
+  price: string | null;
+  isFurnished: string;
+  realLocation: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
 }
@@ -169,6 +173,10 @@ declare interface IEditAd {
   classification: string | null;
   neighborhood: string | null;
   expectedRentAmount: string | null;
+  area: string | null;
+  price: string | null;
+  isFurnished: string;
+  realLocation: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
   files: Array<any>;

@@ -1,14 +1,6 @@
 import prisma from "~/lib/prisma";
 import type { Ad, InterestedPeople } from "@prisma/client";
 
-// Utility function to validate incoming data
-const validateAdData = (data: Ad) => {
-  // TODO: Add any additional field validation as needed
-  if (!data.basin) {
-    throw new Error("Missing required field: basin");
-  }
-};
-
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event); // Use any because `body` contains nested objects
   const id: number = Number(getRouterParams(event).id);
@@ -25,9 +17,6 @@ export default defineEventHandler(async (event) => {
   const { files, interestedPeople, ...adData } = body;
 
   try {
-    // Validate the incoming data
-    validateAdData(body);
-
     // Check if the ad exists
     const ad = await prisma.ad.findUnique({
       where: { id },
@@ -58,10 +47,10 @@ export default defineEventHandler(async (event) => {
         .map((person: InterestedPeople) => person.id);
 
       // Find IDs to delete (existing IDs not in the incoming list)
-      const idsToDelete = existingPeople.filter((person) => !incomingIds.includes(person.id.toString())).map((person) => person.id);
+      // const idsToDelete = existingPeople.filter((person) => !incomingIds.includes(person.id.toString())).map((person) => person.id);
 
       // Perform deletions
-      const deleteOperations = idsToDelete.map((idToDelete) => tx.interestedPeople.delete({ where: { id: idToDelete } }));
+      // const deleteOperations = idsToDelete.map((idToDelete) => tx.interestedPeople.delete({ where: { id: idToDelete } }));
 
       // Handle updates and creations
       const upsertOperations = interestedPeople.map((person: InterestedPeople) =>
@@ -76,7 +65,7 @@ export default defineEventHandler(async (event) => {
       );
 
       // Execute deletions, updates, and creations
-      await Promise.all([...deleteOperations, ...upsertOperations]);
+      await Promise.all([ ...upsertOperations]);
 
       // Return success response
       return {

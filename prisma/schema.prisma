@@ -4,10 +4,10 @@ generator client {
 
 datasource db {
   provider  = "postgres"
-  // url       = env("POSTGRES_PRISMA_URL")
-  // directUrl = env("POSTGRES_URL_NON_POOLING")
-  url       = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+  // url       = env("DATABASE_URL")
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // *** User ***
@@ -179,6 +179,10 @@ model Ad {
   classification        String?
   neighborhood          String?
   expectedRentAmount    String?
+  area                  String?
+  price                 String?
+  isFurnished           String             @default("غير مفروش")
+  realLocation          String?
   notes                 String?
   interestedPeople      InterestedPeople[]
   files                 AppFile[]

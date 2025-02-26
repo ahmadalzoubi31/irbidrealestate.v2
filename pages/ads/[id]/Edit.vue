@@ -34,6 +34,10 @@ const state: IEditAd = reactive({
   classification: "",
   neighborhood: "",
   expectedRentAmount: "",
+  area: "",
+  price: "",
+  isFurnished: "",
+  realLocation: "",
   notes: "",
   interestedPeople: [],
   files: [],
@@ -129,6 +133,10 @@ watchEffect(() => {
     state.classification = ad.classification;
     state.neighborhood = ad.neighborhood;
     state.expectedRentAmount = ad.expectedRentAmount;
+    state.area = ad.area;
+    state.price = ad.price;
+    state.isFurnished = ad.isFurnished;
+    state.realLocation = ad.realLocation;
     state.notes = ad.notes;
     // @ts-ignore
     state.interestedPeople = ad.interestedPeople;
@@ -442,6 +450,45 @@ watchEffect(() => {
             :required="ad?.code.includes('ASI')"
             v-model="state.expectedRentAmount!"
           />
+        </div>
+        <!-- area -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="area"> المساحة </label>
+          <UInput id="area" name="area" :type="'text'" :size="'sm'" :required="false" v-model="state.area!" />
+        </div>
+        <!-- price -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="price"> السعر </label>
+          <UInput id="price" name="price" :type="'text'" :size="'sm'" :required="false" v-model="state.price!" />
+        </div>
+        <!-- isFurnished -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="isFurnished"> مفروش \ غير مفروش </label>
+          <USelectMenu
+            id="isFurnished"
+            name="isFurnished"
+            :required="true"
+            v-model="state.isFurnished"
+            :options="[
+              {
+                id: 1,
+                name: 'غير مفروش',
+                value: 'غير مفروش',
+              },
+              {
+                id: 2,
+                name: 'مفروش',
+                value: 'مفروش',
+              },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div>
+        <!-- realLocation -->
+        <div class="col-span-6 sm:col-span-4">
+          <label for="realLocation"> الموقع الفعلي </label>
+          <UInput id="realLocation" name="realLocation" :type="'text'" :size="'sm'" :required="false" v-model="state.realLocation!" />
         </div>
         <!-- notes -->
         <div class="col-span-6 sm:col-span-6">

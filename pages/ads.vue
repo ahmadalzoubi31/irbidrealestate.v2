@@ -111,9 +111,24 @@ const generateSharedLinkSelectedRecord = async () => {
               <span v-else>-</span>
             </span>
           </template>
-          <template #propertyLocation-data="{ row }">
+          <template #propertyLink-data="{ row }">
             <span>
               {{ row.governorate + " - " + row.village }}
+            </span>
+          </template>
+          <template #realLocation-data="{ row }">
+            <span>
+              <UButton
+                v-if="row.realLocation"
+                :to="row.realLocation"
+                :external="true"
+                :target="'_blank'"
+                icon="i-heroicons-link-20-solid"
+                class="text-blue-500 h-0 align-middle items-center"
+                variant="ghost"
+                size="sm"
+              />
+              <span v-else>-</span>
             </span>
           </template>
         </UTable>
