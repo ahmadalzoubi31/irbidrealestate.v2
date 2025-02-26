@@ -3,9 +3,14 @@ const colorMode = useColorMode();
 
 colorMode.preference = "light";
 
-navigateTo("/buildings");
+// navigateTo("/buildings");
+const photoKey = ref("NDusXRL-IpnpUHRzy3SVP ");
 </script>
 
 <template>
-  <div></div>
+  <div>
+    <h1>Home</h1>
+    <AppPhotoUploader />
+    <AppPhotoViewer2 :photoKey="photoKey" />
+  </div>
 </template>

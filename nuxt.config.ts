@@ -33,13 +33,21 @@ export default defineNuxtConfig({
       addDefaultCallbackUrl: false,
     },
   },
+  // nitro: {
+  //   storage: {
+  //     customDriver: {
+  //       driver: "mongodb",
+  //       connectionString: process.env.MONGODB_PROD_URI,
+  //       databaseName: "irbidrealestate_db",
+  //       collectionName: "FileContent",
+  //     },
+  //   },
+  // },
   nitro: {
     storage: {
-      customDriver: {
-        driver: "mongodb",
-        connectionString: process.env.MONGODB_PROD_URI,
-        databaseName: "irbidrealestate_db",
-        collectionName: "FileContent",
+      photos: {
+        driver: "fs", // Change to 's3', 'cloudflare', etc.
+        base: "./uploads", // Driver-specific config
       },
     },
   },

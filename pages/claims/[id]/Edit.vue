@@ -53,7 +53,6 @@ const state: ICreateClaim = reactive({
   claimCollections: [],
   claimDetails: [],
   claimStatus: 0,
-  year: new Date().getFullYear(),
 });
 const isOpen = ref(false);
 const modalData = ref("");
