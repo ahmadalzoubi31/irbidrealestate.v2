@@ -141,14 +141,14 @@ const totalPrices = computed(() => {
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
         <!-- claimNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="claimNumber"> رقم المطالبة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="claimNumber"> رقم المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="claimNumber" name="claimNumber" :size="'sm'" :required="true" v-model="state.claimNumber" />
         </div>
         <!-- apartmentName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentName">
             رقم الشقة
-            <span class="text-sm text-primary-500">(اجباري)</span>
+            <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
           <UInput id="apartmentName" name="apartmentName" :size="'sm'" :required="true" v-model="state.apartmentName" />
         </div>
@@ -176,7 +176,7 @@ const totalPrices = computed(() => {
         <div class="col-span-6 sm:col-span-2">
           <label for="claimFrom">
             مطالبة مالية من السيد/السيدة
-            <span class="text-sm text-primary-500">(اجباري)</span></label
+            <span class="text-xs text-primary-500">(اجباري)</span></label
           >
           <UInput id="claimFrom" name="claimFrom" :size="'sm'" :required="true" v-model="state.claimFrom" />
         </div>
@@ -196,7 +196,7 @@ const totalPrices = computed(() => {
         </div>
         <!-- claimStatus -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="claimStatus">حالة المطالبة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="claimStatus">حالة المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
           <USelectMenu
             id="claimStatus"
             name="claimStatus"

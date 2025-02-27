@@ -50,14 +50,14 @@ const submitForm = async () => {
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="buildingName">اسم البناية <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="buildingName">اسم البناية <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="buildingName" name="buildingName" :size="'sm'" :autofocus="true" :required="true" v-model="state.name" />
         </div>
         <!-- apartmentsCount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="apartmentsCount">
             عدد الشقق في البناية
-            <span class="text-sm text-primary-500">(اجباري)</span>
+            <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
           <UInput id="apartmentsCount" name="apartmentsCount" :type="'number'" :size="'sm'" :required="true" v-model="state.apartmentsCount" />
         </div>
@@ -68,17 +68,17 @@ const submitForm = async () => {
         </div>
         <!-- basinName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="basinName"> اسم الحوض <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="basinName"> اسم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="basinName" name="basinName" :size="'sm'" :required="true" v-model="state.basinName" />
         </div>
         <!-- basinNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="basinNumber"> رقم الحوض <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="basinNumber"> رقم الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="basinNumber" name="basinNumber" :size="'sm'" :required="true" v-model="state.basinNumber" />
         </div>
         <!-- landNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="landNumber"> رقم قطعة الارض <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="landNumber"> رقم قطعة الارض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="landNumber" name="landNumber" :size="'sm'" :required="true" v-model="state.landNumber" />
         </div>
         <!-- electricBill -->

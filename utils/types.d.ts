@@ -150,11 +150,23 @@ declare interface ICreateAd {
   price: string | null;
   isFurnished: string;
   realLocation: string | null;
+  buildingName: string | null;
+  nearbyLandmarks: string | null;
+  internalArea: string | null;
+  externalArea: string | null;
+  floor: string | null;
+  floorsCount: string | null;
+  floorsArea: string | null;
+  buildingAge: string | null;
+  storesCount: string | null;
+  storesArea: string | null;
+  isRegistered: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
 }
 
 declare interface IEditAd {
+  code: string;
   propertyStatus: string;
   propertyOwnerName: string;
   propertyOwnerNumber: string;
@@ -177,6 +189,17 @@ declare interface IEditAd {
   price: string | null;
   isFurnished: string;
   realLocation: string | null;
+  buildingName: string | null;
+  nearbyLandmarks: string | null;
+  internalArea: string | null;
+  externalArea: string | null;
+  floor: string | null;
+  floorsCount: string | null;
+  floorsArea: string | null;
+  buildingAge: string | null;
+  storesCount: string | null;
+  storesArea: string | null;
+  isRegistered: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
   files: Array<any>;

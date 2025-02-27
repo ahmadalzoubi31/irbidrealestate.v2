@@ -72,7 +72,7 @@ const submitForm = async () => {
 
         <!-- apartmentsCount -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="apartmentsCount">عدد الشقق في البناية <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="apartmentsCount">عدد الشقق في البناية <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="apartmentsCount" name="apartmentsCount" :type="'number'" :size="'sm'" :required="true" v-model="state.apartmentsCount" />
         </div>
 

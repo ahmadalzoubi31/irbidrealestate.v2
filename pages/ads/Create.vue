@@ -34,6 +34,17 @@ const state: ICreateAd = reactive({
   price: "",
   isFurnished: "غير مفروش",
   realLocation: "",
+  buildingName: "",
+  nearbyLandmarks: "",
+  internalArea: "",
+  externalArea: "",
+  floor: "",
+  floorsCount: "",
+  floorsArea: "",
+  buildingAge: "",
+  storesCount: "",
+  storesArea: "",
+  isRegistered: "فارغ",
   notes: "",
   interestedPeople: [],
 });
@@ -291,7 +302,7 @@ watch(
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyStatus">حالة العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="propertyStatus">حالة العقار <span class="text-xs text-primary-500">(اجباري)</span></label>
           <USelectMenu
             id="propertyStatus"
             name="propertyStatus"
@@ -304,7 +315,7 @@ watch(
         </div>
         <!-- propertyType -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyType"> نوع العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="propertyType"> نوع العقار <span class="text-xs text-primary-500">(اجباري)</span></label>
           <USelectMenu
             id="propertyType"
             name="propertyType"
@@ -317,12 +328,12 @@ watch(
         </div>
         <!-- propertyOwnerName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyOwnerName"> اسم صاحب العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="propertyOwnerName"> اسم صاحب العقار <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="propertyOwnerName" name="propertyOwnerName" :size="'sm'" :required="true" v-model="state.propertyOwnerName" />
         </div>
         <!-- propertyOwnerNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="propertyOwnerNumber"> رقم صاحب العقار <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="propertyOwnerNumber"> رقم صاحب العقار <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="propertyOwnerNumber" name="propertyOwnerNumber" :size="'sm'" :required="true" v-model="state.propertyOwnerNumber" />
         </div>
         <!-- propertyOwnerIdentity -->
@@ -387,32 +398,68 @@ watch(
       <div class="grid grid-cols-8 gap-x-6 gap-y-4">
         <!-- governorate -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="governorate"> المحافظة <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="governorate"> المحافظة <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="governorate" name="governorate" :size="'sm'" :required="true" v-model="state.governorate" />
         </div>
         <!-- directorate -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="directorate"> المديرية <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="directorate"> المديرية <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="directorate" name="directorate" :size="'sm'" :required="true" v-model="state.directorate" />
         </div>
         <!-- village -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="village"> القرية <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="village"> القرية <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="village" name="village" :size="'sm'" :required="true" v-model="state.village" />
         </div>
         <!-- basin -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="basin"> الحوض <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="basin"> الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="basin" name="basin" :size="'sm'" :required="true" v-model="state.basin" />
         </div>
-        <!-- plot -->
+        <!-- neighborhood -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="plot"> رقم القطعة <span class="text-sm text-primary-500">(اجباري)</span></label>
-          <UInput id="plot" name="plot" :size="'sm'" :required="true" v-model="state.plot" />
+          <label for="neighborhood"> الحي </label>
+          <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="false" v-model="state.neighborhood!" />
+        </div>
+        <!-- price -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="price"> السعر </label>
+          <UInput id="price" name="price" :type="'text'" :size="'sm'" :required="false" v-model="state.price!" />
+        </div>
+        <!-- nearbyLandmarks -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="nearbyLandmarks"> ابرز المعالم القريبة </label>
+          <UInput id="nearbyLandmarks" name="nearbyLandmarks" :type="'text'" :size="'sm'" :required="false" v-model="state.nearbyLandmarks!" />
+        </div>
+        <!-- realLocation -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="realLocation"> الموقع الفعلي (Google Maps Location)</label>
+          <UInput id="realLocation" name="realLocation" :type="'text'" :size="'sm'" :required="false" v-model="state.realLocation!" />
+        </div>
+
+        <!-- ## BASED ON CODE ## -->
+        <!-- plot -->
+        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('LS') || state.code.includes('LR')">
+          <label for="plot"> رقم القطعة <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput id="plot" name="plot" :size="'sm'" :required="state.code.includes('LS') || state.code.includes('LR')" v-model="state.plot" />
+        </div>
+        <!-- buildingName -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+        >
+          <label for="buildingName"> اسم البناية <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="buildingName"
+            name="buildingName"
+            :size="'sm'"
+            :required="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+            v-model="state.buildingName!"
+          />
         </div>
         <!-- apartmentNumber -->
-        <div class="col-span-6 sm:col-span-2" v-show="!state.code.includes('LS') && !state.code.includes('LR')">
-          <label for="apartmentNumber"> رقم الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
+        <!-- <div class="col-span-6 sm:col-span-2" v-show="">
+          <label for="apartmentNumber"> رقم الشقة <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput
             id="apartmentNumber"
             name="apartmentNumber"
@@ -420,10 +467,10 @@ watch(
             :required="!state.code.includes('LS') && !state.code.includes('LR')"
             v-model="state.apartmentNumber!"
           />
-        </div>
+        </div> -->
         <!-- classification -->
-        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('LS') || state.code.includes('LR')">
-          <label for="classification"> تصنيف الارض <span class="text-sm text-primary-500">(اجباري)</span></label>
+        <!-- <div class="col-span-6 sm:col-span-2" v-show="">
+          <label for="classification"> تصنيف الارض <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput
             id="classification"
             name="classification"
@@ -431,40 +478,261 @@ watch(
             :required="state.code.includes('LS') || state.code.includes('LR')"
             v-model="state.classification!"
           />
-        </div>
-        <!-- neighborhood -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="neighborhood"> الحي </label>
-          <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="false" v-model="state.neighborhood!" />
-        </div>
-        <!-- expectedRentAmount -->
-        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('ASI')">
-          <label for="expectedRentAmount"> دخل الايجار المتوقع <span class="text-sm text-primary-500">(اجباري)</span></label>
+        </div> -->
+        <!-- area -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="
+            state.code.includes('LS') ||
+            state.code.includes('LR') ||
+            state.code.includes('VS') ||
+            state.code.includes('VR') ||
+            state.code.includes('BS') ||
+            state.code.includes('BR') ||
+            state.code.includes('FS') ||
+            state.code.includes('FR')
+          "
+        >
+          <label for="area"> المساحة <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput
-            id="expectedRentAmount"
-            name="expectedRentAmount"
+            id="area"
+            name="area"
+            :type="'text'"
             :size="'sm'"
-            :required="state.code.includes('ASI')"
-            v-model="state.expectedRentAmount!"
+            :required="
+              state.code.includes('LS') ||
+              state.code.includes('LR') ||
+              state.code.includes('VS') ||
+              state.code.includes('VR') ||
+              state.code.includes('BS') ||
+              state.code.includes('BR') ||
+              state.code.includes('FS') ||
+              state.code.includes('FR')
+            "
+            v-model="state.area!"
           />
         </div>
-        <!-- area -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="area"> المساحة </label>
-          <UInput id="area" name="area" :type="'text'" :size="'sm'" :required="false" v-model="state.area!" />
+        <!-- internalArea -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+        >
+          <label for="internalArea"> المساحة الداخلية <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="internalArea"
+            name="internalArea"
+            :type="'text'"
+            :size="'sm'"
+            :required="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+            v-model="state.internalArea!"
+          />
         </div>
-        <!-- price -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="price"> السعر </label>
-          <UInput id="price" name="price" :type="'text'" :size="'sm'" :required="false" v-model="state.price!" />
+        <!-- externalArea -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+        >
+          <label for="externalArea"> المساحة الخارجية <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="externalArea"
+            name="externalArea"
+            :type="'text'"
+            :size="'sm'"
+            :required="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+            v-model="state.externalArea!"
+          />
+        </div>
+        <!-- floor -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+        >
+          <label for="floor"> الطابق <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="floor"
+            name="floor"
+            :type="'text'"
+            :size="'sm'"
+            :required="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
+            v-model="state.floor!"
+          />
+        </div>
+        <!-- floorsCount -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="
+            state.code.includes('VS') ||
+            state.code.includes('VR') ||
+            state.code.includes('BS') ||
+            state.code.includes('BR') ||
+            state.code.includes('FS') ||
+            state.code.includes('FR')
+          "
+        >
+          <label for="floorsCount"> عدد الطوابق <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="floorsCount"
+            name="floorsCount"
+            :type="'text'"
+            :size="'sm'"
+            :required="
+              state.code.includes('VS') ||
+              state.code.includes('VR') ||
+              state.code.includes('BS') ||
+              state.code.includes('BR') ||
+              state.code.includes('FS') ||
+              state.code.includes('FR')
+            "
+            v-model="state.floorsCount!"
+          />
+        </div>
+        <!-- floorsArea -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="
+            state.code.includes('VS') ||
+            state.code.includes('VR') ||
+            state.code.includes('BS') ||
+            state.code.includes('BR') ||
+            state.code.includes('FS') ||
+            state.code.includes('FR')
+          "
+        >
+          <label for="floorsArea"> مساحة الطوابق <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="floorsArea"
+            name="floorsArea"
+            :type="'text'"
+            :size="'sm'"
+            :required="
+              state.code.includes('VS') ||
+              state.code.includes('VR') ||
+              state.code.includes('BS') ||
+              state.code.includes('BR') ||
+              state.code.includes('FS') ||
+              state.code.includes('FR')
+            "
+            v-model="state.floorsArea!"
+          />
+        </div>
+        <!-- buildingAge -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="
+            state.code.includes('VS') ||
+            state.code.includes('VR') ||
+            state.code.includes('BS') ||
+            state.code.includes('BR') ||
+            state.code.includes('FS') ||
+            state.code.includes('FR') ||
+            state.code.includes('SS') ||
+            state.code.includes('SR') ||
+            state.code.includes('CS') ||
+            state.code.includes('CR')
+          "
+        >
+          <label for="buildingAge"> عمر البناء <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="buildingAge"
+            name="buildingAge"
+            :type="'text'"
+            :size="'sm'"
+            :required="
+              state.code.includes('VS') ||
+              state.code.includes('VR') ||
+              state.code.includes('BS') ||
+              state.code.includes('BR') ||
+              state.code.includes('FS') ||
+              state.code.includes('FR') ||
+              state.code.includes('SS') ||
+              state.code.includes('SR') ||
+              state.code.includes('CS') ||
+              state.code.includes('CR')
+            "
+            v-model="state.buildingAge!"
+          />
+        </div>
+        <!-- storesCount -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('SS') || state.code.includes('SR') || state.code.includes('CS') || state.code.includes('CR')"
+        >
+          <label for="storesCount"> عدد المخازن <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="storesCount"
+            name="storesCount"
+            :type="'text'"
+            :size="'sm'"
+            :required="state.code.includes('SS') || state.code.includes('SR') || state.code.includes('CS') || state.code.includes('CR')"
+            v-model="state.storesCount!"
+          />
+        </div>
+        <!-- storesArea -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('SS') || state.code.includes('SR') || state.code.includes('CS') || state.code.includes('CR')"
+        >
+          <label for="storesArea"> مساحة المخازن <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="storesArea"
+            name="storesArea"
+            :type="'text'"
+            :size="'sm'"
+            :required="state.code.includes('SS') || state.code.includes('SR') || state.code.includes('CS') || state.code.includes('CR')"
+            v-model="state.storesArea!"
+          />
+        </div>
+        <!-- isRegistered -->
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="state.code.includes('SS') || state.code.includes('SR') || state.code.includes('CS') || state.code.includes('CR')"
+        >
+          <label for="isRegistered"> مؤجر \ فارغ <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <USelect
+            id="isRegistered"
+            name="isRegistered"
+            :options="[
+              { id: 1, name: 'فارغ', value: 'فارغ' },
+              { id: 2, name: 'مؤجر', value: 'مؤجر' },
+            ]"
+            :required="state.code.includes('SS') || state.code.includes('SR') || state.code.includes('CS') || state.code.includes('CR')"
+            v-model="state.isRegistered!"
+            value-attribute="value"
+            option-attribute="name"
+          />
         </div>
         <!-- isFurnished -->
-        <div class="col-span-6 sm:col-span-2">
-          <label for="isFurnished"> مفروش \ غير مفروش </label>
+        <div
+          class="col-span-6 sm:col-span-2"
+          v-show="
+            state.code.includes('AS') ||
+            state.code.includes('AR') ||
+            state.code.includes('ASI') ||
+            state.code.includes('ARS') ||
+            state.code.includes('VS') ||
+            state.code.includes('VR') ||
+            state.code.includes('BS') ||
+            state.code.includes('BR') ||
+            state.code.includes('FS') ||
+            state.code.includes('FR')
+          "
+        >
+          <label for="isFurnished"> مفروش \ غير مفروش <span class="text-xs text-primary-500">(اجباري)</span></label>
           <USelectMenu
             id="isFurnished"
             name="isFurnished"
-            :required="true"
+            :required="
+              state.code.includes('AS') ||
+              state.code.includes('AR') ||
+              state.code.includes('ASI') ||
+              state.code.includes('ARS') ||
+              state.code.includes('VS') ||
+              state.code.includes('VR') ||
+              state.code.includes('BS') ||
+              state.code.includes('BR') ||
+              state.code.includes('FS') ||
+              state.code.includes('FR')
+            "
             v-model="state.isFurnished"
             :options="[
               {
@@ -482,10 +750,16 @@ watch(
             option-attribute="name"
           />
         </div>
-        <!-- realLocation -->
-        <div class="col-span-6 sm:col-span-4">
-          <label for="realLocation"> الموقع الفعلي </label>
-          <UInput id="realLocation" name="realLocation" :type="'text'" :size="'sm'" :required="false" v-model="state.realLocation!" />
+        <!-- expectedRentAmount -->
+        <div class="col-span-6 sm:col-span-2" v-show="state.code.includes('ASI')">
+          <label for="expectedRentAmount"> دخل الايجار المتوقع <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <UInput
+            id="expectedRentAmount"
+            name="expectedRentAmount"
+            :size="'sm'"
+            :required="state.code.includes('ASI')"
+            v-model="state.expectedRentAmount!"
+          />
         </div>
         <!-- notes -->
         <div class="col-span-6 sm:col-span-8">

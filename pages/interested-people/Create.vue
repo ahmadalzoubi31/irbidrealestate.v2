@@ -52,12 +52,12 @@ const computedAds = computed(() => availableAds.value?.map((a) => ({ id: a.id, n
         </div>
         <!-- name -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="name">اسم الشخص <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="name">اسم الشخص <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="name" name="name" :size="'sm'" :autofocus="true" :required="true" v-model="state.name" />
         </div>
         <!-- number -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="number">رقم الشخص <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="number">رقم الشخص <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="number" name="number" :size="'sm'" :autofocus="true" :required="true" v-model="state.number" />
         </div>
       </div>

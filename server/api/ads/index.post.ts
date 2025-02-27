@@ -1,14 +1,6 @@
 import { Ad, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
-// Utility function for validating request data
-const validateAdData = (data: Ad) => {
-  // TODO: Add any additional field validation as needed
-  if (!data.apartmentNumber || !data.basin) {
-    throw new Error("Missing required fields: apartmentNumber and basin");
-  }
-};
-
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event);
 
@@ -22,16 +14,13 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Validate the incoming data
-    validateAdData(body);
-
     const { interestedPeople, ...adData } = body;
     // Relate the claim with the related records
     const data = {
       ...adData,
       // @ts-ignore
       interestedPeople: { create: interestedPeople },
-    }
+    };
 
     // Create a new ad entry
     const newAd: Ad = await prisma.ad.create({
@@ -64,7 +53,7 @@ export default defineEventHandler(async (event) => {
     console.log(msg);
     throw createError({
       statusCode: 500,
-      message: msg
+      message: msg,
     });
   }
 });

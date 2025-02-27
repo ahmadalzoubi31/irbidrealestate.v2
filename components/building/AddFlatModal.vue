@@ -138,7 +138,7 @@ const flatStatusOptions = [
           </div>
           <!-- flatStatus -->
           <div class="col-span-6 sm:col-span-2">
-            <label for="flatStatus">حالة الشقة <span class="text-sm text-primary-500">(اجباري)</span></label>
+            <label for="flatStatus">حالة الشقة <span class="text-xs text-primary-500">(اجباري)</span></label>
             <USelectMenu
               id="flatStatus"
               name="flatStatus"

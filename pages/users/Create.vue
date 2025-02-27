@@ -50,37 +50,37 @@ watchEffect(() => {
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- firstName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="firstName"> الاسم الاول <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="firstName"> الاسم الاول <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="firstName" name="buildingName" :size="'sm'" :autofocus="true" :required="true" v-model="state.firstName" />
         </div>
         <!-- lastName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="lastName">
             الاسم الثاني
-            <span class="text-sm text-primary-500">(اجباري)</span>
+            <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
           <UInput id="lastName" name="lastName" :size="'sm'" :required="true" v-model="state.lastName" />
         </div>
         <!-- username -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="username"> اسم المعرف <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="username"> اسم المعرف <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="username" name="username" :size="'sm'" :required="false" v-model="state.username" />
         </div>
         <!-- password -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="password"> كلمة السر <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="password"> كلمة السر <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="password" name="password" :type="'password'" :size="'sm'" :required="true" v-model="state.password" />
           <small v-if="!passwordsValid" class="text-red-500">Passwords must match and be more than 6 characters long.</small>
         </div>
         <!-- confirmPassword -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="confirmPassword"> تأكيد كلمة السر <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="confirmPassword"> تأكيد كلمة السر <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="confirmPassword" name="confirmPassword" :type="'password'" :size="'sm'" :required="true" v-model="confirmPassword" />
           <small v-if="!passwordsValid" class="text-red-500">Passwords must match and be more than 6 characters long.</small>
         </div>
         <!-- role -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="role"> الصلاحيات <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="role"> الصلاحيات <span class="text-xs text-primary-500">(اجباري)</span></label>
           <USelectMenu
             id="role"
             name="role"

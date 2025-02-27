@@ -48,25 +48,25 @@ const submitForm = async () => {
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- firstName -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="firstName"> الاسم الاول <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="firstName"> الاسم الاول <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="firstName" name="userName" :size="'sm'" :autofocus="true" :required="true" v-model="state.firstName" />
         </div>
         <!-- lastName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="lastName">
             الاسم الثاني
-            <span class="text-sm text-primary-500">(اجباري)</span>
+            <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
           <UInput id="lastName" name="lastName" :size="'sm'" :required="true" v-model="state.lastName" />
         </div>
         <!-- username -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="username"> اسم المعرف <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="username"> اسم المعرف <span class="text-xs text-primary-500">(اجباري)</span></label>
           <UInput id="username" name="username" :size="'sm'" :required="false" :disabled="true" :modelValue="user?.username" />
         </div>
         <!-- role -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="role"> الصلاحيات <span class="text-sm text-primary-500">(اجباري)</span></label>
+          <label for="role"> الصلاحيات <span class="text-xs text-primary-500">(اجباري)</span></label>
           <USelectMenu
             id="role"
             name="role"
