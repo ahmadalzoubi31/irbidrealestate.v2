@@ -413,13 +413,19 @@ watch(
         </div>
         <!-- basin -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="basin"> الحوض <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="basin" name="basin" :size="'sm'" :required="true" v-model="state.basin" />
+          <label for="basin"> الحوض </label>
+          <UInput id="basin" name="basin" :size="'sm'" :required="state.code.includes('LS') || state.code.includes('LR')" v-model="state.basin" />
         </div>
         <!-- neighborhood -->
         <div class="col-span-6 sm:col-span-2">
           <label for="neighborhood"> الحي </label>
-          <UInput id="neighborhood" name="neighborhood" :size="'sm'" :required="false" v-model="state.neighborhood!" />
+          <UInput
+            id="neighborhood"
+            name="neighborhood"
+            :size="'sm'"
+            :required="state.code.includes('LS') || state.code.includes('LR')"
+            v-model="state.neighborhood!"
+          />
         </div>
         <!-- price -->
         <div class="col-span-6 sm:col-span-2">
@@ -448,14 +454,8 @@ watch(
           class="col-span-6 sm:col-span-2"
           v-show="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
         >
-          <label for="buildingName"> اسم البناية <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput
-            id="buildingName"
-            name="buildingName"
-            :size="'sm'"
-            :required="state.code.includes('AS') || state.code.includes('AR') || state.code.includes('ASI') || state.code.includes('ARS')"
-            v-model="state.buildingName!"
-          />
+          <label for="buildingName"> اسم البناية </label>
+          <UInput id="buildingName" name="buildingName" :size="'sm'" :required="false" v-model="state.buildingName!" />
         </div>
         <!-- apartmentNumber -->
         <!-- <div class="col-span-6 sm:col-span-2" v-show="">
