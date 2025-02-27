@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     // Fetch all ads
     const ads: Ad[] = await prisma.ad.findMany({
       orderBy: {
-        createdAt: "asc",
+        code: "asc",
       },
       include: {
         interestedPeople: true,

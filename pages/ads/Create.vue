@@ -298,7 +298,7 @@ watch(
         <!-- code -->
         <div class="col-span-6 sm:col-span-2">
           <label for="code">رقم الاعلان </label>
-          <UInput id="code" name="code" :size="'sm'" :required="true" :disabled="true" inputClass="bg-gray-200" v-model="state.code" />
+          <UInput id="code" name="code" :size="'sm'" :required="true" v-model="state.code" />
         </div>
         <!-- propertyStatus -->
         <div class="col-span-6 sm:col-span-2">

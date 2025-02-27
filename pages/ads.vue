@@ -16,9 +16,8 @@ const { ads, status } = useAds();
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
 
 // Property Type Filter
-const selectedPropertyType = ref(0);
+const selectedPropertyType: Ref<number[]> = ref([]);
 const propertyTypeOptions = [
-  { id: 0, name: "All", value: 0 },
   { id: 1, name: "شقة سكنية للبيع", value: 1 },
   { id: 2, name: "شقة استثمارية للبيع", value: 2 },
   { id: 3, name: "شقة سكنية للايجار", value: 3 },
@@ -40,7 +39,7 @@ const propertyTypeOptions = [
 ];
 
 const filteredAds = computed(() =>
-  ads.value ? ads.value.filter((ad) => selectedPropertyType.value === 0 || ad.propertyType === selectedPropertyType.value) : []
+  ads.value ? ads.value.filter((ad) => selectedPropertyType.value.length === 0 || selectedPropertyType.value.includes(ad.propertyType)) : []
 );
 
 // Filtering
@@ -87,9 +86,16 @@ const generateSharedLinkSelectedRecord = async () => {
             @click="generateSharedLinkSelectedRecord"
           />
         </div>
-        <div class="flex justify-between">
-          <UInput class="ml-3" v-model="q" placeholder="البحث ..." />
-          <USelect :options="propertyTypeOptions" v-model="selectedPropertyType" />
+        <div class="flex justify-between w-[30rem]">
+          <UInput class="ml-3 w-[30rem]" v-model="q" placeholder="البحث ..." />
+          <USelectMenu
+            class="w-[20rem]"
+            :options="propertyTypeOptions"
+            v-model="selectedPropertyType"
+            option-attribute="name"
+            value-attribute="value"
+            multiple
+          />
         </div>
       </div>
 
