@@ -15,8 +15,36 @@ const { ads, status } = useAds();
 // Computed loading state
 const isLoading = computed(() => status.value !== "success" && status.value !== "error");
 
+// Property Type Filter
+const selectedPropertyType = ref(0);
+const propertyTypeOptions = [
+  { id: 0, name: "All", value: 0 },
+  { id: 1, name: "شقة سكنية للبيع", value: 1 },
+  { id: 2, name: "شقة استثمارية للبيع", value: 2 },
+  { id: 3, name: "شقة سكنية للايجار", value: 3 },
+  { id: 4, name: "شقة طلابية للايجار", value: 4 },
+  { id: 5, name: "ارض للبيع", value: 5 },
+  { id: 6, name: "ارض للايجار", value: 6 },
+  { id: 7, name: "فيلا للبيع", value: 7 },
+  { id: 8, name: "فيلا للايجار", value: 8 },
+  { id: 9, name: "مزرعة للبيع", value: 9 },
+  { id: 10, name: "مزرعة للايجار", value: 10 },
+  { id: 11, name: "مخزن للبيع", value: 11 },
+  { id: 12, name: "مخزن للايجار", value: 12 },
+  { id: 13, name: "بيت مستقل للبيع", value: 13 },
+  { id: 14, name: "بيت مستقل للايجار", value: 14 },
+  { id: 15, name: "مجمع تجاري للبيع", value: 15 },
+  { id: 16, name: "مجمع تجاري للايجار", value: 16 },
+  { id: 17, name: "مكاتب للبيع", value: 17 },
+  { id: 18, name: "مكاتب للايجار", value: 18 },
+];
+
+const filteredAds = computed(() =>
+  ads.value ? ads.value.filter((ad) => selectedPropertyType.value === 0 || ad.propertyType === selectedPropertyType.value) : []
+);
+
 // Filtering
-const filteredRows = useFilteredRows<Ad>(ads, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<Ad>(filteredAds, q, ["createdAt", "updatedAt"]);
 
 // Actions
 const { deleteAd } = useAdActions();
@@ -59,7 +87,10 @@ const generateSharedLinkSelectedRecord = async () => {
             @click="generateSharedLinkSelectedRecord"
           />
         </div>
-        <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
+        <div class="flex justify-between">
+          <UInput class="ml-3" v-model="q" placeholder="البحث ..." />
+          <USelect :options="propertyTypeOptions" v-model="selectedPropertyType" />
+        </div>
       </div>
 
       <!-- Table -->

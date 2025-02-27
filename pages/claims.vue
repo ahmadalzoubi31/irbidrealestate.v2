@@ -80,7 +80,7 @@ const generateSharedLinkSelectedRecord = async () => {
           />
         </div>
         <div class="flex justify-between">
-          <UInput v-model="q" placeholder="البحث ..." class="ml-3" />
+          <UInput class="ml-3" v-model="q" placeholder="البحث ..." />
           <USelect :options="years" v-model="selectedYear" />
         </div>
       </div>
