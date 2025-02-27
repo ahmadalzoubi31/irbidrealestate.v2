@@ -28,7 +28,7 @@ const completedClaims = computed(() =>
 
 // Year Filter
 const selectedYear = ref(new Date().getFullYear());
-const years = ref([2023, 2024, 2025, 2026]);
+const years = ref([2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035]);
 
 // Filtering
 const filteredRows_active = useFilteredRows<Claim>(activeClaims, q, ["createdAt", "updatedAt"]);
