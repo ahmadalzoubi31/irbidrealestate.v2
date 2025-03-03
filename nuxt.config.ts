@@ -42,26 +42,26 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    //   storage: {
-    //     customDriver: {
-    //       driver: "mongodb",
-    //       connectionString: process.env.MONGODB_PROD_URI,
-    //       databaseName: "irbidrealestate_db",
-    //       collectionName: "FileContent",
-    //     },
-    //   },
-    // },
     storage: {
-      // Use the "database" driver (built-in)
       customDriver: {
-        driver: "db0",
-        // Database connection string
-        connectionString: process.env.DATABASE_URL,
-        // Database table name
-        tableName: "file_content",
+        driver: "mongodb",
+        connectionString: process.env.MONGODB_PROD_URI,
+        databaseName: "irbidrealestate_db",
+        collectionName: "FileContent",
       },
     },
   },
+  // storage: {
+  //   // Use the "database" driver (built-in)
+  //   customDriver: {
+  //     driver: "db0",
+  //     // Database connection string
+  //     connectionString: process.env.DATABASE_URL,
+  //     // Database table name
+  //     tableName: "file_content",
+  //   },
+  // },
+  // },
   // nitro: {
   //   storage: {
   //     photos: {
