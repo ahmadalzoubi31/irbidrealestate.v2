@@ -120,12 +120,21 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             name="buildingName"
             v-model="state.buildingId"
             :autofocus="true"
-            :required="!isOutOfBuilding"
+            :required="true"
             :options="computedBuildings"
             value-attribute="id"
             option-attribute="name"
           />
-          <UInput v-else id="buildingName" name="buildingName" :autofocus="true" inputClass="bg-gray-300" :disabled="true" model-value="لا يوجد" />
+          <UInput
+            v-else
+            id="buildingName"
+            name="buildingName"
+            :autofocus="true"
+            :required="false"
+            inputClass="bg-gray-300"
+            :disabled="true"
+            model-value="لا يوجد"
+          />
         </div>
         <!-- apartmentNumber -->
         <div class="col-span-6 sm:col-span-2">
@@ -357,9 +366,9 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
         <div class="col-span-6 sm:col-span-2">
           <label for="contractImage">
             صورة العقد
-            <span class="text-xs text-primary-500">(اجباري)</span>
+            <!-- <span class="text-xs text-primary-500">(اجباري)</span> -->
           </label>
-          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="true" @input="handle3" />
+          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
           <!-- <NuxtImg
             v-if="contractImage.length > 0"
             :src="contractImage[0].content?.toString()"

@@ -1,4 +1,12 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { createDatabase } from "db0";
+import postgresql from "db0/connectors/postgresql";
+const database = createDatabase(
+  postgresql({
+    /* db0 connector options */
+    url: process.env.DATABASE_URL as string,
+  })
+);
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
@@ -34,12 +42,23 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    //   storage: {
+    //     customDriver: {
+    //       driver: "mongodb",
+    //       connectionString: process.env.MONGODB_PROD_URI,
+    //       databaseName: "irbidrealestate_db",
+    //       collectionName: "FileContent",
+    //     },
+    //   },
+    // },
     storage: {
+      // Use the "database" driver (built-in)
       customDriver: {
-        driver: "mongodb",
-        connectionString: process.env.MONGODB_PROD_URI,
-        databaseName: "irbidrealestate_db",
-        collectionName: "FileContent",
+        driver: "db0",
+        // Database connection string
+        connectionString: process.env.DATABASE_URL,
+        // Database table name
+        tableName: "file_content",
       },
     },
   },

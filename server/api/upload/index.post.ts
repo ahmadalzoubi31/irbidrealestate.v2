@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const queryList = getQuery<{ relatedType: string; relatedId: number; purpose: string }>(event);
 
   const relatedType = queryList?.relatedType;
-  const relatedId = queryList?.relatedId;
+  const relatedId = Number(queryList?.relatedId);
   const purpose = queryList?.purpose;
 
   // Remove all file content related to id
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
 
     // const fileCount: string = (await prisma.appFile.count({ where: { relatedId, relatedType, purpose } })).toString();
     // this will use to update and delete the file like follow format: type:count:id Ex. ad:id:1, contract:id:1, furniture:1:id:1, furniture:1:id:2
-    const key = new String().concat(relatedType, ":", purpose, ":", fileCount.toString(), ":", relatedId);
+    const key = new String().concat(relatedType, ":", purpose, ":", fileCount.toString(), ":", relatedId.toString());
 
     // Upload the file content to the server
     await useStorage("customDriver").setItem(key, file.content);

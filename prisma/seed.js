@@ -21,21 +21,21 @@ async function seed() {
     },
   });
 
-  // await prisma.building.upsert({
-  //   where: {
-  //     name: "---",
-  //   },
-  //   update: {},
-  //   create: {
-  //     id: 1,
-  //     name: "---",
-  //     apartmentsCount: 0,
-  //     basinName: "-",
-  //     basinNumber: "-",
-  //     landNumber: "-",
-  //     status: false,
-  //   },
-  // });
+  await prisma.building.upsert({
+    where: {
+      name: "---",
+    },
+    update: {},
+    create: {
+      id: 1,
+      name: "---",
+      apartmentsCount: 0,
+      basinName: "-",
+      basinNumber: "-",
+      landNumber: "-",
+      status: false,
+    },
+  });
 }
 
 try {
