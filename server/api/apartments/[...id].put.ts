@@ -2,11 +2,6 @@
 import prisma from "~/lib/prisma";
 import { Apartment } from "@prisma/client";
 
-// Utility function to validate the request body
-const validateApartmentData = (data: Apartment) => {
-  // TODO: Add any additional field validation as needed
-};
-
 export default defineEventHandler(async (event) => {
   const body: Apartment = await readBody(event);
   const id: number = Number(getRouterParams(event).id);
@@ -22,8 +17,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    validateApartmentData(body); // Custom validation for required fields
-
     // Fetch the apartment to ensure it exists
     const existApartment = await prisma.apartment.findUnique({
       where: { id },

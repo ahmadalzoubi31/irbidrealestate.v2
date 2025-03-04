@@ -1,12 +1,4 @@
-import { createDatabase } from "db0";
-import postgresql from "db0/connectors/postgresql";
-const database = createDatabase(
-  postgresql({
-    /* db0 connector options */
-    url: process.env.DATABASE_URL as string,
-  })
-);
-
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
@@ -42,32 +34,22 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    //   storage: {
+    //     customDriver: {
+    //       driver: "mongodb",
+    //       connectionString: process.env.MONGODB_PROD_URI,
+    //       databaseName: "irbidrealestate_db",
+    //       collectionName: "FileContent",
+    //     },
+    //   },
     storage: {
-      customDriver: {
-        driver: "mongodb",
-        connectionString: process.env.MONGODB_PROD_URI,
-        databaseName: "irbidrealestate_db",
-        collectionName: "FileContent",
+      photos: {
+        driver: "vercelBlob", // Change to 's3', 'cloudflare', etc.
+        access: "public", // Required! Beware that stored data is publicly accessible.
+        token: "vercel_blob_rw_X9KcdaXQpbWk18aw_WimYSNRyslrNgRlua38XljYNYCA3sE", // or set BLOB_READ_WRITE_TOKEN
+        // base: "unstorage",
+        envPrefix: "BLOB",
       },
     },
   },
-  // storage: {
-  //   // Use the "database" driver (built-in)
-  //   customDriver: {
-  //     driver: "db0",
-  //     // Database connection string
-  //     connectionString: process.env.DATABASE_URL,
-  //     // Database table name
-  //     tableName: "file_content",
-  //   },
-  // },
-  // },
-  // nitro: {
-  //   storage: {
-  //     photos: {
-  //       driver: "fs", // Change to 's3', 'cloudflare', etc.
-  //       base: "./uploads", // Driver-specific config
-  //     },
-  //   },
-  // },
 });

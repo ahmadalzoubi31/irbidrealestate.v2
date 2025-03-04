@@ -17,7 +17,7 @@ export function useInterestedPeoples() {
     toast.add({
       description: "حدث خطأ اثناء جلب البنايات",
       color: "rose",
-      timeout: 10000,
+      timeout: 15000,
     });
   }
 

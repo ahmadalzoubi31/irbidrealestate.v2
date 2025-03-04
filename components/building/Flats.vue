@@ -57,7 +57,7 @@ if (status.value === "error") {
   toast.add({
     description: "حدث خطأ اثناء جلب البنايات",
     color: "rose",
-    timeout: 10000,
+    timeout: 15000,
   });
 }
 
@@ -91,13 +91,13 @@ const deleteSelectedRecord = async (id: number) => {
     toast.add({
       description: "تم مسح الشقة بنجاح",
       color: "primary",
-      timeout: 1000,
+      timeout: 1500,
     });
   } catch (error: any) {
     toast.add({
       description: error.message || "حدث خطأ أثناء الحذف",
       color: "rose",
-      timeout: 10000,
+      timeout: 15000,
     });
   } finally {
     useLoadingIndicator().finish();

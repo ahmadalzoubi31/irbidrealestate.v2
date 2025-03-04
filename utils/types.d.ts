@@ -94,6 +94,7 @@ declare interface IEditApartment {
   isServiceIncluded: string;
   insurance: number;
   commissionAmount: number;
+  images: string;
 }
 
 declare interface IBrokeApartment {
@@ -123,6 +124,7 @@ declare interface IEditPayment {
   depositAmount: number;
   depositDate: Date;
   notes: string;
+  images: string;
 }
 
 declare interface ICreateAd {
@@ -202,23 +204,23 @@ declare interface IEditAd {
   isRegistered: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
-  files: Array<any>;
+  images: string;
 }
 
-declare interface IAppFile {
-  name: string;
-  path: string;
-  type: string;
-  size: string;
-  url: string;
-  key: string;
-  purpose: string;
-  relatedId: number;
-  relatedType: string;
-  adId: number | null;
-  paymentId: number | null;
-  apartmentId: number | null;
-}
+// declare interface IAppFile {
+//   name: string;
+//   path: string;
+//   type: string;
+//   size: string;
+//   url: string;
+//   key: string;
+//   purpose: string;
+//   relatedId: number;
+//   relatedType: string;
+//   adId: number | null;
+//   paymentId: number | null;
+//   apartmentId: number | null;
+// }
 
 declare interface IInterestedPeople {
   name: string;
@@ -299,4 +301,24 @@ declare interface ICreateInterestedPeople {
   name: string;
   number: string;
   adId: number;
+}
+
+declare interface Image {
+  content:
+    | string
+    | {
+        readonly byteLength: number;
+        slice: (begin: number, end?: number | undefined) => ArrayBuffer;
+        readonly [Symbol.toStringTag]: string;
+      }
+    | null
+    | undefined;
+  name: string;
+  lastModified: number;
+  readonly size: number;
+  readonly type: string;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  slice: (start?: number | undefined, end?: number | undefined, contentType?: string | undefined) => Blob;
+  stream: () => ReadableStream<Uint8Array>;
+  text: () => Promise<string>;
 }

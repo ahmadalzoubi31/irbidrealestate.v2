@@ -8,7 +8,7 @@ export function useAdActions() {
     toast.add({
       description: error.message || defaultMessage,
       color: "rose",
-      timeout: 10000,
+      timeout: 15000,
     });
   };
 
@@ -16,8 +16,36 @@ export function useAdActions() {
     toast.add({
       description: message,
       color: "primary",
-      timeout: 1000,
+      timeout: 1500,
     });
+  };
+
+  const uploadImages = async (images: Image[], type: string) => {
+    if (images.length > 0) {
+      const keys: string[] | null = await uploadFile(images, type);
+      if (!keys) {
+        throw new Error(`فشل رفع الملفات - ${type}`);
+      }
+      return keys.join(",");
+    }
+    return "";
+  };
+
+  const updateImages = async (images: Image[], oldKeys: string[], type: string) => {
+    if (images.length > 0) {
+      if (oldKeys.length > 0) {
+        await $fetch("/api/v2/files", {
+          method: "DELETE",
+          body: { keys: oldKeys },
+        });
+      }
+      const keys: string[] | null = await uploadFile(images, type);
+      if (!keys) {
+        throw new Error(`فشل رفع الملفات - ${type}`);
+      }
+      return keys.join(",");
+    }
+    return oldKeys.join(",");
   };
 
   const getOneAd = async (id: number) => {
@@ -34,68 +62,65 @@ export function useAdActions() {
     return { data: data.value, status: status.value };
   };
 
-  const createAd = async (payload: ICreateAd, files: any[]) => {
+  const createAd = async (payload: ICreateAd, files: Image[]) => {
+    let imagesArray: string = "";
     try {
-      // Create the ad
-      const newAd = await $fetch("/api/ads", { method: "POST", body: payload });
-
-      // Upload the files with the new ad's ID as the related ID
-      if (files.length > 0) {
-        const res: boolean = await uploadFile(files, "ads", newAd.data.id, "ad");
-
-        if (!res) {
-          // Optionally, you can delete the created ad if file upload fails
-          await $fetch("/api/ads/" + newAd.data.id, { method: "DELETE" });
-          throw new Error("تم إنشاء الإعلان ولكن فشل رفع الملفات. تم حذف الإعلان.");
-        }
-      }
-
-      await refreshNuxtData("getAds");
-      await navigateTo("/ads");
-      handleSuccess("تم انشاء الاعلان بنجاح");
+      imagesArray += await uploadImages(files, "ads");
     } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء الحفظ");
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
     } finally {
-      useLoadingIndicator().finish();
+      try {
+        // Create the ad
+        const newAd = await $fetch("/api/ads", { method: "POST", body: { ...payload, images: imagesArray } });
+        await refreshNuxtData("getAds");
+        await navigateTo("/ads");
+        handleSuccess("تم انشاء الاعلان بنجاح");
+      } catch (error) {
+        handleError(error, "حدث خطأ أثناء الحفظ");
+      } finally {
+        useLoadingIndicator().finish();
+      }
     }
   };
 
-  const editAd = async (id: number, payload: IEditAd) => {
-    try {
-      // Separate the body form the files
-      const { files, ...adData } = payload;
-      // Separate new files from existing files
-      const newFiles = files.filter((file) => !file.id);
-      const existingFiles = files.filter((file) => file.id);
+  const editAd = async (id: number, payload: IEditAd, adImages: Image[]) => {
+    let imagesArray: string = "";
+    const oldAdImageKeys = payload.images.split(",").filter((key) => key.includes("ads"));
 
-      // Update the ad details
-      await $fetch("/api/ads/" + id, { method: "PUT", body: adData });
+    try {
+      imagesArray += await updateImages(adImages, oldAdImageKeys, "ads");
 
       // Handle file uploads
-      if (newFiles.length > 0) {
-        try {
-          await uploadFile(newFiles, "ads", id, "ad");
-        } catch (uploadError: any) {
-          handleError(uploadError, "حدث خطأ أثناء رفع الملف");
-        }
-      }
+      // if (newFiles.length > 0) {
+      //   try {
+      //     await uploadFile(newFiles, "ads", id, "ad");
+      //   } catch (uploadError: any) {
+      //     handleError(uploadError, "حدث خطأ أثناء رفع الملف");
+      //   }
+      // }
 
       // Handle file deletions if status false
-      const filesToDelete = existingFiles.filter((file) => !file.status);
-      if (filesToDelete.length > 0) {
-        await $fetch("/api/upload", {
-          method: "DELETE",
-          body: { files: filesToDelete.map((file) => file.id) },
-        });
-      }
-
-      await refreshNuxtData("getAds");
-      await navigateTo("/ads");
-      handleSuccess("تم تحديث الإعلان بنجاح");
+      // const filesToDelete = existingFiles.filter((file) => !file.status);
+      // if (filesToDelete.length > 0) {
+      //   await $fetch("/api/upload", {
+      //     method: "DELETE",
+      //     body: { files: filesToDelete.map((file) => file.id) },
+      //   });
+      // }
     } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء تحديث الإعلان");
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
     } finally {
-      useLoadingIndicator().finish();
+      try {
+        // Update the ad details
+        await $fetch("/api/ads/" + id, { method: "PUT", body: { ...payload, images: imagesArray } });
+        await refreshNuxtData("getAds");
+        await navigateTo("/ads");
+        handleSuccess("تم تحديث الإعلان بنجاح");
+      } catch (error) {
+        handleError(error, "حدث خطأ أثناء التعديل");
+      } finally {
+        useLoadingIndicator().finish();
+      }
     }
   };
 

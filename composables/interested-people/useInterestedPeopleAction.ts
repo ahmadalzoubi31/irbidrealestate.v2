@@ -22,7 +22,7 @@ export function useInterestedPeopleActions() {
       toast.add({
         description: error.value!.message || "الشخص المطلوب غير موجود.",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
       navigateTo("/interested-people");
     }
@@ -39,7 +39,7 @@ export function useInterestedPeopleActions() {
       toast.add({
         description: error.value!.message || "الشخص المطلوب غير موجود.",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
       navigateTo("/interested-people");
     }
@@ -55,13 +55,13 @@ export function useInterestedPeopleActions() {
       toast.add({
         description: "تم انشاء الشخص بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء الحفظ",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();
@@ -76,13 +76,13 @@ export function useInterestedPeopleActions() {
       toast.add({
         description: "تم تعديل الشخص بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء التعديل",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();
@@ -98,13 +98,13 @@ export function useInterestedPeopleActions() {
       toast.add({
         description: "تم حذف الشخص بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء الحذف",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();

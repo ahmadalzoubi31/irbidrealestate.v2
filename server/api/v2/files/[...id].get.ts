@@ -1,9 +1,7 @@
-// import { photoStorage } from "~/server/services/storage";
-
 export default defineEventHandler(async (event) => {
   const key = getRouterParams(event).id;
 
-  const photo = await useStorage("photos").getItem(key as string);
+  const photo = await useStorage("photos").getItem(key);
 
   if (!photo) throw createError("File not found");
 
@@ -12,6 +10,6 @@ export default defineEventHandler(async (event) => {
 
   return {
     body: photo,
-    contentType: "image/jpeg",
+    mimeType: "image/png",
   };
 });

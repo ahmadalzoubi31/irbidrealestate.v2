@@ -8,12 +8,10 @@ const route = useRoute();
 const selectedApartmentId = ref(Number(route.params.id));
 
 const { data: apartment } = await getOneApartment(selectedApartmentId.value);
-
 const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
-const existingContractImage = apartment?.files.find((file) => file.purpose === "contract");
-const existingRenterIdentificationImage = apartment?.files.find((file) => file.purpose === "renter-identification");
+
 const state: IEditApartment = reactive({
   ownerName: "",
   ownerNumber: "",
@@ -35,6 +33,7 @@ const state: IEditApartment = reactive({
   isServiceIncluded: "لا",
   insurance: 0,
   commissionAmount: 0,
+  images: "",
 });
 const isFurnitureOptions = [
   { id: 0, name: "لا", value: "لا" },
@@ -82,6 +81,7 @@ watchEffect(() => {
     state.isServiceIncluded = apartment.isServiceIncluded;
     state.insurance = apartment.insurance;
     state.commissionAmount = apartment.commissionAmount;
+    state.images = apartment.images;
   }
 });
 
@@ -93,9 +93,7 @@ const submitForm = async () => {
 const removeFurnitureImages = (index: number) => {
   furnitureImages.value.splice(index, 1);
 };
-const removeExistingFurnitureImages = (index: number) => {
-  apartment?.files.splice(index, 1);
-};
+
 const openFile = (file: string, isNew: boolean) => {
   if (isNew) {
     selectedImage.value = file;
@@ -108,6 +106,33 @@ const closeModal = () => {
   isModalOpen.value = false;
   selectedImage.value = "";
 };
+// Update getImageUrl method
+const getImageUrl = async (key: string, download = false) => {
+  if (!key) return "";
+  const res = await $fetch<any>("/api/v2/files/" + key);
+
+  const base64Data = res.body.split(",")[1]; // Extract base64 data
+  const mimeType = res.mimeType; // Ensure the response contains the MIME type
+  const url = base64ToBlobUrl(base64Data, mimeType);
+
+  return url;
+};
+// Convert base64 to Blob and create URL
+const base64ToBlobUrl = (base64: string, mimeType: string) => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: mimeType });
+  return URL.createObjectURL(blob);
+};
+
+const imageKeys = computed(() => apartment?.images.split(",").filter((i) => i !== ""));
+
+const existingContractImage = await getImageUrl(imageKeys.value?.find((key) => key.split(":")[0] === "contract") || "");
+const existingRenterIdentificationImage = await getImageUrl(imageKeys.value?.find((key) => key.split(":")[0] === "renterIdentification") || "");
 </script>
 
 <template>
@@ -129,7 +154,7 @@ const closeModal = () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :modelValue="apartment?.Building.name"
+            :modelValue="apartment?.building.name"
           />
         </div>
         <!-- apartmentNumber -->
@@ -155,7 +180,7 @@ const closeModal = () => {
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.Building.basinName"
+            :model-value="apartment?.building.basinName"
           />
         </div>
         <!-- basinNumber -->
@@ -168,7 +193,7 @@ const closeModal = () => {
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.Building.basinNumber"
+            :model-value="apartment?.building.basinNumber"
           />
         </div>
         <!-- landNumber -->
@@ -181,7 +206,7 @@ const closeModal = () => {
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.Building.landNumber"
+            :model-value="apartment?.building.landNumber"
           />
         </div>
         <!-- ownerName -->
@@ -372,27 +397,35 @@ const closeModal = () => {
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput id="renterIdentificationImage" name="renterIdentificationImage" :type="'file'" :size="'sm'" :required="false" @input="handle2" />
+          <UInput
+            id="renterIdentificationImage"
+            name="renterIdentificationImage"
+            :type="'file'"
+            :size="'sm'"
+            :required="false"
+            @input="handle2"
+            icon="i-heroicons-folder"
+          />
           <NuxtImg
             v-if="existingRenterIdentificationImage"
-            :src="existingRenterIdentificationImage.fileContent?.value.toString()"
+            :src="existingRenterIdentificationImage.toString()"
             alt="file"
             class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
             preload
-            @click="openFile(existingRenterIdentificationImage.fileContent?.value.toString(), false)"
+            @click="openFile(existingRenterIdentificationImage.toString(), false)"
           />
         </div>
         <!-- contractImage -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="contractImage"> صورة العقد <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
+          <label for="contractImage"> صورة العقد </label>
+          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" icon="i-heroicons-folder" />
           <NuxtImg
             v-if="existingContractImage"
-            :src="existingContractImage.fileContent?.value.toString()"
+            :src="existingContractImage.toString()"
             alt="file"
             class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
             preload
-            @click="openFile(existingContractImage.fileContent?.value.toString(), false)"
+            @click="openFile(existingContractImage.toString(), false)"
           />
         </div>
       </div>
@@ -418,7 +451,7 @@ const closeModal = () => {
             :required="true"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.Building.maintenanceAmount"
+            :model-value="apartment?.building.maintenanceAmount"
           />
         </div>
         <!-- serviceAmount -->
@@ -431,7 +464,7 @@ const closeModal = () => {
             :required="false"
             :disabled="true"
             inputClass="bg-gray-200"
-            :model-value="apartment?.Building.serviceAmount"
+            :model-value="apartment?.building.serviceAmount"
           />
         </div>
       </div>

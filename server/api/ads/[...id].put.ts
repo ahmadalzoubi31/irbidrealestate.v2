@@ -14,13 +14,13 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { files, interestedPeople, ...adData } = body;
+  const { interestedPeople, ...adData } = body;
 
   try {
     // Check if the ad exists
     const ad = await prisma.ad.findUnique({
       where: { id },
-      include: { interestedPeople: true, files: true },
+      include: { interestedPeople: true },
     });
 
     if (!ad) {
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
       );
 
       // Execute deletions, updates, and creations
-      await Promise.all([ ...upsertOperations]);
+      await Promise.all([...upsertOperations]);
 
       // Return success response
       return {

@@ -131,7 +131,7 @@ model Apartment {
   createdAt            DateTime  @default(now())
   updatedBy            String?   @default("-")
   updatedAt            DateTime  @updatedAt
-  files                AppFile[]
+  images               String?
   payments             Payment[]
   building             Building? @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   buildingId           Int?
@@ -145,7 +145,7 @@ model Payment {
   depositAmount       Float
   depositDate         DateTime
   notes               String?
-  files               AppFile[]
+  images              String?
   status              Boolean   @default(true)
   createdBy           String    @default("-")
   createdAt           DateTime  @default(now())
@@ -196,7 +196,7 @@ model Ad {
   storesArea            String?
   isRegistered          String?            @default("فارغ")
   interestedPeople      InterestedPeople[]
-  files                 AppFile[]
+  images                String?
   status                Boolean            @default(true)
   createdBy             String             @default("-")
   createdAt             DateTime           @default(now())
@@ -273,40 +273,34 @@ model ClaimDetail {
   claimId  Int
 }
 
-model AppFile {
-  id            Int         @id @default(autoincrement())
-  name          String
-  path          String
-  type          String
-  size          String
-  key           String      @unique
-  fileCount     Int
-  purpose       String
-  relatedId     Int
-  relatedType   String
-  status        Boolean     @default(true)
-  createdBy     String      @default("-")
-  createdAt     DateTime    @default(now())
-  updatedBy     String?     @default("-")
-  updatedAt     DateTime    @updatedAt
-  apartment     Apartment?  @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId   Int?
-  payment       Payment?    @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  paymentId     Int?
-  ad            Ad?         @relation(fields: [adId], references: [id], onDelete: Cascade)
-  adId          Int?
-  fileContent   FileContent @relation(fields: [fileContentId], references: [id], onDelete: Cascade)
-  fileContentId Int         @unique
-}
+// model AppFile {
+//   id          Int           @id @default(autoincrement())
+//   name        String
+//   path        String
+//   type        String
+//   size        String
+//   key         String        @unique
+//   fileCount   Int
+//   purpose     String
+//   relatedId   Int
+//   relatedType String
+//   status      Boolean       @default(true)
+//   createdBy   String        @default("-")
+//   createdAt   DateTime      @default(now())
+//   updatedBy   String?       @default("-")
+//   updatedAt   DateTime      @updatedAt
+//   FileContent FileContent[]
+// }
 
-model FileContent {
-  id         Int      @id @default(autoincrement())
-  key        String
-  value      String
-  appFile    AppFile?
-  createdAt  DateTime
-  modifiedAt DateTime
-}
+// model FileContent {
+//   id         Int      @id @default(autoincrement())
+//   key        String
+//   value      String
+//   appFile    AppFile? @relation(fields: [appFileId], references: [id])
+//   createdAt  DateTime
+//   modifiedAt DateTime
+//   appFileId  Int?
+// }
 
 model Flat {
   id           Int           @id @default(autoincrement())

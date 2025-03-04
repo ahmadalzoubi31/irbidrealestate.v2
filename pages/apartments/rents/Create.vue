@@ -48,6 +48,7 @@ const rentDurationOptions = [
   { id: 1, name: "سنتان", value: "سنتان" },
   { id: 2, name: "3 سنين", value: "3 سنين" },
 ];
+
 const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
 const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
@@ -233,7 +234,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
         <!-- furnitureImages -->
         <!-- <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-2">
           <label for="furnitureImages"> صورة كشف الاثاث </label>
-          <UInput id="furnitureImages" name="furnitureImages" :type="'file'" :size="'sm'" :required="false" @input="handle1" multiple />
+          <UInput id="furnitureImages" name="furnitureImages" :type="'file'" :size="'sm'" :required="false" @input="handle1" multiple icon="i-heroicons-folder" />
         </div>
         <div v-if="state.isFurniture == 'نعم'" class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in furnitureImages" class="relative inline-block">
@@ -353,7 +354,15 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-2">
           <label for="renterIdentificationImage"> صورة الاثبات </label>
-          <UInput id="renterIdentificationImage" name="renterIdentificationImage" :type="'file'" :size="'sm'" :required="false" @input="handle2" />
+          <UInput
+            id="renterIdentificationImage"
+            name="renterIdentificationImage"
+            :type="'file'"
+            :size="'sm'"
+            :required="false"
+            @input="handle2"
+            icon="i-heroicons-folder"
+          />
           <!-- <NuxtImg
             v-if="renterIdentificationImage.length > 0"
             :src="renterIdentificationImage[0].content?.toString()"
@@ -368,14 +377,8 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             صورة العقد
             <!-- <span class="text-xs text-primary-500">(اجباري)</span> -->
           </label>
-          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" />
-          <!-- <NuxtImg
-            v-if="contractImage.length > 0"
-            :src="contractImage[0].content?.toString()"
-            alt="file"
-            class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg cursor-pointer mr-3"
-            preload
-          /> -->
+          <!-- <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" /> -->
+          <UInput id="contractImage" name="contractImage" :type="'file'" :size="'sm'" :required="false" @input="handle3" icon="i-heroicons-folder" />
         </div>
       </div>
     </div>

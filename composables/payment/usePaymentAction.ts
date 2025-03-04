@@ -15,7 +15,7 @@ export function usePaymentActions() {
       toast.add({
         description: error.value!.message || "الدفعة المطلوبة غير موجودة.",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
       navigateTo("/apartments/payments");
     }
@@ -31,13 +31,13 @@ export function usePaymentActions() {
       toast.add({
         description: "تم انشاء الدفعة بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء الحفظ",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();
@@ -52,13 +52,13 @@ export function usePaymentActions() {
       toast.add({
         description: "تم تعديل الدفعة بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء التعديل",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();
@@ -74,13 +74,13 @@ export function usePaymentActions() {
       toast.add({
         description: "تم حذف الدفعة بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء الحذف",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();

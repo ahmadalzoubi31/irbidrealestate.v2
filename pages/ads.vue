@@ -122,7 +122,7 @@ const generateSharedLinkSelectedRecord = async () => {
             <span>
               <UButton
                 v-if="row.facebookLink"
-                :href="row.facebookLink"
+                :to="row.facebookLink"
                 :external="true"
                 :target="'_blank'"
                 icon="i-heroicons-link-20-solid"

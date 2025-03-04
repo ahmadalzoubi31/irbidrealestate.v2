@@ -15,13 +15,13 @@ export const useUseMaintenanceActions = () => {
       toast.add({
         description: "تم تعديل الجدول بنجاح",
         color: "primary",
-        timeout: 1000,
+        timeout: 1500,
       });
     } catch (error: any) {
       toast.add({
         description: error.message || "حدث خطأ أثناء التعديل",
         color: "rose",
-        timeout: 10000,
+        timeout: 15000,
       });
     } finally {
       useLoadingIndicator().finish();

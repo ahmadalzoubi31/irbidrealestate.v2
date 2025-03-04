@@ -1,7 +1,6 @@
 // composables/useTableColumns.ts
 export function useInterestedPeopleTableColumns() {
   const columns = [
-    { key: "", label: "", sortable: true },
     { key: "id", label: "id", sortable: true },
     { key: "ad.code", label: "ترميز الاعلان", sortable: false },
     { key: "ad.propertyStatus", label: "حالة الاعلان", sortable: true },

@@ -52,7 +52,7 @@ const state: IEditAd = reactive({
   isRegistered: "",
   notes: "",
   interestedPeople: [],
-  files: [],
+  images: "",
 });
 const items = (row: { name: string; number: string }) => [
   [
@@ -85,14 +85,8 @@ const propertyStatusOptions = [
 
 // Handle form submission
 const submitForm = async () => {
-  const fileList = state.files.concat(files.value);
-
-  const payload = {
-    ...state,
-    files: fileList,
-  };
   useLoadingIndicator().start();
-  await editAd(selectedAdId.value, payload);
+  await editAd(selectedAdId.value, state, files.value);
 };
 const openFile = (fileName: string, isNew: boolean) => {
   if (isNew) {
@@ -107,7 +101,7 @@ const closeModal = () => {
   selectedImage.value = "";
 };
 const toggleFileDeletion = (index: any) => {
-  state.files[index].status = !state.files[index].status;
+  // state.files[index].status = !state.files[index].status;
 };
 const removeFile = (index: number) => {
   files.value.splice(index, 1);
@@ -164,10 +158,34 @@ watchEffect(() => {
     state.notes = ad.notes;
     // @ts-ignore
     state.interestedPeople = ad.interestedPeople;
-    // @ts-ignore
-    state.files = ad.files;
+    state.images = ad.images;
   }
 });
+
+// Update getImageUrl method
+const getImageUrl = async (key: string, download = false) => {
+  if (!key) return "";
+  const res = await $fetch<any>("/api/v2/files/" + key);
+
+  const base64Data = res.body.split(",")[1]; // Extract base64 data
+  const mimeType = res.mimeType; // Ensure the response contains the MIME type
+  const url = base64ToBlobUrl(base64Data, mimeType);
+
+  return url;
+};
+// Convert base64 to Blob and create URL
+const base64ToBlobUrl = (base64: string, mimeType: string) => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: mimeType });
+  return URL.createObjectURL(blob);
+};
+
+const imageKeys = computed(() => ad?.images.split(",").filter((i) => i !== ""));
 </script>
 
 <template>
@@ -262,39 +280,9 @@ watchEffect(() => {
         </div>
 
         <!-- Image/Video Grid -->
-        <div class="col-span-6 sm:col-span-6 flex">
-          <!-- For existing files -->
+        <!-- <div class="col-span-6 sm:col-span-6 flex">
           <div v-for="(el, index) in state.files" :key="index" class="relative inline-block">
-            <!-- <template v-if="el.name.endsWith('.mp4')"> -->
-            <template v-if="false">
-              <!-- Render video thumbnail (optional) -->
-              <video
-                :class="el.status ? 'opacity-100' : 'opacity-25'"
-                :src="'#'"
-                class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg mr-3"
-                preload="metadata"
-                @click="openFile(el.name, false)"
-              />
-              <div class="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 rounded-lg mr-3" @click="openFile(el.name, false)">
-                <icon name="i-heroicons-play-circle-20-solid" class="text-white text-5xl cursor-pointer"></icon>
-              </div>
-              <UButton
-                v-if="el.status"
-                icon="i-heroicons-minus-20-solid"
-                @click="toggleFileDeletion(index)"
-                class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-                style="transform: translate(-40%, -40%)"
-              />
-              <UButton
-                v-else
-                icon="i-heroicons-plus-20-solid"
-                @click="toggleFileDeletion(index)"
-                class="absolute top-0 left-0 bg-primary-500 hover:bg-primary-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-                style="transform: translate(-40%, -40%)"
-              />
-            </template>
-            <template v-else>
-              <!-- Render image -->
+            <template>
               <NuxtImg
                 :class="el.status ? 'opacity-100' : 'opacity-25'"
                 :src="el.fileContent.value"
@@ -320,33 +308,11 @@ watchEffect(() => {
                 style="transform: translate(-40%, -40%)"
               />
             </template>
-          </div>
+          </div> -->
 
-          <!-- For new files -->
-          <div v-for="(el, index) in files" :key="index + 'new'" class="relative inline-block">
-            <template v-if="false">
-              <!-- Render video thumbnail (optional) -->
-              <video
-                :src="el.content?.toString()"
-                class="rounded-lg shadow-md h-[100px] w-[100px] hover:shadow-lg mr-3"
-                preload="metadata"
-                @click="openFile(el.content!.toString(), true)"
-              />
-              <div
-                class="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 rounded-lg mr-3"
-                @click="openFile(el.content!.toString(), true)"
-              >
-                <icon name="i-heroicons-play-circle-20-solid" class="text-white text-5xl cursor-pointer"></icon>
-              </div>
-              <UButton
-                icon="i-heroicons-minus-20-solid"
-                @click="removeFile(index)"
-                class="absolute top-0 left-0 bg-gray-400 hover:bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center"
-                style="transform: translate(-40%, -40%)"
-              />
-            </template>
-            <template v-else>
-              <!-- Render image -->
+        <!-- For new files -->
+        <!-- <div v-for="(el, index) in files" :key="index + 'new'" class="relative inline-block">
+            <template>
               <NuxtImg
                 :src="el.content?.toString()"
                 alt="file"
@@ -362,21 +328,15 @@ watchEffect(() => {
               />
             </template>
           </div>
-        </div>
+        </div> -->
 
         <!-- Modal with Transition -->
-        <transition name="fade">
+        <!-- <transition name="fade">
           <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
-              <!-- Conditionally Render Image or Video -->
-              <template v-if="selectedImage.endsWith('.mp4') || selectedImage.startsWith('data:video/mp4;base64,')">
-                <video :src="selectedImage" controls width="1600" class="max-w-full rounded-lg" />
-              </template>
-              <template v-else>
+              <template>
                 <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />
               </template>
-
-              <!-- Close Button -->
               <UButton
                 type="button"
                 icon="i-heroicons-x-circle-20-solid"
@@ -385,7 +345,7 @@ watchEffect(() => {
               />
             </div>
           </div>
-        </transition>
+        </transition> -->
       </div>
     </div>
 

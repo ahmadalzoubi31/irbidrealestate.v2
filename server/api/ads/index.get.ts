@@ -13,14 +13,6 @@ export default defineEventHandler(async (event) => {
       },
       include: {
         interestedPeople: true,
-        files: {
-          where: {
-            status: true,
-          },
-          include: {
-            fileContent: true,
-          },
-        },
       },
     });
 

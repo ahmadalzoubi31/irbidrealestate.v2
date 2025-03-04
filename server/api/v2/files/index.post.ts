@@ -2,22 +2,28 @@
 import { nanoid } from "nanoid";
 
 export default defineEventHandler(async (event) => {
-  const body = await readMultipartFormData(event);
-  const file = body?.find((item) => item.name === "photo");
+  const body = await readBody(event);
 
-  if (!file) throw createError("No file uploaded");
+  // const tag = body?.find((item: { name: string }) => item.name === "tag")?.data.toString();
+  // const files = body?.filter((item: { name: string }) => item.name === "photo");
+  const { files, tag } = body;
 
-  const allowedTypes = ["image/jpeg", "image/png"];
-  if (!allowedTypes.includes(file.type as string)) {
-    throw createError("Invalid file type");
+  if (!files || files.length === 0) throw createError("No files uploaded");
+
+  const keys = [];
+  for (const file of files) {
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (!allowedTypes.includes(file.type as string)) {
+      throw createError("Invalid file type");
+    }
+    const mimeType = file?.type.split("/")[1];
+    const key = tag + ":" + nanoid() + "." + mimeType;
+    keys.push(key);
+
+    await useStorage("photos").setItem(key, file.content, {
+      tag: "contract",
+    });
   }
 
-  const key = nanoid();
-  const mimeType = file?.type || "application/octet-stream";
-
-  await useStorage("photos").setItem(key, file.data, {
-    metadata: { contentType: mimeType },
-  });
-
-  return { key };
+  return { keys };
 });

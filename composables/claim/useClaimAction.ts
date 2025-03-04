@@ -15,7 +15,7 @@ export function useClaimActions() {
     toast.add({
       description: error.message || defaultMessage,
       color: "rose",
-      timeout: 10000,
+      timeout: 15000,
     });
   };
 
@@ -23,7 +23,7 @@ export function useClaimActions() {
     toast.add({
       description: message,
       color: "primary",
-      timeout: 1000,
+      timeout: 1500,
     });
   };
 

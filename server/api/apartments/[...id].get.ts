@@ -11,14 +11,6 @@ export default defineEventHandler(async (event) => {
       where: { id },
       include: {
         building: true,
-        files: {
-          where: {
-            status: true,
-          },
-          include: {
-            fileContent: true,
-          },
-        },
       },
     });
 

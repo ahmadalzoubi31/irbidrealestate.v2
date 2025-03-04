@@ -10,14 +10,14 @@ export function useUsers() {
     key: "getUsers",
     server: false,
     lazy: true,
-    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   });
 
   if (status.value === "error") {
     toast.add({
       description: "حدث خطأ اثناء جلب البنايات",
       color: "rose",
-      timeout: 10000,
+      timeout: 15000,
     });
   }
 
@@ -32,5 +32,4 @@ export function useUsers() {
   });
 
   return { users, status };
-
 }

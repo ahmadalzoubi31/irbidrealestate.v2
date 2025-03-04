@@ -29,7 +29,7 @@ const submitForm = async () => {
     toast.add({
       description: msg,
       color: "rose",
-      timeout: 10000,
+      timeout: 15000,
     });
   } finally {
     isLoading.value = false;
