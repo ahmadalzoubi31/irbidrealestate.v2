@@ -25,6 +25,7 @@ const state: ICreateApartment = reactive({
   isFurniture: "لا",
   rentStatus: 3,
   renterNationality: "اردني",
+  renterCountry: "",
   renterIdentification: "",
   isServiceIncluded: "لا",
   insurance: 0,
@@ -346,10 +347,15 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
           />
         </div>
         <!-- renterIdentification -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-1">
           <label for="renterIdentification" v-if="state.renterNationality == 'اردني'"> الرقم الوطني </label>
           <label for="renterIdentification" v-else> رقم جواز السفر </label>
           <UInput id="renterIdentification" name="renterIdentification" :size="'sm'" :required="false" v-model="state.renterIdentification" />
+        </div>
+        <!-- renterCountry -->
+        <div class="col-span-6 sm:col-span-1" v-if="state.renterNationality !== 'اردني'">
+          <label for="renterCountry"> الدولة </label>
+          <UInput id="renterCountry" name="renterCountry" :size="'sm'" :required="false" v-model="state.renterCountry!" />
         </div>
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-2">

@@ -122,6 +122,7 @@ model Apartment {
    */
   rentStatus           Int       @default(3)
   renterNationality    String?
+  renterCountry        String?
   renterIdentification String?
   isServiceIncluded    String    @default("لا")
   insurance            Float     @default(0)

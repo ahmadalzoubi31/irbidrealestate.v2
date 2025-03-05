@@ -67,6 +67,7 @@ declare interface ICreateApartment {
   isFurniture: string;
   rentStatus: number;
   renterNationality: string;
+  renterCountry: string | null;
   renterIdentification: string;
   isServiceIncluded: string;
   insurance: number;
@@ -90,11 +91,12 @@ declare interface IEditApartment {
   isFurniture: string;
   rentStatus: number;
   renterNationality: string;
+  renterCountry: string | null;
   renterIdentification: string;
   isServiceIncluded: string;
   insurance: number;
   commissionAmount: number;
-  images: string;
+  images: string | null;
 }
 
 declare interface IBrokeApartment {
@@ -124,7 +126,7 @@ declare interface IEditPayment {
   depositAmount: number;
   depositDate: Date;
   notes: string;
-  images: string;
+  images: string | null;
 }
 
 declare interface ICreateAd {
@@ -204,7 +206,7 @@ declare interface IEditAd {
   isRegistered: string | null;
   notes: string | null;
   interestedPeople: Array<IInterestedPeople>;
-  images: string;
+  images: string | null;
 }
 
 // declare interface IAppFile {

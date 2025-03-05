@@ -29,6 +29,7 @@ const state: IEditApartment = reactive({
   isFurniture: "لا",
   rentStatus: 3,
   renterNationality: "اردني",
+  renterCountry: "",
   renterIdentification: "",
   isServiceIncluded: "لا",
   insurance: 0,
@@ -81,7 +82,8 @@ watchEffect(() => {
     state.isServiceIncluded = apartment.isServiceIncluded;
     state.insurance = apartment.insurance;
     state.commissionAmount = apartment.commissionAmount;
-    state.images = apartment.images;
+    state.images = apartment.images!;
+    state.renterCountry = apartment.renterCountry;
   }
 });
 
@@ -129,7 +131,7 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
   return URL.createObjectURL(blob);
 };
 
-const imageKeys = computed(() => apartment?.images.split(",").filter((i) => i !== ""));
+const imageKeys = computed(() => apartment?.images?.split(",").filter((i) => i !== ""));
 
 const existingContractImage = await getImageUrl(imageKeys.value?.find((key) => key.split(":")[0] === "contract") || "");
 const existingRenterIdentificationImage = await getImageUrl(imageKeys.value?.find((key) => key.split(":")[0] === "renterIdentification") || "");
@@ -389,10 +391,15 @@ const existingRenterIdentificationImage = await getImageUrl(imageKeys.value?.fin
           />
         </div>
         <!-- renterIdentification -->
-        <div class="col-span-6 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-1">
           <label for="renterIdentification" v-if="state.renterNationality == 'اردني'"> الرقم الوطني </label>
           <label for="renterIdentification" v-else> رقم جواز السفر </label>
           <UInput id="renterIdentification" name="renterIdentification" :size="'sm'" :required="false" v-model="state.renterIdentification" />
+        </div>
+        <!-- renterCountry -->
+        <div class="col-span-6 sm:col-span-1" v-if="state.renterNationality !== 'اردني'">
+          <label for="renterCountry"> الدولة </label>
+          <UInput id="renterCountry" name="renterCountry" :size="'sm'" :required="false" v-model="state.renterCountry!" />
         </div>
         <!-- renterIdentificationImage -->
         <div class="col-span-6 sm:col-span-2">
