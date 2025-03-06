@@ -133,8 +133,12 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
 
 const imageKeys = computed(() => apartment?.images?.split(",").filter((i) => i !== ""));
 
-const existingContractImage = await getImageUrl(imageKeys.value?.find((key) => key.split(":")[0] === "contract") || "");
-const existingRenterIdentificationImage = await getImageUrl(imageKeys.value?.find((key) => key.split(":")[0] === "renterIdentification") || "");
+const existingContractImage = await getImageUrl(
+  imageKeys.value?.find((key) => key.split(":")[0] === "contract" && key.split(".")[1] !== "pdf") || ""
+);
+const existingRenterIdentificationImage = await getImageUrl(
+  imageKeys.value?.find((key) => key.split(":")[0] === "renterIdentification" && key.split(".")[1] !== "pdf") || ""
+);
 </script>
 
 <template>
