@@ -13,6 +13,7 @@ const props = defineProps({
   selectedApartmentId: {
     type: Number,
     required: true,
+    default: 0,
   },
 });
 

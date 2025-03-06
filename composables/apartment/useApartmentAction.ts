@@ -72,9 +72,7 @@ export function useApartmentActions() {
       imagesArray += (await uploadImages(furnitureImages, "furniture")) + ",";
       imagesArray += (await uploadImages(renterIdentificationImage, "renterIdentification")) + ",";
       imagesArray += await uploadImages(contractImage, "contract");
-    } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء رفع الملفات");
-    } finally {
+
       try {
         // Create the Apartment
         await $fetch("/api/apartments", { method: "POST", body: { ...payload, images: imagesArray } });
@@ -83,9 +81,11 @@ export function useApartmentActions() {
         handleSuccess("تم انشاء الايجار بنجاح");
       } catch (error) {
         handleError(error, "حدث خطأ أثناء الحفظ");
-      } finally {
-        useLoadingIndicator().finish();
       }
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
+    } finally {
+      useLoadingIndicator().finish();
     }
   };
 
@@ -97,16 +97,14 @@ export function useApartmentActions() {
     contractImage: Image[]
   ) => {
     let imagesArray: string = "";
-    const oldContractImageKeys = payload.images.split(",").filter((key) => key.includes("contract"));
-    const oldFurnitureImageKeys = payload.images.split(",").filter((key) => key.includes("furniture"));
-    const oldRenterIdentificationImageKeys = payload.images.split(",").filter((key) => key.includes("renterIdentification"));
+    const oldContractImageKeys = payload.images?.split(",").filter((key) => key.includes("contract"));
+    const oldFurnitureImageKeys = payload.images?.split(",").filter((key) => key.includes("furniture"));
+    const oldRenterIdentificationImageKeys = payload.images?.split(",").filter((key) => key.includes("renterIdentification"));
     try {
-      imagesArray += (await updateImages(furnitureImages, oldFurnitureImageKeys, "furniture")) + ",";
-      imagesArray += (await updateImages(renterIdentificationImage, oldRenterIdentificationImageKeys, "renterIdentification")) + ",";
-      imagesArray += await updateImages(contractImage, oldContractImageKeys, "contract");
-    } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء رفع الملفات");
-    } finally {
+      imagesArray += (await updateImages(furnitureImages, oldFurnitureImageKeys!, "furniture")) + ",";
+      imagesArray += (await updateImages(renterIdentificationImage, oldRenterIdentificationImageKeys!, "renterIdentification")) + ",";
+      imagesArray += await updateImages(contractImage, oldContractImageKeys!, "contract");
+
       try {
         // Update the apartment details
         await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...payload, images: imagesArray } });
@@ -116,6 +114,9 @@ export function useApartmentActions() {
       } catch (error) {
         handleError(error, "حدث خطأ أثناء التعديل");
       }
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
+    } finally {
       useLoadingIndicator().finish();
     }
   };
@@ -166,7 +167,7 @@ export function useApartmentActions() {
 
   const brokeApartment = async (id: number, payload: IBrokeApartment, contractImages: any) => {
     try {
-      const { data: apartment } = await useFetch<Apartment>("/api/apartments/" + id, {
+      const { data: apartment } = await useFetch<ApartmentWithBuilding>("/api/apartments/" + id, {
         key: "getApartmentById",
         server: true,
       });
@@ -180,8 +181,7 @@ export function useApartmentActions() {
         renterName: payload.renterName,
         renterNumber: payload.renterNumber,
         rentStatus: 3,
-        //@ts-expect-error
-        buildingId: apartment.value.Building.id,
+        buildingId: apartment.value.building.id,
       };
 
       const result = await $fetch("/api/apartments", { method: "POST", body: newApartment });

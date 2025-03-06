@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const keys = [];
   for (const file of files) {
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!allowedTypes.includes(file.type as string)) {
       throw createError("Invalid file type");
     }
