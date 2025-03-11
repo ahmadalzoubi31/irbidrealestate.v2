@@ -1,136 +1,175 @@
 <script setup lang="ts">
-// *** Dependencies ***
+// *** Imports ***
 import { format } from "date-fns";
 
-const { getOneClaim, editClaim } = useClaimActions();
+// *** Composables ***
+const toast = useToast();
 const route = useRoute();
+const { getOneClaim, editClaim } = useClaimActions();
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 
-// Extract route parameter
+// *** Constants ***
+const claimStatusOptions = [
+  { id: 1, name: "نشط", value: 1 },
+  { id: 2, name: "جاهزه للتحصيل", value: 2 },
+  { id: 3, name: "تمت المخالصة", value: 3 },
+];
+
+// *** State ***
 const selectedClaimId = ref(Number(route.params.id));
+const isModalOpen = ref(false);
+const modalData = ref("");
 
 const { data: claim } = await getOneClaim(selectedClaimId.value);
+
+const state = reactive<ICreateClaim>({
+  apartmentName: "",
+  claimNumber: "",
+  claimDate: new Date(),
+  claimFrom: "",
+  total: 0.0,
+  profit: 0.0,
+  clearanceNotes: "",
+  claimCollections: [],
+  claimDetails: [],
+  claimStatus: 1,
+});
 
 const collectionData = reactive({
   dateTime: new Date(),
   payment: 0,
   notes: "",
 });
+
 const detailData = reactive({
   item: "",
   price: 0,
+  specialPrice: 0,
   dateTime: new Date(),
-  billImage: undefined,
+  image: null,
 });
-const detailItem = (row: { item: string; price: number }) => [
+
+// *** Computed ***
+const totalPayments = computed(() => state.claimCollections.reduce((sum, c) => sum + c.payment, 0));
+const totalPrices = computed(() => state.claimDetails.reduce((sum, d) => sum + d.price, 0));
+
+// *** Methods ***
+const updateTotal = () => {
+  const totalDetails = state.claimDetails.reduce((sum, detail) => sum + detail.price, 0);
+  const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
+  state.total = totalDetails - totalCollections;
+};
+
+const addCollectionData = () => {
+  state.claimCollections.push({ ...collectionData });
+  Object.assign(collectionData, {
+    dateTime: new Date(),
+    payment: 0,
+    notes: "",
+  });
+};
+
+const addDetailData = () => {
+  state.claimDetails.push({ ...detailData, image: files.value[0] });
+  Object.assign(detailData, {
+    item: "",
+    price: 0,
+    specialPrice: 0,
+    dateTime: new Date(),
+    image: null,
+  });
+};
+
+const submitForm = async () => {
+  if (!state.claimFrom) {
+    toast.add({
+      description: "من فضلك أكمل جميع الحقول المطلوبة.",
+      color: "yellow",
+      timeout: 5000,
+    });
+    return;
+  }
+  useLoadingIndicator().start();
+  await editClaim(selectedClaimId.value, state);
+};
+
+const detailItem = (row: { item: string; price: number; specialPrice: number }) => [
   [
     {
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
-      click: () => (state.claimDetails = state.claimDetails.filter((item) => !(item.item === row.item && item.price === row.price))),
+      click: () => {
+        state.claimDetails = state.claimDetails.filter(
+          (item) => !(item.item === row.item && item.price === row.price && item.specialPrice === row.specialPrice)
+        );
+      },
     },
   ],
 ];
+
 const collectionItem = (row: { dateTime: Date; payment: number; notes: string }) => [
   [
     {
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
-      click: () =>
-        (state.claimCollections = state.claimCollections.filter(
+      click: () => {
+        state.claimCollections = state.claimCollections.filter(
           (item) => !(item.dateTime === row.dateTime && item.payment === row.payment && item.notes === row.notes)
-        )),
+        );
+      },
     },
   ],
 ];
-const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
-const state: ICreateClaim = reactive({
-  apartmentName: "",
-  claimNumber: "",
-  claimDate: new Date(),
-  claimFrom: "",
-  total: 0.0,
-  clearanceNotes: "",
-  claimCollections: [],
-  claimDetails: [],
-  claimStatus: 0,
-});
-const isOpen = ref(false);
-const modalData = ref("");
-// *** Declare Menus ***
-const claimStatusOptions = [
-  {
-    id: 1,
-    name: "نشط",
-    value: 1,
-  },
-  {
-    id: 2,
-    name: "جاهزه للتحصيل",
-    value: 2,
-  },
-  {
-    id: 3,
-    name: "تمت المخالصة",
-    value: 3,
-  },
-];
-// Handle form submission
-const submitForm = async () => {
-  useLoadingIndicator().start();
-  await editClaim(selectedClaimId.value, state);
-};
-const addCollectionData = () => {
-  state.claimCollections.push({ dateTime: collectionData.dateTime, payment: collectionData.payment, notes: collectionData.notes });
 
-  collectionData.dateTime = new Date();
-  collectionData.payment = 0;
-  collectionData.notes = "";
-};
-const addDetailData = () => {
-  state.claimDetails.push({ item: detailData.item, price: detailData.price, dateTime: detailData.dateTime, billImage: files.value[0] });
-
-  detailData.item = "";
-  detailData.price = 0;
-  collectionData.dateTime = new Date();
-  detailData.billImage = undefined;
-};
-const fillModalPropertirs = (rowContent: string) => {
-  modalData.value = rowContent;
-  isOpen.value = true;
+const fillModalProperties = async (rowContent: string) => {
+  const imageUrl = await getImageUrl(rowContent, false);
+  modalData.value = imageUrl;
+  isModalOpen.value = true;
 };
 
-// Reactively update the form state when `building` becomes available
+const getImageUrl = async (key: string, download = false) => {
+  debugger;
+  if (!key) return "";
+  const res = await $fetch<any>("/api/v2/files/" + key);
+
+  const base64Data = res.body.split(",")[1]; // Extract base64 data
+  const mimeType = res.mimeType; // Ensure the response contains the MIME type
+  const url = base64ToBlobUrl(base64Data, mimeType);
+
+  return url;
+};
+
+const base64ToBlobUrl = (base64: string, mimeType: string) => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: mimeType });
+  return URL.createObjectURL(blob);
+};
+
+// *** Watchers ***
+watch(() => state.claimDetails, updateTotal, { deep: true });
+watch(() => state.claimCollections, updateTotal, { deep: true });
+
+// Initialize form data when claim is loaded
 watchEffect(() => {
   if (claim) {
-    state.apartmentName = claim.apartmentName;
-    state.claimNumber = claim.claimNumber;
-    state.claimDate = claim.claimDate;
-    state.claimFrom = claim.claimFrom;
-    state.total = claim.total;
-    state.clearanceNotes = claim.clearanceNotes as string;
-    // @ts-ignore
-    state.claimCollections = claim.claimCollections;
-    // @ts-ignore
-    state.claimDetails = claim.claimDetails;
-    state.claimStatus = claim.claimStatus;
+    Object.assign(state, {
+      apartmentName: claim.apartmentName,
+      claimNumber: claim.claimNumber,
+      claimDate: claim.claimDate,
+      claimFrom: claim.claimFrom,
+      total: claim.total,
+      profit: claim.profit,
+      clearanceNotes: claim.clearanceNotes as string,
+      claimCollections: claim.claimCollections,
+      claimDetails: claim.claimDetails,
+      claimStatus: claim.claimStatus,
+    });
   }
-});
-
-watch(
-  () => state.claimDetails,
-  (newDetails) => {
-    const totalDetails = newDetails.reduce((sum, detail) => sum + detail.price, 0);
-    const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
-    state.total = totalDetails - totalCollections;
-  },
-  { deep: true }
-);
-
-const totalPayments = computed(() => {
-  return state.claimCollections.reduce((sum, c) => sum + c.payment, 0);
-});
-const totalPrices = computed(() => {
-  return state.claimDetails.reduce((sum, d) => sum + d.price, 0);
 });
 </script>
 
@@ -196,6 +235,20 @@ const totalPrices = computed(() => {
             v-model="state.total"
           />
         </div>
+        <!-- profit -->
+        <div class="col-span-6 sm:col-span-2">
+          <label for="profit"> المربح الكلي </label>
+          <UInput
+            id="profit"
+            name="profit"
+            type="text"
+            :size="'sm'"
+            :required="false"
+            :disabled="true"
+            inputClass="bg-gray-200"
+            v-model="state.profit"
+          />
+        </div>
         <!-- claimStatus -->
         <div class="col-span-6 sm:col-span-2">
           <label for="claimStatus">حالة المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
@@ -224,9 +277,14 @@ const totalPrices = computed(() => {
           <UInput id="item" name="item" :size="'sm'" :required="false" v-model="detailData.item" />
         </div>
         <!-- price -->
-        <label for="price" class="col-span-6 sm:col-span-1"> السعر :</label>
+        <label for="price" class="col-span-6 sm:col-span-1"> السعر العام :</label>
         <div class="col-span-6 sm:col-span-2">
           <UInput id="price" name="price" type="number" :size="'sm'" :required="false" v-model="detailData.price" />
+        </div>
+        <!-- specialPrice -->
+        <label for="specialPrice" class="col-span-6 sm:col-span-1"> السعر الخاص :</label>
+        <div class="col-span-6 sm:col-span-2">
+          <UInput id="specialPrice" name="specialPrice" type="number" :size="'sm'" :required="false" v-model="detailData.specialPrice" />
         </div>
         <!-- dateTime -->
         <label for="dateTime" class="col-span-6 sm:col-span-1"> الوقت والتاريخ :</label>
@@ -246,18 +304,10 @@ const totalPrices = computed(() => {
           </UPopover>
           <!-- <UInput id="dateTime" name="dateTime" :size="'sm'" :required="false" v-model="collectionData.dateTime" /> -->
         </div>
-        <!-- billImage -->
-        <label for="billImage" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
+        <!-- image -->
+        <label for="image" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput
-            id="billImage"
-            name="billImage"
-            :type="'file'"
-            :size="'sm'"
-            :required="false"
-            @input="handleFileInput"
-            v-model="detailData.billImage"
-          />
+          <UInput id="image" name="image" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" icon="i-heroicons-folder" />
         </div>
 
         <UButton
@@ -276,14 +326,20 @@ const totalPrices = computed(() => {
           :rows="state.claimDetails"
           :columns="[
             { key: 'item', label: 'المادة' },
-            { key: 'price', label: 'السعر' },
+            { key: 'price', label: 'السعر العام' },
+            { key: 'specialPrice', label: 'السعر الخاص' },
+            { key: 'rowProfit', label: 'المربح' },
             { key: 'dateTime', label: 'الوقت والتاريخ' },
-            { key: 'billImage', label: 'الفاتورة' },
+            { key: 'image', label: 'الفاتورة' },
             { key: 'actions' },
           ]"
         >
-          <template #billImage-data="{ row }">
-            <div @click="fillModalPropertirs(row.billImage.content)" class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer">
+          <template #image-data="{ row }">
+            <div
+              v-if="row.image"
+              @click="fillModalProperties(row.image)"
+              class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
+            >
               <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
               مشاهدة
             </div>
@@ -293,6 +349,9 @@ const totalPrices = computed(() => {
           </template>
           <template #dateTime-data="{ row }">
             <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
+          </template>
+          <template #rowProfit-data="{ row }">
+            <span :class="[row.specialPrice - row.price > 0 ? 'text-primary' : 'text-rose-500']">{{ row.specialPrice - row.price + " دينار" }}</span>
           </template>
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
@@ -305,7 +364,7 @@ const totalPrices = computed(() => {
         <span>المجموع الكلي للمواد: {{ totalPrices }} دينار</span>
       </div>
     </div>
-    <UModal v-model="isOpen">
+    <UModal v-model="isModalOpen">
       <div class="p-4 w-full">
         <NuxtImg :src="modalData" sizes="100vw" />
       </div>

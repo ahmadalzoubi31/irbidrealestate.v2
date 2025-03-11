@@ -85,28 +85,12 @@ export function useAdActions() {
 
   const editAd = async (id: number, payload: IEditAd, adImages: Image[]) => {
     let imagesArray: string = "";
-    const oldAdImageKeys = payload.images.split(",").filter((key) => key.includes("ads"));
+    const oldAdImageKeys = payload.images?.split(",").filter((key) => key.includes("ads"));
 
     try {
-      imagesArray += await updateImages(adImages, oldAdImageKeys, "ads");
-
-      // Handle file uploads
-      // if (newFiles.length > 0) {
-      //   try {
-      //     await uploadFile(newFiles, "ads", id, "ad");
-      //   } catch (uploadError: any) {
-      //     handleError(uploadError, "حدث خطأ أثناء رفع الملف");
-      //   }
-      // }
-
-      // Handle file deletions if status false
-      // const filesToDelete = existingFiles.filter((file) => !file.status);
-      // if (filesToDelete.length > 0) {
-      //   await $fetch("/api/upload", {
-      //     method: "DELETE",
-      //     body: { files: filesToDelete.map((file) => file.id) },
-      //   });
-      // }
+      if (oldAdImageKeys && oldAdImageKeys.length > 0) {
+        imagesArray += await updateImages(adImages, oldAdImageKeys, "ads");
+      }
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء رفع الملفات");
     } finally {

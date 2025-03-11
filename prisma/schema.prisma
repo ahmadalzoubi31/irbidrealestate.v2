@@ -243,6 +243,7 @@ model Claim {
   claimDetails     ClaimDetail[]
   clearanceNotes   String?
   total            Float             @default(0.0)
+  profit           Float             @default(0.0)
   /**
    * 1 ==> "نشط"
    * 2 ==> "جاهزه للتحصيل"
@@ -266,12 +267,14 @@ model ClaimCollection {
 }
 
 model ClaimDetail {
-  id       Int      @id @default(autoincrement())
-  item     String
-  price    Float    @default(0.0)
-  dateTime DateTime @default(now())
-  claim    Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
-  claimId  Int
+  id           Int      @id @default(autoincrement())
+  item         String
+  price        Float    @default(0.0)
+  specialPrice Float    @default(0.0)
+  dateTime     DateTime @default(now())
+  image        String?  @default("")
+  claim        Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId      Int
 }
 
 // model AppFile {

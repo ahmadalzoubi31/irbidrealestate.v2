@@ -260,8 +260,9 @@ declare interface ICollection {
 declare interface IDetail {
   item: string;
   price: number;
+  specialPrice: number;
   dateTime: Date;
-  billImage: any;
+  image: Image | null | string;
 }
 
 declare interface ICreateClaim {
@@ -270,6 +271,7 @@ declare interface ICreateClaim {
   claimDate: Date;
   claimFrom: string;
   total: number;
+  profit: number;
   clearanceNotes: string;
   claimCollections: Array<ICollection>;
   claimDetails: Array<IDetail>;
