@@ -128,7 +128,6 @@ const fillModalProperties = async (rowContent: string) => {
 };
 
 const getImageUrl = async (key: string, download = false) => {
-  debugger;
   if (!key) return "";
   const res = await $fetch<any>("/api/v2/files/" + key);
 
@@ -179,7 +178,7 @@ watchEffect(() => {
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- claimNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="claimNumber"> رقم المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
@@ -315,7 +314,7 @@ watchEffect(() => {
           :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addDetailData"
-          :disabled="detailData.item === '' || detailData.price === 0 || detailData.dateTime === undefined"
+          :disabled="detailData.item === '' || isNaN(detailData.price) || detailData.price <= 0 || detailData.dateTime === undefined"
         >
           اضافة
         </UButton>
@@ -347,11 +346,14 @@ watchEffect(() => {
           <template #price-data="{ row }">
             <span>{{ row.price + " دينار" }}</span>
           </template>
-          <template #dateTime-data="{ row }">
-            <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
+          <template #specialPrice-data="{ row }">
+            <span>{{ row.specialPrice + " دينار" }}</span>
           </template>
           <template #rowProfit-data="{ row }">
             <span :class="[row.specialPrice - row.price > 0 ? 'text-primary' : 'text-rose-500']">{{ row.specialPrice - row.price + " دينار" }}</span>
+          </template>
+          <template #dateTime-data="{ row }">
+            <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
           </template>
           <template #actions-data="{ row }">
             <UDropdown :items="detailItem(row)" class="align-middle">
@@ -408,7 +410,7 @@ watchEffect(() => {
           :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addCollectionData"
-          :disabled="!collectionData.dateTime || collectionData.payment === 0"
+          :disabled="isNaN(collectionData.payment) || collectionData.payment <= 0 || collectionData.dateTime === undefined"
         >
           اضافة
         </UButton>

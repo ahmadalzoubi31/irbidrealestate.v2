@@ -14,7 +14,7 @@ useHead({
   <div class="h-full">
     <UNotifications />
     <NuxtLayout>
-      <NuxtPage class="col-span-8" />
+      <NuxtPage />
     </NuxtLayout>
   </div>
 </template>

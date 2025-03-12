@@ -18,6 +18,7 @@ const heading = [
   "المطلوب منه",
   "تاريخ المطالبة",
   "مجموع المبلغ",
+  "مجموع الكلي للربح",
   "الحالة",
   "تم الانشاء بواسطة",
   "تاريخ الانشاء",
@@ -32,6 +33,7 @@ const keysToExtract = [
   "claimFrom",
   "claimDate",
   "total",
+  "profit",
   "claimStatus",
   "createdBy",
   "createdAt",
@@ -63,7 +65,7 @@ const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A
         </dd>
 
         <!-- Handle total field -->
-        <dd v-else-if="key === 'total'" class="font-normal text-primary-500">
+        <dd v-else-if="key === 'total' || key === 'profit'" class="font-normal text-primary-500">
           {{ entry + " دينار" }}
         </dd>
 

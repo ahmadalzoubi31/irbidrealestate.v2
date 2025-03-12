@@ -1,32 +1,61 @@
 <script setup lang="ts">
-import type { Claim, ClaimCollection, ClaimDetail, Apartment } from "@prisma/client";
-import { useDateFormat } from "@vueuse/core";
+import type { Claim, ClaimCollection, ClaimDetail } from "@prisma/client";
 import format from "date-fns/format";
 
 definePageMeta({
   layout: "generate",
 });
 
-// Extend the Claim type to include the files property
-interface ClaimWithDetailsAndCollections extends Claim {
-  claimDetails: ClaimDetail[];
-  claimCollections: ClaimCollection[];
-}
-
 // *** Fetch Data ***
 const selectedClaimId = Number(useRoute().params.id);
 const { getOneClaim } = useClaimActions();
 const { data: claim } = await getOneClaim(selectedClaimId);
+console.log("🚀 ~ claim:", toRaw(claim));
 
 // *** Config Generator ***
 const heading = ["رقم المطالبة", "رقم الشقة", "المطلوب منه", "تاريخ المطالبة", "مجموع المبلغ"];
 const keys = ["claimNumber", "apartmentName", "claimFrom", "claimDate", "total"];
-
+const isModalOpen = ref(false);
+const modalData = ref("");
 const extracted = computed(() => (claim ? useExtractKeys(claim, keys) : {}));
+
+console.log("🚀 ~ extracted:", extracted.value);
+const fillModalProperties = async (rowContent: string) => {
+  const imageUrl = await getImageUrl(rowContent, false);
+  modalData.value = imageUrl;
+  isModalOpen.value = true;
+};
+
+const getImageUrl = async (key: string, download = false) => {
+  if (!key) return "";
+  const res = await $fetch<any>("/api/v2/files/" + key);
+
+  const base64Data = res.body.split(",")[1]; // Extract base64 data
+  const mimeType = res.mimeType; // Ensure the response contains the MIME type
+  const url = base64ToBlobUrl(base64Data, mimeType);
+
+  return url;
+};
+
+const base64ToBlobUrl = (base64: string, mimeType: string) => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: mimeType });
+  return URL.createObjectURL(blob);
+};
 </script>
 
 <template>
   <div class="min-h-screen">
+    <UModal v-model="isModalOpen">
+      <div class="p-4 w-full">
+        <NuxtImg :src="modalData" sizes="100vw" />
+      </div>
+    </UModal>
     <!-- Header -->
     <header class="bg-gradient-to-r from-primary-800 to-primary-600 shadow-lg">
       <div class="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
@@ -62,6 +91,7 @@ const extracted = computed(() => (claim ? useExtractKeys(claim, keys) : {}));
                     { key: 'item', label: 'المادة' },
                     { key: 'price', label: 'السعر' },
                     { key: 'dateTime', label: 'الوقت والتاريخ' },
+                    { key: 'image', label: 'الفاتورة' },
                   ]"
                 >
                   <template #dateTime-data="{ row }">
@@ -71,6 +101,16 @@ const extracted = computed(() => (claim ? useExtractKeys(claim, keys) : {}));
                   </template>
                   <template #price-data="{ row }">
                     <span>{{ row.price + " دينار" }}</span>
+                  </template>
+                  <template #image-data="{ row }">
+                    <div
+                      v-if="row.image"
+                      @click="fillModalProperties(row.image)"
+                      class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
+                    >
+                      <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+                      مشاهدة
+                    </div>
                   </template>
                 </UTable>
               </div>

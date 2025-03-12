@@ -69,7 +69,7 @@ watch(fillRentDate, (newVal, oldVal) => {
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName" class="flex justify-between">

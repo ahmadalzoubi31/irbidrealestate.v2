@@ -8,21 +8,19 @@ export default defineEventHandler(async (event) => {
   // const files = body?.filter((item: { name: string }) => item.name === "photo");
   const { files, tag } = body;
 
-  if (!files || files.length === 0) throw createError("No files uploaded");
+  if (!files || files.length === 0) return;
 
   const keys = [];
   for (const file of files) {
     const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!allowedTypes.includes(file.type as string)) {
-      throw createError("Invalid file type");
+      return;
     }
     const mimeType = file?.type.split("/")[1];
     const key = tag + ":" + nanoid() + "." + mimeType;
     keys.push(key);
 
-    await useStorage("photos").setItem(key, file.content, {
-      tag: "contract",
-    });
+    await useStorage("photos").setItem(key, file.content);
   }
 
   return { keys };

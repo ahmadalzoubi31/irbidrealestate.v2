@@ -38,24 +38,6 @@ export function useClaimActions() {
     return "";
   };
 
-  const updateImages = async (images: Image[], oldKeys: string[], type: string) => {
-    debugger;
-    if (images.length > 0) {
-      if (oldKeys.length > 0) {
-        await $fetch("/api/v2/files", {
-          method: "DELETE",
-          body: { keys: oldKeys },
-        });
-      }
-      const keys: string[] | null = await uploadFile(images, type);
-      if (!keys) {
-        throw new Error(`فشل رفع الملفات - ${type}`);
-      }
-      return keys.join(",");
-    }
-    return oldKeys.join(",");
-  };
-
   const getOneClaim = async (id: number) => {
     const { data, status, error } = await useFetch<ClaimWithDetailsAndCollections>("/api/claims/" + id, {
       key: "getClaimById",
@@ -73,7 +55,7 @@ export function useClaimActions() {
   const createClaim = async (payload: ICreateClaim) => {
     let imagesArray: string = "";
     const { claimDetails, claimCollections, ...claimData } = payload;
-    const billImage = claimDetails.map((detail) => detail.image).filter((img): img is Image => img !== null);
+    const billImage = claimDetails.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];
     const claimDetailsRest = claimDetails.map(({ image, ...rest }) => rest);
     try {
       if (billImage && billImage.length > 0) {
@@ -105,23 +87,36 @@ export function useClaimActions() {
   };
 
   const editClaim = async (id: number, payload: ICreateClaim) => {
-    debugger;
     let imagesArray: string = "";
-    const { claimDetails, claimCollections, ...claimData } = payload;
-    const billImage = claimDetails.map((detail) => detail.image).filter((img): img is Image => img instanceof Image && img !== null);
-    const claimDetailsRest = claimDetails.map(({ image, ...rest }) => rest);
-    const oldImageKeys = payload.claimDetails.map((el) => (el.image ? el.image.toString().split(":")[1] : ""));
-    try {
-      if (billImage && billImage.length > 0) {
-        imagesArray += await updateImages(billImage, oldImageKeys!, "bill");
-      }
 
-      const claimDetailsData: IDetail[] = claimDetailsRest.map((detail) => ({ ...detail, image: imagesArray }));
+    const { claimDetails, claimCollections, ...claimData } = payload;
+
+    // fetch record that have an image need to be uploaded
+    const recordWithImageNeedUpload = claimDetails.filter(
+      (record) => typeof record.image === "object" && record.image !== null && "content" in record.image
+    );
+    const recordWithOutImage = claimDetails.filter(
+      (record) => (typeof record.image === "string" && record.image !== null) || record.image === undefined
+    );
+
+    const billImage = recordWithImageNeedUpload.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];
+
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ image, ...rest }) => rest);
+
+    // const oldImageKeys = recordWithOutImage.map((el) => (el.image ? el.image.toString().split(":")[1] : ""));
+
+    try {
+      if (billImage && billImage.length !== 0) {
+        imagesArray += await uploadFile(billImage, "bill");
+      }
+      const updatedRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail) => ({ ...detail, image: imagesArray }));
+
+      const finalClaimDetails = [...recordWithOutImage, ...updatedRecordWithImageNeedUpload];
 
       try {
         await $fetch("/api/claims/" + id, {
           method: "PUT",
-          body: { ...claimData, claimDetails: { create: claimDetailsData }, claimCollections: { create: claimCollections } },
+          body: { ...claimData, claimDetails: finalClaimDetails, claimCollections },
         });
         await refreshNuxtData("getClaims");
         await navigateTo("/claims");

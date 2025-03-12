@@ -29,11 +29,6 @@ export default defineEventHandler(async (event) => {
     // Validate the incoming data
     validateClaimData(body);
 
-    // Remove billImage form body.claimDetails object.
-    // body.claimDetails.forEach((detail) => {
-    //   delete detail.billImage;
-    // });
-
     // Separate `claimCollections, claimDetails` from the main body
     const { claimCollections, claimDetails, ...claimData } = body;
     // Validate claim existence
@@ -110,12 +105,18 @@ export default defineEventHandler(async (event) => {
               data: {
                 item: d.item,
                 price: d.price,
+                specialPrice: d.specialPrice,
+                dateTime: d.dateTime,
+                image: d.image,
               },
             })
           : tx.claimDetail.create({
               data: {
                 item: d.item,
                 price: d.price,
+                specialPrice: d.specialPrice,
+                dateTime: d.dateTime,
+                image: d.image,
                 claimId: id,
               },
             })

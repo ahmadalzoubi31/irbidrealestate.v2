@@ -57,9 +57,13 @@ const updateTotal = () => {
   const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
   state.total = totalDetails - totalCollections;
 };
+const updateProfit = () => {
+  const rowProfitDetails = state.claimDetails.reduce((sum, detail) => sum + detail.specialPrice - detail.price, 0);
+  state.profit = rowProfitDetails;
+};
 
 const addCollectionData = () => {
-  state.claimCollections.push(collectionData);
+  state.claimCollections.push({ ...collectionData });
   Object.assign(collectionData, {
     dateTime: new Date(),
     payment: 0,
@@ -68,7 +72,7 @@ const addCollectionData = () => {
 };
 
 const addDetailData = () => {
-  state.claimDetails.push({ ...detailData, image: files.value[0] });
+  state.claimDetails.push({ ...detailData, image: files.value[0] || null });
   Object.assign(detailData, {
     item: "",
     price: 0,
@@ -127,6 +131,7 @@ const fillModalProperties = (rowContent: string) => {
 // *** Watchers ***
 watch(() => state.claimDetails, updateTotal, { deep: true });
 watch(() => state.claimCollections, updateTotal, { deep: true });
+watch(() => state.claimDetails, updateProfit, { deep: true });
 </script>
 
 <template>
@@ -135,7 +140,7 @@ watch(() => state.claimCollections, updateTotal, { deep: true });
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- claimNumber -->
         <div class="col-span-6 sm:col-span-2">
           <label for="claimNumber"> رقم المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
@@ -270,7 +275,7 @@ watch(() => state.claimCollections, updateTotal, { deep: true });
           :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addDetailData"
-          :disabled="detailData.item === '' || detailData.price === 0 || detailData.dateTime === undefined"
+          :disabled="detailData.item === '' || isNaN(detailData.price) || detailData.price <= 0 || detailData.dateTime === undefined"
         >
           اضافة
         </UButton>
@@ -366,7 +371,7 @@ watch(() => state.claimCollections, updateTotal, { deep: true });
           :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addCollectionData"
-          :disabled="!collectionData.dateTime || collectionData.payment === 0"
+          :disabled="isNaN(collectionData.payment) || collectionData.payment <= 0 || collectionData.dateTime === undefined"
         >
           اضافة
         </UButton>

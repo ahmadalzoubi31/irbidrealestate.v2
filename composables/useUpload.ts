@@ -19,8 +19,6 @@ export const useUpload = () => {
 
   const uploadFile = async (files: Image[], tag: string) => {
     try {
-      debugger;
-      // Validate file types and sizes
       const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
       const maxSize = 10 * 1024 * 1024; // 10 MB
 

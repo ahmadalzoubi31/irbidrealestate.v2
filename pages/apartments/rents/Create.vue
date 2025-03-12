@@ -261,7 +261,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
       <h3 class="text-center font-semibold text-xl mb-1">معلومات الايجار</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- rentAmount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="rentAmount"> قيمة الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
@@ -321,7 +321,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
       <h3 class="text-center font-semibold text-xl mb-1">معلومات المستأجرين</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- renterName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="renterName"> الاسم الكامل <span class="text-xs text-primary-500">(اجباري)</span></label>
@@ -393,7 +393,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
       <h3 class="text-center font-semibold text-xl mb-1">معلومات اضافية</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-8 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- commissionAmount -->
         <div class="col-span-6 sm:col-span-2">
           <label for="commissionAmount"> العمولة </label>
