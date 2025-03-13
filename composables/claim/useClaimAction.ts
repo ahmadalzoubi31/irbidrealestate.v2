@@ -54,23 +54,36 @@ export function useClaimActions() {
 
   const createClaim = async (payload: ICreateClaim) => {
     let imagesArray: string = "";
+
     const { claimDetails, claimCollections, ...claimData } = payload;
-    const billImage = claimDetails.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];
-    const claimDetailsRest = claimDetails.map(({ image, ...rest }) => rest);
+
+    const recordWithImageNeedUpload = claimDetails.filter(
+      (record) => typeof record.image === "object" && record.image !== null && "content" in record.image
+    );
+    const recordWithOutImage = claimDetails.filter(
+      (record) => typeof record.image === "string" || record.image === null || record.image === undefined
+    );
+
+    const billImage = recordWithImageNeedUpload.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];
+
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ image, ...rest }) => rest);
+
     try {
-      if (billImage && billImage.length > 0) {
-        imagesArray += await uploadImages(billImage, "bill");
+      if (billImage && billImage.length !== 0) {
+        imagesArray += await uploadFile(billImage, "bill");
       }
 
-      const claimDetailsData: IDetail[] = claimDetailsRest.map((detail) => ({ ...detail, image: imagesArray }));
+      const newRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail) => ({ ...detail, image: imagesArray }));
+
+      const finalClaimDetails = [...recordWithOutImage, ...newRecordWithImageNeedUpload];
 
       try {
         await $fetch("/api/claims", {
           method: "POST",
           body: {
             ...claimData,
-            claimDetails: { create: claimDetailsData },
-            claimCollections: { create: claimCollections },
+            claimDetails: finalClaimDetails,
+            claimCollections,
           },
         });
         await refreshNuxtData("getClaims");
@@ -96,7 +109,7 @@ export function useClaimActions() {
       (record) => typeof record.image === "object" && record.image !== null && "content" in record.image
     );
     const recordWithOutImage = claimDetails.filter(
-      (record) => (typeof record.image === "string" && record.image !== null) || record.image === undefined
+      (record) => typeof record.image === "string" || record.image === null || record.image === undefined
     );
 
     const billImage = recordWithImageNeedUpload.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];

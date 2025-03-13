@@ -10,7 +10,6 @@ definePageMeta({
 const selectedClaimId = Number(useRoute().params.id);
 const { getOneClaim } = useClaimActions();
 const { data: claim } = await getOneClaim(selectedClaimId);
-console.log("🚀 ~ claim:", toRaw(claim));
 
 // *** Config Generator ***
 const heading = ["رقم المطالبة", "رقم الشقة", "المطلوب منه", "تاريخ المطالبة", "مجموع المبلغ"];
@@ -19,7 +18,6 @@ const isModalOpen = ref(false);
 const modalData = ref("");
 const extracted = computed(() => (claim ? useExtractKeys(claim, keys) : {}));
 
-console.log("🚀 ~ extracted:", extracted.value);
 const fillModalProperties = async (rowContent: string) => {
   const imageUrl = await getImageUrl(rowContent, false);
   modalData.value = imageUrl;

@@ -6,7 +6,6 @@ import { format } from "date-fns";
 const toast = useToast();
 const route = useRoute();
 const { getOneClaim, editClaim } = useClaimActions();
-const { handleFileInput, files } = useFileStorage({ clearOldFiles: true });
 
 // *** Constants ***
 const claimStatusOptions = [
@@ -41,14 +40,6 @@ const collectionData = reactive({
   notes: "",
 });
 
-const detailData = reactive({
-  item: "",
-  price: 0,
-  specialPrice: 0,
-  dateTime: new Date(),
-  image: null,
-});
-
 // *** Computed ***
 const totalPayments = computed(() => state.claimCollections.reduce((sum, c) => sum + c.payment, 0));
 const totalPrices = computed(() => state.claimDetails.reduce((sum, d) => sum + d.price, 0));
@@ -70,14 +61,7 @@ const addCollectionData = () => {
 };
 
 const addDetailData = () => {
-  state.claimDetails.push({ ...detailData, image: files.value[0] });
-  Object.assign(detailData, {
-    item: "",
-    price: 0,
-    specialPrice: 0,
-    dateTime: new Date(),
-    image: null,
-  });
+  state.claimDetails.push();
 };
 
 const submitForm = async () => {
@@ -269,99 +253,7 @@ watchEffect(() => {
       <h3 class="text-center font-semibold text-xl mb-1">تفاصيل المطالبة المالية</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid sm:flex grid-cols-1 gap-x-6 gap-y-4 items-center">
-        <!-- item -->
-        <label for="item" class="col-span-6 sm:col-span-1"> المادة :</label>
-        <div class="col-span-6 sm:col-span-2">
-          <UInput id="item" name="item" :size="'sm'" :required="false" v-model="detailData.item" />
-        </div>
-        <!-- price -->
-        <label for="price" class="col-span-6 sm:col-span-1"> السعر العام :</label>
-        <div class="col-span-6 sm:col-span-2">
-          <UInput id="price" name="price" type="number" :size="'sm'" :required="false" v-model="detailData.price" />
-        </div>
-        <!-- specialPrice -->
-        <label for="specialPrice" class="col-span-6 sm:col-span-1"> السعر الخاص :</label>
-        <div class="col-span-6 sm:col-span-2">
-          <UInput id="specialPrice" name="specialPrice" type="number" :size="'sm'" :required="false" v-model="detailData.specialPrice" />
-        </div>
-        <!-- dateTime -->
-        <label for="dateTime" class="col-span-6 sm:col-span-1"> الوقت والتاريخ :</label>
-        <div class="col-span-6 sm:col-span-2">
-          <UPopover :popper="{ placement: 'bottom-start' }">
-            <UInput
-              icon="i-heroicons-calendar-days-20-solid"
-              nam="dateTime"
-              :size="'sm'"
-              class="w-full"
-              :model-value="format(detailData.dateTime, 'dd/MM/yyyy')"
-            />
-
-            <template #panel="{ close }">
-              <AppDatePicker v-model="detailData.dateTime" is-required @close="close" />
-            </template>
-          </UPopover>
-          <!-- <UInput id="dateTime" name="dateTime" :size="'sm'" :required="false" v-model="collectionData.dateTime" /> -->
-        </div>
-        <!-- image -->
-        <label for="image" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
-        <div class="col-span-6 sm:col-span-2">
-          <UInput id="image" name="image" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" icon="i-heroicons-folder" />
-        </div>
-
-        <UButton
-          :type="'button'"
-          :size="'sm'"
-          class="w-20 text-center place-content-center ml-3"
-          @click="addDetailData"
-          :disabled="detailData.item === '' || isNaN(detailData.price) || detailData.price <= 0 || detailData.dateTime === undefined"
-        >
-          اضافة
-        </UButton>
-      </div>
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable
-          class=""
-          :rows="state.claimDetails"
-          :columns="[
-            { key: 'item', label: 'المادة' },
-            { key: 'price', label: 'السعر العام' },
-            { key: 'specialPrice', label: 'السعر الخاص' },
-            { key: 'rowProfit', label: 'المربح' },
-            { key: 'dateTime', label: 'الوقت والتاريخ' },
-            { key: 'image', label: 'الفاتورة' },
-            { key: 'actions' },
-          ]"
-        >
-          <template #image-data="{ row }">
-            <div
-              v-if="row.image"
-              @click="fillModalProperties(row.image)"
-              class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
-            >
-              <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
-              مشاهدة
-            </div>
-          </template>
-          <template #price-data="{ row }">
-            <span>{{ row.price + " دينار" }}</span>
-          </template>
-          <template #specialPrice-data="{ row }">
-            <span>{{ row.specialPrice + " دينار" }}</span>
-          </template>
-          <template #rowProfit-data="{ row }">
-            <span :class="[row.specialPrice - row.price > 0 ? 'text-primary' : 'text-rose-500']">{{ row.specialPrice - row.price + " دينار" }}</span>
-          </template>
-          <template #dateTime-data="{ row }">
-            <span>{{ format(row.dateTime, "hh:mm:ss - dd/MM/yyy") }}</span>
-          </template>
-          <template #actions-data="{ row }">
-            <UDropdown :items="detailItem(row)" class="align-middle">
-              <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
-            </UDropdown>
-          </template>
-        </UTable>
-      </div>
+      <ClaimInfo @submit-add-form="addDetailData" :claimDetails="state.claimDetails" />
       <div class="text-right font-semibold">
         <span>المجموع الكلي للمواد: {{ totalPrices }} دينار</span>
       </div>

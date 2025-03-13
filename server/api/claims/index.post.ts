@@ -10,7 +10,7 @@ const validateClaimData = (data: Claim) => {
 };
 
 export default defineEventHandler(async (event) => {
-  const body: Claim = await readBody(event);
+  const body: any = await readBody(event);
 
   if (!body) {
     var msg = "ERROR: Argument data is missing";
@@ -23,10 +23,21 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Validate the incoming data
-    validateClaimData(body);
+    // validateClaimData(body);
+    const { claimDetails, claimCollections, ...claimData } = body;
+    console.log({ claimDetails, claimCollections });
+
     // Create a new claim entry
     const newClaim: Claim = await prisma.claim.create({
-      data: body,
+      data: {
+        ...claimData,
+        claimDetails: {
+          create: claimDetails,
+        },
+        claimCollections: {
+          create: claimCollections,
+        },
+      },
     });
 
     // Return success response
