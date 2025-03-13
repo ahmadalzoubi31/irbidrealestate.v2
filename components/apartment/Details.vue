@@ -94,7 +94,7 @@ const extracted: Apartment = useExtractKeys(props.apartment, keysToExtract);
 
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;
-const imageKeys = computed(() => props.apartment.images.split(",").filter((i) => i !== ""));
+const imageKeys = computed(() => props.apartment.images?.split(",").filter((i) => i !== ""));  
 
 // Convert base64 to Blob and create URL
 const base64ToBlobUrl = (base64: string, mimeType: string) => {
@@ -146,13 +146,13 @@ const getImageUrl = async (key: string, download = false) => {
     </dd>
     <dd v-else class="font-normal text-primary-500">{{ entry == null || entry == "" ? "-" : entry }}</dd>
     </dt>
-    <dt class="font-medium">
+    <dt class="font-medium col-span-1">
       الملحقات
-    <dd v-if="imageKeys.length > 0">
+    <dd v-if="imageKeys && imageKeys.length > 0"> 
       <ul role="list" class="divide-y divide-gray-200 rounded-md border border-gray-200">
         <li v-for="file in imageKeys" class="flex items-center justify-between py-2 pl-3 pr-4 text-sm">
           <div v-if="file.split(':')[0] === 'contract'" class="flex w-0 flex-1 items-center">
-            <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+            <UIcon name="i-heroicons:paper-clip-solid" class=" h-5 w-5 flex-shrink-0 text-gray-400 ml-1" />
             <span class="ml-2 w-0 flex-1 truncate">صورة العقد</span>
           </div>
           <div v-if="file.split(':')[0] === 'contract'" class="ml-4 flex-shrink-0">
@@ -168,7 +168,7 @@ const getImageUrl = async (key: string, download = false) => {
             </a>
           </div>
           <div v-if="file.split(':')[0] === 'furniture'" class="flex w-0 flex-1 items-center">
-            <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+            <UIcon name="i-heroicons:paper-clip-solid" class=" h-5 w-5 flex-shrink-0 text-gray-400 ml-1" />
             <span class="ml-2 w-0 flex-1 truncate">صورة كشف الاثاث</span>
           </div>
           <div v-if="file.split(':')[0] === 'furniture'" class="ml-4 flex-shrink-0">
@@ -184,7 +184,7 @@ const getImageUrl = async (key: string, download = false) => {
             </a>
           </div>
           <div v-if="file.split(':')[0] === 'renterIdentification'" class="flex w-0 flex-1 items-center">
-            <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+            <UIcon name="i-heroicons:paper-clip-solid" class=" h-5 w-5 flex-shrink-0 text-gray-400 ml-1" />
             <span class="ml-2 w-0 flex-1 truncate">صورة الاثبات</span>
           </div>
           <div v-if="file.split(':')[0] === 'renterIdentification'" class="ml-4 flex-shrink-0">
@@ -200,7 +200,7 @@ const getImageUrl = async (key: string, download = false) => {
             </a>
           </div>
           <div v-if="file.split(':')[0] === 'clearance'" class="flex w-0 flex-1 items-center">
-            <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+            <UIcon name="i-heroicons:paper-clip-solid" class=" h-5 w-5 flex-shrink-0 text-gray-400 ml-1" />
             <span class="ml-2 w-0 flex-1 truncate">صورة المخالصة</span>
           </div>
           <div v-if="file.split(':')[0] === 'clearance'" class="ml-4 flex-shrink-0">
@@ -216,7 +216,7 @@ const getImageUrl = async (key: string, download = false) => {
             </a>
           </div>
           <div v-if="file.split(':')[0] === 'new-contract'" class="flex w-0 flex-1 items-center">
-            <span class="material-symbols-outlined h-5 w-5 flex-shrink-0 text-gray-400">attach_file</span>
+            <UIcon name="i-heroicons:paper-clip-solid" class=" h-5 w-5 flex-shrink-0 text-gray-400 ml-1" />
             <span class="ml-2 w-0 flex-1 truncate">صورة العقد الجديد</span>
           </div>
           <div v-if="file.split(':')[0] === 'new-contract'" class="ml-4 flex-shrink-0">
