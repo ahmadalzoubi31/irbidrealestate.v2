@@ -39,6 +39,7 @@ const state: IEditApartment = reactive({
 const isFurnitureOptions = [
   { id: 0, name: "لا", value: "لا" },
   { id: 1, name: "نعم", value: "نعم" },
+  { id: 3, name: "نصف فرش", value: "نصف فرش" },
 ];
 const isServiceIncludedOptions = [
   { id: 0, name: "لا", value: "لا" },
