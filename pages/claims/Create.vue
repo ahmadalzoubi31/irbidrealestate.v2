@@ -45,7 +45,7 @@ const updateTotal = () => {
   state.total = totalDetails - totalCollections;
 };
 const updateProfit = () => {
-  const rowProfitDetails = state.claimDetails.reduce((sum, detail) => sum + detail.specialPrice - detail.price, 0);
+  const rowProfitDetails = state.claimDetails.reduce((sum, detail) => sum + detail.price - detail.specialPrice, 0);
   state.profit = rowProfitDetails;
 };
 

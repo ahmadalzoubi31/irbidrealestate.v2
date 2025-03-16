@@ -92,8 +92,8 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
               </span>
             </template>
             <template #rowProfit-data="{ row }">
-              <span :class="[row.specialPrice - row.price > 0 ? 'text-primary' : 'text-rose-500']">
-                {{ row.specialPrice - row.price + " دينار" }}
+              <span :class="[row.price - row.specialPrice > 0 ? 'text-primary' : 'text-rose-500']">
+                {{ row.price - row.specialPrice + " دينار" }}
               </span>
             </template>
           </UTable>
