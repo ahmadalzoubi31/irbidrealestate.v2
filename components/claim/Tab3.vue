@@ -25,7 +25,7 @@ const totalPayments = computed(() => {
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
+  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
     <div class="col-span-4">
       <dd class="font-normal text-primary-500">
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">

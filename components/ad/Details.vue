@@ -248,7 +248,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
+  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
     <div v-for="(entry, key, index) in extracted">
       <dt class="font-medium">
         {{ heading[index] }}

@@ -63,7 +63,7 @@ const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-1 sm:grid sm:grid-cols-4 sm:gap-2">
+  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
     <template v-for="(entry, key, index) in extracted">
       <div>
         <dt class="font-medium">{{ heading[index] }}</dt>
