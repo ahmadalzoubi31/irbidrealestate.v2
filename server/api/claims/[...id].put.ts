@@ -7,11 +7,6 @@ interface ClaimWithDetailsAndCollections extends Claim {
   claimCollections: ClaimCollection[];
 }
 
-// Utility function to validate incoming data
-const validateClaimData = (data: Claim) => {
-  // TODO: Add any additional field validation as needed
-};
-
 export default defineEventHandler(async (event) => {
   const body: ClaimWithDetailsAndCollections = await readBody(event); // Use any because `body` contains nested objects
   const id: number = Number(getRouterParams(event).id);
@@ -26,9 +21,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Validate the incoming data
-    validateClaimData(body);
-
     // Separate `claimCollections, claimDetails` from the main body
     const { claimCollections, claimDetails, ...claimData } = body;
     // Validate claim existence
@@ -39,7 +31,6 @@ export default defineEventHandler(async (event) => {
 
     if (!claim) {
       const msg = "ERROR: No claim found with the given ID";
-      console.log(msg);
       throw createError({
         statusCode: 404,
         message: msg,

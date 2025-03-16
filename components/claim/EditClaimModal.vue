@@ -8,7 +8,6 @@ interface ClaimState {
   image: Image | null;
 }
 
-import type { ClaimDetail } from "@prisma/client";
 // Composables
 import format from "date-fns/format";
 const isEditClaimModalOpen = useState<boolean>("isEditClaimModalOpen");

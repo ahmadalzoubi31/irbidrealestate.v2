@@ -2,7 +2,7 @@ import { Apartment, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const body: Apartment = await readBody(event);
+  const body: any = await readBody(event);
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -14,8 +14,17 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    const { renterInfo, ...apartmentData } = body;
+
     // Create a new apartment entry
-    const newApartment: Apartment = await prisma.apartment.create({ data: body });
+    const newApartment: Apartment = await prisma.apartment.create({
+      data: {
+        ...apartmentData,
+        renterInfo: {
+          create: renterInfo,
+        },
+      },
+    });
 
     // Return success response
     return {

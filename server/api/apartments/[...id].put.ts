@@ -1,9 +1,14 @@
 // ~/server/api/apartments/[id]/update.ts
 import prisma from "~/lib/prisma";
-import { Apartment } from "@prisma/client";
+import { Apartment, ApartmentRenterInfo } from "@prisma/client";
+
+// Declare interface
+interface ApartmentWithRenterInfo extends Apartment {
+  renterInfo: ApartmentRenterInfo[];
+}
 
 export default defineEventHandler(async (event) => {
-  const body: Apartment = await readBody(event);
+  const body: ApartmentWithRenterInfo = await readBody(event);
   const id: number = Number(getRouterParams(event).id);
 
   // Check if body data is provided
@@ -17,9 +22,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    // Separate ` renterInfo` from the main body
+    const { renterInfo, ...apartmentData } = body;
     // Fetch the apartment to ensure it exists
     const existApartment = await prisma.apartment.findUnique({
       where: { id },
+      include: { renterInfo: true },
     });
 
     // If apartment doesn't exist, throw an error
@@ -30,20 +38,58 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const { buildingId, ...updateData } = body;
+    await prisma.$transaction(async (tx) => {
+      // Update the apartment data
+      await tx.apartment.update({ where: { id }, data: apartmentData });
 
-    // Proceed with updating the apartment data
-    const updatedApartment = await prisma.apartment.update({
-      where: { id },
-      data: updateData, // Updated data without 'name' field
+      // Fetch existing related records
+      const existingRenterInfo = await tx.apartmentRenterInfo.findMany({
+        where: { apartmentId: id },
+      });
+
+      // Extract IDs from the incoming request
+      const incomingRenterInfoIds = renterInfo
+        .filter((a: ApartmentRenterInfo) => a.id) // Only include those with IDs
+        .map((a: ApartmentRenterInfo) => a.id);
+
+      // Find IDs to delete (existing IDs not in the incoming list)
+      const idsRenterInfoToDelete = existingRenterInfo.filter((a) => !incomingRenterInfoIds.includes(a.id)).map((a) => a.id);
+
+      // Perform deletions
+      const deleteRenterOperations = idsRenterInfoToDelete.map((id) => tx.apartmentRenterInfo.delete({ where: { id: id } }));
+
+      // Handle updates and creations
+      const upsertRenterOperations = renterInfo.map((c: ApartmentRenterInfo) =>
+        c.id
+          ? tx.apartmentRenterInfo.update({
+              where: { id: c.id },
+              data: {
+                renterName: c.renterName,
+                renterNumber: c.renterNumber,
+                renterNationality: c.renterNationality,
+                renterCountry: c.renterCountry,
+                renterIdentification: c.renterIdentification,
+                identificationImage: c.identificationImage,
+                contractImage: c.contractImage,
+              },
+            })
+          : tx.apartmentRenterInfo.create({
+              data: {
+                renterName: c.renterName,
+                renterNumber: c.renterNumber,
+                renterNationality: c.renterNationality,
+                renterCountry: c.renterCountry,
+                renterIdentification: c.renterIdentification,
+                identificationImage: c.identificationImage,
+                contractImage: c.contractImage,
+                apartmentId: id,
+              },
+            })
+      );
+
+      // Execute deletions, updates, and creations
+      await Promise.all([...deleteRenterOperations, ...upsertRenterOperations]);
     });
-
-    // Return a success response after updating the apartment
-    return {
-      success: true,
-      message: "Apartment updated successfully",
-      data: updatedApartment,
-    };
   } catch (error: any) {
     console.error("Error updating apartment:", error.message);
 

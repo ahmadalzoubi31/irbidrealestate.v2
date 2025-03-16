@@ -58,17 +58,13 @@ declare interface ICreateApartment {
   electricSub: string;
   waterSub: string;
   realLocation: string;
-  renterName: string;
-  renterNumber: string;
   rentDuration: string;
   rentAmount: number;
   rentDate: Date;
   rentPaymentWay: string;
   isFurniture: string;
   rentStatus: number;
-  renterNationality: string;
-  renterCountry: string | null;
-  renterIdentification: string;
+  renterInfo: Array<IApartmentRenterInfo>;
   isServiceIncluded: string;
   insurance: number;
   commissionAmount: number;
@@ -82,21 +78,26 @@ declare interface IEditApartment {
   electricSub: string;
   waterSub: string;
   realLocation: string;
-  renterName: string;
-  renterNumber: string;
   rentDuration: string;
   rentAmount: number;
   rentDate: Date;
   rentPaymentWay: string;
   isFurniture: string;
   rentStatus: number;
-  renterNationality: string;
-  renterCountry: string | null;
-  renterIdentification: string;
+  renterInfo: Array<IApartmentRenterInfo>;
   isServiceIncluded: string;
   insurance: number;
   commissionAmount: number;
-  images: string | null;
+}
+
+declare interface IApartmentRenterInfo {
+  renterName: string;
+  renterNumber: string;
+  renterNationality: string;
+  renterCountry: string | null;
+  renterIdentification: string;
+  identificationImage: Image | string;
+  contractImage: Image | string;
 }
 
 declare interface IBrokeApartment {

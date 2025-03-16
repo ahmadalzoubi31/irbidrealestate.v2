@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
       where: { id },
       include: {
         building: true,
+        renterInfo: true,
       },
     });
 

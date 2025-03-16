@@ -77,20 +77,6 @@ const submitForm = async () => {
   await editClaim(selectedClaimId.value, state);
 };
 
-const detailItem = (row: { item: string; price: number; specialPrice: number }) => [
-  [
-    {
-      label: "مسح",
-      icon: "i-heroicons-trash-20-solid",
-      click: () => {
-        state.claimDetails = state.claimDetails.filter(
-          (item) => !(item.item === row.item && item.price === row.price && item.specialPrice === row.specialPrice)
-        );
-      },
-    },
-  ],
-];
-
 const collectionItem = (row: { dateTime: Date; payment: number; notes: string }) => [
   [
     {
@@ -104,34 +90,6 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
     },
   ],
 ];
-
-const fillModalProperties = async (rowContent: string) => {
-  const imageUrl = await getImageUrl(rowContent, false);
-  modalData.value = imageUrl;
-  isModalOpen.value = true;
-};
-
-const getImageUrl = async (key: string, download = false) => {
-  if (!key) return "";
-  const res = await $fetch<any>("/api/v2/files/" + key);
-
-  const base64Data = res.body.split(",")[1]; // Extract base64 data
-  const mimeType = res.mimeType; // Ensure the response contains the MIME type
-  const url = base64ToBlobUrl(base64Data, mimeType);
-
-  return url;
-};
-
-const base64ToBlobUrl = (base64: string, mimeType: string) => {
-  const byteCharacters = atob(base64);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: mimeType });
-  return URL.createObjectURL(blob);
-};
 
 // *** Watchers ***
 watch(() => state.claimDetails, updateTotal, { deep: true });

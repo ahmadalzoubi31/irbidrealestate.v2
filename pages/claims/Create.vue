@@ -73,7 +73,7 @@ const submitForm = async () => {
     return;
   }
   useLoadingIndicator().start();
-  debugger;
+
   await createClaim(state);
 };
 

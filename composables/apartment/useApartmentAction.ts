@@ -1,7 +1,8 @@
-import type { Apartment, Building } from "@prisma/client";
+import type { Apartment, ApartmentRenterInfo, Building } from "@prisma/client";
 
 interface ApartmentWithBuilding extends Apartment {
   building: Building;
+  renterInfo: ApartmentRenterInfo[];
 }
 // composables/useApartmentActions.ts
 export function useApartmentActions() {
@@ -57,7 +58,7 @@ export function useApartmentActions() {
           body: { keys: oldKeys },
         });
       }
-      const keys: string[] | null = await uploadFile(images, type);
+      const keys: string[] = await uploadFile(images, type);
       if (!keys) {
         throw new Error(`فشل رفع الملفات - ${type}`);
       }
@@ -66,16 +67,56 @@ export function useApartmentActions() {
     return oldKeys.join(",");
   };
 
-  const createApartment = async (payload: ICreateApartment, furnitureImages: Image[], renterIdentificationImage: Image[], contractImage: Image[]) => {
-    let imagesArray: string = "";
+  const createApartment = async (payload: ICreateApartment, furnitureImages: Image[]) => {
+    let contractImageKey: string = "";
+    let renterIdentificationImageKey: string = "";
+
+    const { renterInfo, ...apartmentData } = payload;
+
+    const recordWithImageNeedUpload = renterInfo.filter(
+      (record) =>
+        (typeof record.identificationImage === "object" && record.identificationImage !== null && "content" in record.identificationImage) ||
+        (typeof record.contractImage === "object" && record.contractImage !== null && "content" in record.contractImage)
+    );
+    const recordWithOutImage = renterInfo.filter(
+      (record) =>
+        (typeof record.identificationImage === "string" || record.identificationImage === null || record.identificationImage === undefined) &&
+        (typeof record.contractImage === "string" || record.contractImage === null || record.contractImage === undefined)
+    );
+
+    const renterIdentificationImage = recordWithImageNeedUpload
+      .filter((el) => el.identificationImage !== null)
+      .map((detail) => detail.identificationImage) as Image[];
+
+    const contractImage = recordWithImageNeedUpload.filter((el) => el.contractImage !== null).map((detail) => detail.contractImage) as Image[];
+
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ contractImage, identificationImage, ...rest }) => rest);
+
     try {
-      imagesArray += (await uploadImages(furnitureImages, "furniture")) + ",";
-      imagesArray += (await uploadImages(renterIdentificationImage, "renterIdentification")) + ",";
-      imagesArray += await uploadImages(contractImage, "contract");
+      if (renterIdentificationImage && renterIdentificationImage.length !== 0) {
+        renterIdentificationImageKey += await uploadFile(renterIdentificationImage, "renterIdentification");
+      }
+      if (contractImage && contractImage.length !== 0) {
+        contractImageKey += await uploadFile(contractImage, "contract");
+      }
+
+      const newRecordWithImageNeedUpload: IApartmentRenterInfo[] = recordWithImageNeedUploadRest.map((detail) => ({
+        ...detail,
+        identificationImage: renterIdentificationImageKey,
+        contractImage: contractImageKey,
+      }));
+
+      const finalRenterDetails = [...recordWithOutImage, ...newRecordWithImageNeedUpload];
 
       try {
         // Create the Apartment
-        await $fetch("/api/apartments", { method: "POST", body: { ...payload, images: imagesArray } });
+        await $fetch("/api/apartments", {
+          method: "POST",
+          body: {
+            ...apartmentData,
+            renterInfo: finalRenterDetails,
+          },
+        });
         await refreshNuxtData("getApartments");
         await navigateTo("/apartments/rents");
         handleSuccess("تم انشاء الايجار بنجاح");
@@ -89,25 +130,50 @@ export function useApartmentActions() {
     }
   };
 
-  const editApartment = async (
-    id: number,
-    payload: IEditApartment,
-    furnitureImages: Image[],
-    renterIdentificationImage: Image[],
-    contractImage: Image[]
-  ) => {
-    let imagesArray: string = "";
-    const oldContractImageKeys = payload.images?.split(",").filter((key) => key.includes("contract"));
-    const oldFurnitureImageKeys = payload.images?.split(",").filter((key) => key.includes("furniture"));
-    const oldRenterIdentificationImageKeys = payload.images?.split(",").filter((key) => key.includes("renterIdentification"));
+  const editApartment = async (id: number, payload: IEditApartment) => {
+    debugger;
+    let contractImageKey: string = "";
+    let renterIdentificationImageKey: string = "";
+
+    const { renterInfo, ...apartmentData } = payload;
+
+    const recordWithImageNeedUpload = renterInfo.filter(
+      (record) =>
+        (typeof record.identificationImage === "object" && record.identificationImage !== null && "content" in record.identificationImage) ||
+        (typeof record.contractImage === "object" && record.contractImage !== null && "content" in record.contractImage)
+    );
+    const recordWithOutImage = renterInfo.filter(
+      (record) =>
+        (typeof record.identificationImage === "string" || record.identificationImage === null || record.identificationImage === undefined) &&
+        (typeof record.contractImage === "string" || record.contractImage === null || record.contractImage === undefined)
+    );
+
+    const renterIdentificationImage = recordWithImageNeedUpload
+      .filter((el) => el.identificationImage !== null)
+      .map((detail) => detail.identificationImage) as Image[];
+
+    const contractImage = recordWithImageNeedUpload.filter((el) => el.contractImage !== null).map((detail) => detail.contractImage) as Image[];
+
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ contractImage, identificationImage, ...rest }) => rest);
+
     try {
-      imagesArray += (await updateImages(furnitureImages, oldFurnitureImageKeys!, "furniture")) + ",";
-      imagesArray += (await updateImages(renterIdentificationImage, oldRenterIdentificationImageKeys!, "renterIdentification")) + ",";
-      imagesArray += await updateImages(contractImage, oldContractImageKeys!, "contract");
+      if (renterIdentificationImage && renterIdentificationImage.length !== 0) {
+        renterIdentificationImageKey += await uploadFile(renterIdentificationImage, "renterIdentification");
+      }
+      if (contractImage && contractImage.length !== 0) {
+        contractImageKey += await uploadFile(contractImage, "contract");
+      }
+
+      const updatedRecordWithImageNeedUpload: IApartmentRenterInfo[] = recordWithImageNeedUploadRest.map((detail) => ({
+        ...detail,
+        identificationImage: renterIdentificationImageKey,
+        contractImage: contractImageKey,
+      }));
+
+      const finalRenterDetails = [...recordWithOutImage, ...updatedRecordWithImageNeedUpload];
 
       try {
-        // Update the apartment details
-        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...payload, images: imagesArray } });
+        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentData, renterInfo: finalRenterDetails } });
         await refreshNuxtData("getApartments");
         await navigateTo("/apartments/rents");
         handleSuccess("تم تعديل الايجار بنجاح");

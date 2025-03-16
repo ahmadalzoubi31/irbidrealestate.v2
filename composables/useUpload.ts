@@ -18,6 +18,8 @@ export const useUpload = () => {
   };
 
   const uploadFile = async (files: Image[], tag: string) => {
+    debugger;
+    if (!files || files.length === 0 || files[0] === undefined) return [];
     try {
       const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
       const maxSize = 10 * 1024 * 1024; // 10 MB
@@ -36,15 +38,14 @@ export const useUpload = () => {
       });
 
       if (!result) {
-        throw new Error();
+        throw new Error("خطأ ");
       }
 
       handleSuccess("تم رفع الملفات بنجاح");
-
       return result.keys;
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء رفع الملفات");
-      return null;
+      return [];
     }
   };
 

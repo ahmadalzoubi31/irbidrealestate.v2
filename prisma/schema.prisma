@@ -98,44 +98,52 @@ model BuildingFlat {
 
 // *** Apartment ***
 model Apartment {
-  id                   Int       @id @default(autoincrement())
-  apartmentNumber      String
-  ownerName            String
-  ownerNumber          String?
-  agentName            String
-  agentNumber          String?
-  realLocation         String?
-  electricSub          String?
-  waterSub             String?
-  renterName           String
-  renterNumber         String    @default("###")
-  rentDuration         String
-  rentAmount           Float     @default(0.0)
-  rentDate             DateTime  @default(now())
-  rentPaymentWay       String?
-  isFurniture          String    @default("لا")
+  id                Int                   @id @default(autoincrement())
+  apartmentNumber   String
+  ownerName         String
+  ownerNumber       String?
+  agentName         String
+  agentNumber       String?
+  realLocation      String?
+  electricSub       String?
+  waterSub          String?
+  rentDuration      String
+  rentAmount        Float                 @default(0.0)
+  rentDate          DateTime              @default(now())
+  rentPaymentWay    String?
+  isFurniture       String                @default("لا")
   /**
    * 0 ==> "منتهي"
    * 1 ==> "مفسوخ"
    * 2 ==> "مجدد"
    * 3 ==> "قائم"
    */
-  rentStatus           Int       @default(3)
+  rentStatus        Int                   @default(3)
+  renterInfo        ApartmentRenterInfo[]
+  isServiceIncluded String                @default("لا")
+  insurance         Float                 @default(0)
+  commissionAmount  Float                 @default(0)
+  status            Boolean               @default(true)
+  createdBy         String                @default("-")
+  createdAt         DateTime              @default(now())
+  updatedBy         String?               @default("-")
+  updatedAt         DateTime              @updatedAt
+  payments          Payment[]
+  building          Building?             @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  buildingId        Int?
+}
+
+model ApartmentRenterInfo {
+  id                   Int        @id @default(autoincrement())
+  renterName           String
+  renterNumber         String     @default("###")
   renterNationality    String?
   renterCountry        String?
   renterIdentification String?
-  isServiceIncluded    String    @default("لا")
-  insurance            Float     @default(0)
-  commissionAmount     Float     @default(0)
-  status               Boolean   @default(true)
-  createdBy            String    @default("-")
-  createdAt            DateTime  @default(now())
-  updatedBy            String?   @default("-")
-  updatedAt            DateTime  @updatedAt
-  images               String?
-  payments             Payment[]
-  building             Building? @relation(fields: [buildingId], references: [id], onDelete: Cascade)
-  buildingId           Int?
+  identificationImage  String?
+  contractImage        String?
+  Apartment            Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId          Int?
 }
 
 // *** Payments ***
