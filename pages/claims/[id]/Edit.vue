@@ -50,6 +50,10 @@ const updateTotal = () => {
   const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
   state.total = totalDetails - totalCollections;
 };
+const updateProfit = () => {
+  const rowProfitDetails = state.claimDetails.reduce((sum, detail) => sum + detail.price - detail.specialPrice, 0);
+  state.profit = rowProfitDetails;
+};
 
 const addCollectionData = () => {
   state.claimCollections.push({ ...collectionData });
@@ -94,6 +98,7 @@ const collectionItem = (row: { dateTime: Date; payment: number; notes: string })
 // *** Watchers ***
 watch(() => state.claimDetails, updateTotal, { deep: true });
 watch(() => state.claimCollections, updateTotal, { deep: true });
+watch(() => state.claimDetails, updateProfit, { deep: true });
 
 // Initialize form data when claim is loaded
 watchEffect(() => {
