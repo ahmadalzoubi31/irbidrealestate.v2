@@ -119,7 +119,14 @@ watchEffect(() => {
 
         <template #footer>
           <div class="text-left">
-            <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center"> حفظ </UButton>
+            <UButton
+              :type="'submit'"
+              :size="'sm'"
+              :disabled="state.item === '' || isNaN(state.price) || state.dateTime === undefined"
+              class="w-20 text-center place-content-center"
+            >
+              حفظ
+            </UButton>
           </div>
         </template>
       </UCard>

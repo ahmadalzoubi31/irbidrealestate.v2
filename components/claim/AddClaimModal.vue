@@ -112,7 +112,7 @@ const submitForm = async () => {
             <UButton
               :type="'submit'"
               :size="'sm'"
-              :disabled="state.item === '' || isNaN(state.price) || state.price <= 0 || state.dateTime === undefined"
+              :disabled="state.item === '' || isNaN(state.price) || state.dateTime === undefined"
               class="w-20 text-center place-content-center"
             >
               حفظ
