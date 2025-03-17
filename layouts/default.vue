@@ -10,7 +10,7 @@ import { Analytics } from "@vercel/analytics/nuxt";
       <slot />
     </div>
     <!-- TODO: Add the following components to the layout -->
-    <!-- <SpeedInsights />
-    <Analytics /> -->
+    <SpeedInsights />
+    <Analytics />
   </div>
 </template>
