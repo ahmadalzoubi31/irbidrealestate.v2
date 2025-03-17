@@ -18,7 +18,6 @@ export const useUpload = () => {
   };
 
   const uploadFile = async (files: Image[], tag: string) => {
-    debugger;
     if (!files || files.length === 0 || files[0] === undefined) return [];
     try {
       const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];

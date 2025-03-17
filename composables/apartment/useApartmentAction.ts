@@ -131,7 +131,6 @@ export function useApartmentActions() {
   };
 
   const editApartment = async (id: number, payload: IEditApartment) => {
-    debugger;
     let contractImageKey: string = "";
     let renterIdentificationImageKey: string = "";
 

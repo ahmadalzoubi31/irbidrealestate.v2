@@ -35,7 +35,6 @@ const collectionData = reactive({
 
 // *** Computed ***
 const totalPayments = computed(() => state.claimCollections.reduce((sum, c) => sum + c.payment, 0));
-
 const totalPrices = computed(() => state.claimDetails.reduce((sum, d) => sum + d.price, 0));
 
 // *** Methods ***
