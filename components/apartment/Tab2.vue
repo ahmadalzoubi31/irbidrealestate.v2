@@ -62,13 +62,17 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
       <NuxtImg :src="modalData" sizes="100vw" />
     </div>
   </UModal>
-  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
+  <dl class="grid grid-cols-1 gap-2 sm:grid sm:grid-cols-4 sm:gap-4">
     <div class="col-span-4">
       <dd class="font-normal text-primary-500">
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+        <div
+          class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+        >
           <UTable :rows="props.apartment.renterInfo" :columns="selectedColumns">
             <template #flatStatus-data="{ row }">
-              <span :class="row.flatStatus === 2 ? 'text-red-500' : ''">{{ useGetFlatStatusName(row.flatStatus) }}</span>
+              <span :class="row.flatStatus === 2 ? 'text-red-500' : ''">{{
+                useGetFlatStatusName(row.flatStatus)
+              }}</span>
             </template>
             <template #identificationImage-data="{ row }">
               <div
@@ -76,7 +80,10 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
                 @click="fillModalProperties(row.identificationImage)"
                 class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
               >
-                <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+                <UIcon
+                  name="i-heroicons-eye-20-solid"
+                  class="h-5 w-5 flex-shrink-0 align-sub"
+                />
                 مشاهدة
               </div>
             </template>
@@ -86,7 +93,10 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
                 @click="fillModalProperties(row.contractImage)"
                 class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
               >
-                <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+                <UIcon
+                  name="i-heroicons-eye-20-solid"
+                  class="h-5 w-5 flex-shrink-0 align-sub"
+                />
                 مشاهدة
               </div>
             </template>

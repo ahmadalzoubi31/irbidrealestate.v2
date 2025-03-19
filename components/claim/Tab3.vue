@@ -25,11 +25,16 @@ const totalPayments = computed(() => {
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
+  <dl class="grid grid-cols-1 gap-2 sm:grid sm:grid-cols-4 sm:gap-4">
     <div class="col-span-4">
       <dd class="font-normal text-primary-500">
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-          <UTable :rows="props.claim.claimCollections" :columns="selectedColumns">
+        <div
+          class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+        >
+          <UTable
+            :rows="props.claim.claimCollections"
+            :columns="selectedColumns"
+          >
             <template #dateTime-data="{ row }">
               <span>{{ format(row.dateTime, "hh:mm - dd/MM/yyy") }}</span>
             </template>

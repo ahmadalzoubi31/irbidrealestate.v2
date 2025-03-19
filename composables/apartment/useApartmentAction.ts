@@ -28,7 +28,7 @@ export function useApartmentActions() {
   const getOneApartment = async (id: number) => {
     const { data, status, error } = await useFetch<ApartmentWithBuilding>("/api/apartments/" + id, {
       key: "getApartmentById",
-      server: true,
+      server: true,      
     });
 
     if (status.value === "error") {
@@ -212,68 +212,124 @@ export function useApartmentActions() {
     [
       { label: "انهاء", icon: "i-heroicons-archive-box-20-solid", click: () => openModal("expired") },
       { label: "فسخ", icon: "i-heroicons-document-duplicate-20-solid", click: () => openModal("broken") },
-      { label: "تجديد", icon: "i-heroicons-arrow-right-circle-20-solid", click: () => openModal("renewed") },
+      // { label: "تجديد", icon: "i-heroicons-arrow-right-circle-20-solid", click: () => openModal("renewed") },
     ],
   ];
 
-  const expireApartment = async (id: number, clearanceImages: any) => {
-    try {
-      await $fetch("/api/apartments/" + id, { method: "PUT", body: { rentStatus: 0 } });
-      await uploadImages(clearanceImages, "clearance");
-      await refreshNuxtData("getApartments");
-      useState("isExpiredModalOpen").value = false;
-      handleSuccess("تم تعديل الايجار بنجاح");
-    } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء التعديل");
-    } finally {
-      useLoadingIndicator().finish();
-    }
-  };
+  const expireApartment = async (id: number, clearanceImage: Image[]) => {
+    let clearanceImageKey: string = "";
 
-  const brokeApartment = async (id: number, payload: IBrokeApartment, contractImages: any) => {
-    try {
-      const { data: apartment } = await useFetch<ApartmentWithBuilding>("/api/apartments/" + id, {
-        key: "getApartmentById",
-        server: true,
-      });
+    const apartmentThatWillBeExpired = (await getOneApartment(id)).data!;
 
-      if (!apartment.value) {
-        throw new Error("الايجار المطلوب غير موجود.");
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.id;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.createdAt;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.updatedAt;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.buildingId;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.building;
+
+    apartmentThatWillBeExpired.rentStatus = 0;
+
+    try {
+      if (clearanceImage && clearanceImage.length !== 0) {
+        clearanceImageKey += await uploadFile(clearanceImage, "clearance");
       }
 
-      const newApartment = {
-        ...apartment.value,
-        renterName: payload.renterName,
-        renterNumber: payload.renterNumber,
-        rentStatus: 3,
-        buildingId: apartment.value.building.id,
-      };
-
-      const result = await $fetch("/api/apartments", { method: "POST", body: newApartment });
-      await $fetch("/api/apartments/" + id, { method: "PUT", body: { rentStatus: 1 } });
-      await uploadImages(contractImages, "new-contract");
-
-      await refreshNuxtData("getApartments");
-      useState("isBrokenModalOpen").value = false;
-      handleSuccess("تم تعديل الايجار بنجاح");
+      try {
+        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentThatWillBeExpired, clearanceImage: clearanceImageKey } });
+        await refreshNuxtData("getApartments");
+        await navigateTo("/apartments/rents");
+        handleSuccess("تم انهاء الايجار بنجاح");
+      } catch (error) {
+        handleError(error, "حدث خطأ أثناء التعديل");
+      }
     } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء التعديل");
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
     } finally {
       useLoadingIndicator().finish();
+      useState("isExpiredModalOpen").value = false;
     }
   };
 
-  const renewApartment = async (id: number, contractImages: any) => {
+  const brokeApartment = async (id: number, clearanceImage: Image[]) => {
+    let clearanceImageKey: string = "";
+
+    const apartmentThatWillBeExpired = (await getOneApartment(id)).data!;
+
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.id;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.createdAt;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.updatedAt;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.buildingId;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.building;
+
+    apartmentThatWillBeExpired.rentStatus = 1;
+
     try {
-      await $fetch("/api/apartments/" + id, { method: "PUT", body: { rentStatus: 2 } });
-      await uploadImages(contractImages, "renewed-contract");
-      await refreshNuxtData("getApartments");
-      useState("isRenewedModalOpen").value = false;
-      handleSuccess("تم تعديل الايجار بنجاح");
+      if (clearanceImage && clearanceImage.length !== 0) {
+        clearanceImageKey += await uploadFile(clearanceImage, "clearance");
+      }
+
+      try {
+        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentThatWillBeExpired, clearanceImage: clearanceImageKey } });
+        await refreshNuxtData("getApartments");
+        await navigateTo("/apartments/rents");
+        handleSuccess("تم فسخ الايجار بنجاح");
+      } catch (error) {
+        handleError(error, "حدث خطأ أثناء التعديل");
+      }
     } catch (error: any) {
-      handleError(error, "حدث خطأ أثناء التعديل");
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
     } finally {
       useLoadingIndicator().finish();
+      useState("isBrokenModalOpen").value = false;
+    }
+  };
+
+  const renewApartment = async (id: number, contractImage: Image[]) => {
+    let contractImageKey: string = "";
+
+    const apartmentThatWillBeExpired = (await getOneApartment(id)).data!;
+
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.id;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.createdAt;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.updatedAt;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.buildingId;
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.building;
+
+    apartmentThatWillBeExpired.rentStatus = 2;
+
+    try {
+      if (contractImage && contractImage.length !== 0) {
+        contractImageKey += await uploadFile(contractImage, "renewed-contract");
+      }
+
+      try {
+        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentThatWillBeExpired, contractImage: contractImageKey } });
+        await refreshNuxtData("getApartments");
+        await navigateTo("/apartments/rents");
+        handleSuccess("تم تجديد الايجار بنجاح");
+      } catch (error) {
+        handleError(error, "حدث خطأ أثناء التعديل");
+      }
+    } catch (error: any) {
+      handleError(error, "حدث خطأ أثناء رفع الملفات");
+    } finally {
+      useLoadingIndicator().finish();
+      useState("isRenewedModalOpen").value = false;
     }
   };
 

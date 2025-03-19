@@ -45,27 +45,39 @@ const keysToExtract = [
 const extracted: Claim = useExtractKeys(props.claim, keysToExtract);
 
 // Format date using the useDateFormat function
-const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
+const formatted = (date: Date) =>
+  useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
+  <dl class="grid grid-cols-1 gap-2 sm:grid sm:grid-cols-4 sm:gap-4">
     <template v-for="(entry, key, index) in extracted">
       <div>
         <dt class="font-medium">{{ heading[index] }}</dt>
 
         <!-- Handle formatted date fields -->
-        <dd v-if="key === 'createdAt' || key === 'updatedAt' || key === 'claimDate'" class="font-normal text-primary-500">
+        <dd
+          v-if="
+            key === 'createdAt' || key === 'updatedAt' || key === 'claimDate'
+          "
+          class="font-normal text-primary-500"
+        >
           {{ formatted(entry as Date) }}
         </dd>
 
         <!-- Handle status field -->
-        <dd v-else-if="key === 'claimStatus'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
+        <dd
+          v-else-if="key === 'claimStatus'"
+          :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']"
+        >
           {{ useGetClaimStatusName(entry as number) }}
         </dd>
 
         <!-- Handle total field -->
-        <dd v-else-if="key === 'total' || key === 'profit'" class="font-normal text-primary-500">
+        <dd
+          v-else-if="key === 'total' || key === 'profit'"
+          class="font-normal text-primary-500"
+        >
           {{ entry + " دينار" }}
         </dd>
 

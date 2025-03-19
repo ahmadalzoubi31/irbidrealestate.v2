@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
         building: true,
         renterInfo: true,
       },
+      orderBy: [{ buildingId: "asc" }, { apartmentNumber: "asc" }],
     });
     return apartments;
   } catch (error: any) {

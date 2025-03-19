@@ -194,7 +194,8 @@ const { heading, keys } = getConfig(props.ad.code);
 const extracted: Ad = useExtractKeys(props.ad, keys);
 
 // Declare Methods
-const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
+const formatted = (date: Date) =>
+  useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 const openFile = async (fileName: string) => {
   selectedImage.value = await getImageUrl(fileName);
   isModalOpen.value = true;
@@ -203,7 +204,9 @@ const closeModal = () => {
   isModalOpen.value = false;
   selectedImage.value = "";
 };
-const imageKeys = computed(() => props.ad.images.split(",").filter((i: string) => i !== ""));
+const imageKeys = computed(() =>
+  props.ad.images.split(",").filter((i: string) => i !== "")
+);
 
 // Convert base64 to Blob and create URL
 const base64ToBlobUrl = (base64: string, mimeType: string) => {
@@ -243,31 +246,55 @@ const getImageUrl = async (key: string, download = false) => {
 const imageUrls = ref<string[]>([]);
 
 watchEffect(async () => {
-  imageUrls.value = await Promise.all(imageKeys.value.map((key: string) => getImageUrl(key, false)));
+  imageUrls.value = await Promise.all(
+    imageKeys.value.map((key: string) => getImageUrl(key, false))
+  );
 });
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
+  <dl class="grid grid-cols-1 gap-2 sm:grid sm:grid-cols-4 sm:gap-4">
     <div v-for="(entry, key, index) in extracted">
       <dt class="font-medium">
         {{ heading[index] }}
       </dt>
-      <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">{{ formatted(entry as Date) }}</dd>
-      <dd v-else-if="key == 'status'" :class="[entry ? 'text-primary-500' : 'text-red-500']" class="font-normal">
+      <dd
+        v-if="key === 'createdAt' || key === 'updatedAt'"
+        class="font-normal text-primary-500"
+      >
+        {{ formatted(entry as Date) }}
+      </dd>
+      <dd
+        v-else-if="key == 'status'"
+        :class="[entry ? 'text-primary-500' : 'text-red-500']"
+        class="font-normal"
+      >
         {{ useGetStatusName(entry as boolean) }}
       </dd>
-      <dd v-else-if="key == 'propertyType'" class="font-normal text-primary-500">{{ useGetPropertyTypeName(entry as number) }}</dd>
-      <dd v-else class="font-normal text-primary-500">{{ entry == null || entry == "" ? "-" : entry }}</dd>
+      <dd
+        v-else-if="key == 'propertyType'"
+        class="font-normal text-primary-500"
+      >
+        {{ useGetPropertyTypeName(entry as number) }}
+      </dd>
+      <dd v-else class="font-normal text-primary-500">
+        {{ entry == null || entry == "" ? "-" : entry }}
+      </dd>
     </div>
     <div v-for="entry in props.ad.interestedPeople">
       <dt class="font-medium col-span-4">الاشخاص المهتمين بالاعلان</dt>
-      <dd class="font-normal text-primary-500">{{ entry.name }} - {{ entry.number }}</dd>
+      <dd class="font-normal text-primary-500">
+        {{ entry.name }} - {{ entry.number }}
+      </dd>
     </div>
     <div class="col-span-4">
       <dt class="font-medium">ملفات الاعلان</dt>
       <dd class="font-normal text-primary-500">
-        <div v-for="(url, index) in imageUrls" :key="index" class="relative inline-block">
+        <div
+          v-for="(url, index) in imageUrls"
+          :key="index"
+          class="relative inline-block"
+        >
           <div>
             <!-- Render image -->
             <NuxtImg
@@ -282,11 +309,20 @@ watchEffect(async () => {
         </div>
         <!-- Modal with Transition -->
         <transition name="fade">
-          <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative">
+          <div
+            v-if="isModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          >
+            <div
+              class="bg-white rounded-lg p-4 max-w-[90%] max-h-[90%] relative"
+            >
               <!-- Conditionally Render Image or Video -->
               <div>
-                <img :src="selectedImage" alt="Selected Image" class="max-h-full max-w-full rounded-lg" />
+                <img
+                  :src="selectedImage"
+                  alt="Selected Image"
+                  class="max-h-full max-w-full rounded-lg"
+                />
               </div>
 
               <!-- Close Button -->

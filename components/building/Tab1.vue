@@ -59,22 +59,29 @@ const keysToExtract = [
 const extracted: Building = useExtractKeys(props.building, keysToExtract);
 
 // Format date using the useDateFormat function
-const formatted = (date: Date) => useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
+const formatted = (date: Date) =>
+  useDateFormat(date, "ddd YYYY-MM-DD hh:mm:ss A").value;
 </script>
 
 <template>
-  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
+  <dl class="grid grid-cols-1 gap-2 sm:grid sm:grid-cols-4 sm:gap-4">
     <template v-for="(entry, key, index) in extracted">
       <div>
         <dt class="font-medium">{{ heading[index] }}</dt>
 
         <!-- Handle formatted date fields -->
-        <dd v-if="key === 'createdAt' || key === 'updatedAt'" class="font-normal text-primary-500">
+        <dd
+          v-if="key === 'createdAt' || key === 'updatedAt'"
+          class="font-normal text-primary-500"
+        >
           {{ formatted(entry as Date) }}
         </dd>
 
         <!-- Handle status field -->
-        <dd v-else-if="key === 'status'" :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']">
+        <dd
+          v-else-if="key === 'status'"
+          :class="['font-normal', entry ? 'text-primary-500' : 'text-red-500']"
+        >
           {{ useGetStatusName(entry as boolean) }}
         </dd>
 

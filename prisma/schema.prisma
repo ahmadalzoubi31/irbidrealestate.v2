@@ -123,6 +123,7 @@ model Apartment {
   isServiceIncluded String                @default("لا")
   insurance         Float                 @default(0)
   commissionAmount  Float                 @default(0)
+  clearanceImage    String?
   status            Boolean               @default(true)
   createdBy         String                @default("-")
   createdAt         DateTime              @default(now())

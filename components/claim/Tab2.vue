@@ -63,10 +63,12 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
       <NuxtImg :src="modalData" sizes="100vw" />
     </div>
   </UModal>
-  <dl class="grid grid-cols-1 gap-4 sm:grid sm:grid-cols-4 sm:gap-6">
+  <dl class="grid grid-cols-1 gap-2 sm:grid sm:grid-cols-4 sm:gap-4">
     <div class="col-span-4">
       <dd class="font-normal text-primary-500">
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+        <div
+          class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+        >
           <UTable :rows="props.claim.claimDetails" :columns="selectedColumns">
             <template #dateTime-data="{ row }">
               <span>{{ format(row.dateTime, "hh:mm - dd/MM/yyy") }}</span>
@@ -77,7 +79,10 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
                 @click="fillModalProperties(row.image)"
                 class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
               >
-                <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+                <UIcon
+                  name="i-heroicons-eye-20-solid"
+                  class="h-5 w-5 flex-shrink-0 align-sub"
+                />
                 مشاهدة
               </div>
             </template>
@@ -92,7 +97,13 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
               </span>
             </template>
             <template #rowProfit-data="{ row }">
-              <span :class="[row.price - row.specialPrice > 0 ? 'text-primary' : 'text-rose-500']">
+              <span
+                :class="[
+                  row.price - row.specialPrice > 0
+                    ? 'text-primary'
+                    : 'text-rose-500',
+                ]"
+              >
                 {{ row.price - row.specialPrice + " دينار" }}
               </span>
             </template>
