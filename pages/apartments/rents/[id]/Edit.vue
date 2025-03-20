@@ -18,6 +18,7 @@ const { handleFileInput: handle3, files: contractImage } = useFileStorage({
 });
 
 const state: IEditApartment = reactive({
+  code: "",
   ownerName: "",
   ownerNumber: "",
   agentName: "",
@@ -65,6 +66,7 @@ const selectedImage = ref("");
 watchEffect(() => {
   if (apartment) {
     Object.assign(state, {
+      code: apartment.code,
       ownerName: apartment.ownerName,
       ownerNumber: apartment.ownerNumber!,
       agentName: apartment.agentName,
@@ -135,6 +137,18 @@ const removeFurnitureImages = (index: number) => {
             :required="false"
             :disabled="true"
             :modelValue="apartment?.apartmentNumber"
+          />
+        </div>
+        <!-- code -->
+        <div class="col-span-10 sm:col-span-2">
+          <label for="code"> ترميز الشقة </label>
+          <UInput
+            id="code"
+            name="code"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            v-model="state.code"
           />
         </div>
         <!-- basinName -->

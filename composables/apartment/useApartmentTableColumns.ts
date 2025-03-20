@@ -4,6 +4,7 @@ export function useApartmentTableColumns() {
     { key: "select", class: "w-2" },
     { key: "building.name", label: "اسم البناية", sortable: true },
     { key: "apartmentNumber", label: "رقم الشقة", sortable: true },
+    { key: "code", label: "ترميز الشقة", sortable: true },
     { key: "ownerName", label: "اسم المالك", sortable: false },
     { key: "ownerNumber", label: "رقم المالك", sortable: false },
     { key: "rentAmount", label: "قيمة الإيجار", sortable: false },

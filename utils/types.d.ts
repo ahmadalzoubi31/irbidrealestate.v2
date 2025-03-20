@@ -51,6 +51,7 @@ declare interface IEditBuilding {
 declare interface ICreateApartment {
   buildingId: number;
   apartmentNumber: string;
+  code: string;
   ownerName: string;
   ownerNumber: string;
   agentName: string;
@@ -72,6 +73,7 @@ declare interface ICreateApartment {
 }
 
 declare interface IEditApartment {
+  code: string;
   ownerName: string;
   ownerNumber: string;
   agentName: string;

@@ -9,6 +9,7 @@ const { createApartment } = useApartmentActions();
 const state: ICreateApartment = reactive({
   buildingId: 0,
   apartmentNumber: "",
+  code: "",
   ownerName: "",
   ownerNumber: "",
   agentName: "",
@@ -171,6 +172,18 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             :size="'sm'"
             :required="true"
             v-model="state.apartmentNumber"
+          />
+        </div>
+        <!-- code -->
+        <div class="col-span-10 sm:col-span-2">
+          <label for="code"> ترميز الشقة </label>
+          <UInput
+            id="code"
+            name="code"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            v-model="state.code"
           />
         </div>
         <!-- basinName -->

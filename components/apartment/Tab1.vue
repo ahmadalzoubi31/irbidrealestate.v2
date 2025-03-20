@@ -20,6 +20,7 @@ const props = defineProps({
 const heading = [
   "اسم البناية",
   "رقم الشقة",
+  "ترميز الشقة",
   "اسم الحوض",
   "رقم الحوض",
   "رقم قطعة الأرض",
@@ -52,6 +53,7 @@ const heading = [
 const keysToExtract = [
   "building.name",
   "apartmentNumber",
+  "code",
   "building.basinName",
   "building.basinNumber",
   "building.landNumber",
