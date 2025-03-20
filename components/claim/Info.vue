@@ -51,9 +51,16 @@ const props = defineProps({
 });
 
 // Filtering
-const filteredRows = useFilteredRows<ClaimState>(props.claimDetails, q, ["id", "image"]);
+const filteredRows = useFilteredRows<ClaimState>(props.claimDetails, q, [
+  "id",
+  "image",
+]);
 
-const openModal = (type: string, row: ClaimState | null, index: number | null) => {
+const openModal = (
+  type: string,
+  row: ClaimState | null,
+  index: number | null
+) => {
   if (type === "add") useState("isAddClaimModalOpen").value = true;
   if (type === "edit") {
     useState("selectedDetailRow").value = row;
@@ -123,7 +130,10 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
 
 <template>
   <!-- Modals -->
-  <ClaimAddClaimModal @submit-add-form="submitAddForm" :form-data="props.claimDetails" />
+  <ClaimAddClaimModal
+    @submit-add-form="submitAddForm"
+    :form-data="props.claimDetails"
+  />
   <ClaimEditClaimModal @submit-edit-form="submitEditForm" />
   <UModal v-model="isModalOpen">
     <div class="p-4 w-full">
@@ -134,17 +144,33 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
   <!-- Action Buttons & Search Filter -->
   <div class="flex my-3 justify-between">
     <div id="buttonWrapper">
-      <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مادة" @click="openModal('add', null, null)" />
+      <UButton
+        icon="i-heroicons-plus-circle-20-solid"
+        label="اضافة مادة"
+        @click="openModal('add', null, null)"
+      />
     </div>
     <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
   </div>
 
   <!-- Table -->
-  <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-    <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected">
+  <div
+    class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+  >
+    <UTable
+      :rows="filteredRows"
+      :columns="selectedColumns"
+      @select="select"
+      v-model="selected"
+    >
       <template #actions-data="{ row, index }">
         <UDropdown :items="items(row, index)" class="align-middle">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-ellipsis-horizontal-20-solid"
+            class="h-0"
+          />
         </UDropdown>
       </template>
       <template #dateTime-data="{ row }">
@@ -157,23 +183,44 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
         <span>{{ row.specialPrice + " دينار" }}</span>
       </template>
       <template #rowProfit-data="{ row }">
-        <span :class="row.price - row.specialPrice > 0 ? 'text-primary' : 'text-rose-500'">{{ row.price - row.specialPrice + " دينار" }}</span>
+        <span
+          :class="
+            row.price - row.specialPrice > 0 ? 'text-primary' : 'text-rose-500'
+          "
+          >{{
+            Math.round((row.price - row.specialPrice) * 1000) / 1000 + " دينار"
+          }}</span
+        >
       </template>
       <template #image-data="{ row }">
         <div
-          v-if="typeof row.image === 'object' && row.image !== null && 'content' in row.image"
+          v-if="
+            typeof row.image === 'object' &&
+            row.image !== null &&
+            'content' in row.image
+          "
           @click="fillModalProperties(row.image.content)"
           class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
         >
-          <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+          <UIcon
+            name="i-heroicons-eye-20-solid"
+            class="h-5 w-5 flex-shrink-0 align-sub"
+          />
           مشاهدة
         </div>
         <div
-          v-if="typeof row.image === 'string' && row.image !== '' && row.image !== null"
+          v-if="
+            typeof row.image === 'string' &&
+            row.image !== '' &&
+            row.image !== null
+          "
           @click="fillModalProperties2(row.image)"
           class="font-bold text-primary-600 hover:text-primary-500 hover:cursor-pointer"
         >
-          <UIcon name="i-heroicons-eye-20-solid" class="h-5 w-5 flex-shrink-0 align-sub" />
+          <UIcon
+            name="i-heroicons-eye-20-solid"
+            class="h-5 w-5 flex-shrink-0 align-sub"
+          />
           مشاهدة
         </div>
       </template>

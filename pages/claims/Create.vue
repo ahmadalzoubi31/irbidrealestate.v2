@@ -34,17 +34,31 @@ const collectionData = reactive({
 });
 
 // *** Computed ***
-const totalPayments = computed(() => state.claimCollections.reduce((sum, c) => sum + c.payment, 0));
-const totalPrices = computed(() => state.claimDetails.reduce((sum, d) => sum + d.price, 0));
+const totalPayments = computed(() =>
+  state.claimCollections.reduce((sum, c) => sum + c.payment, 0)
+);
+const totalPrices = computed(() =>
+  state.claimDetails.reduce((sum, d) => sum + d.price, 0)
+);
 
 // *** Methods ***
 const updateTotal = () => {
-  const totalDetails = state.claimDetails.reduce((sum, detail) => sum + detail.price, 0);
-  const totalCollections = state.claimCollections.reduce((sum, collection) => sum + collection.payment, 0);
+  const totalDetails = state.claimDetails.reduce(
+    (sum, detail) => Math.round((sum + detail.price) * 1000) / 1000,
+    0
+  );
+  const totalCollections = state.claimCollections.reduce(
+    (sum, collection) => Math.round((sum + collection.payment) * 1000) / 1000,
+    0
+  );
   state.total = totalDetails - totalCollections;
 };
 const updateProfit = () => {
-  const rowProfitDetails = state.claimDetails.reduce((sum, detail) => sum + detail.price - detail.specialPrice, 0);
+  const rowProfitDetails = state.claimDetails.reduce(
+    (sum, detail) =>
+      Math.round((sum + (detail.price - detail.specialPrice)) * 1000) / 1000,
+    0
+  );
   state.profit = rowProfitDetails;
 };
 
@@ -76,14 +90,23 @@ const submitForm = async () => {
   await createClaim(state);
 };
 
-const collectionItem = (row: { dateTime: Date; payment: number; notes: string }) => [
+const collectionItem = (row: {
+  dateTime: Date;
+  payment: number;
+  notes: string;
+}) => [
   [
     {
       label: "مسح",
       icon: "i-heroicons-trash-20-solid",
       click: () => {
         state.claimCollections = state.claimCollections.filter(
-          (item) => !(item.dateTime === row.dateTime && item.payment === row.payment && item.notes === row.notes)
+          (item) =>
+            !(
+              item.dateTime === row.dateTime &&
+              item.payment === row.payment &&
+              item.notes === row.notes
+            )
         );
       },
     },
@@ -97,16 +120,30 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
 </script>
 
 <template>
-  <form @submit.prevent="submitForm()" class="relative mt-6 flex-1 px-4 sm:px-6">
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+  <form
+    @submit.prevent="submitForm()"
+    class="relative mt-6 flex-1 px-4 sm:px-6"
+  >
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid grid-cols-6 gap-x-6 gap-y-4">
         <!-- claimNumber -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="claimNumber"> رقم المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="claimNumber" name="claimNumber" :size="'sm'" :required="true" v-model="state.claimNumber" />
+          <label for="claimNumber">
+            رقم المطالبة
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="claimNumber"
+            name="claimNumber"
+            :size="'sm'"
+            :required="true"
+            v-model="state.claimNumber"
+          />
         </div>
         <!-- apartmentName -->
         <div class="col-span-6 sm:col-span-2">
@@ -114,7 +151,13 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
             رقم الشقة
             <span class="text-xs text-primary-500">(اجباري)</span>
           </label>
-          <UInput id="apartmentName" name="apartmentName" :size="'sm'" :required="true" v-model="state.apartmentName" />
+          <UInput
+            id="apartmentName"
+            name="apartmentName"
+            :size="'sm'"
+            :required="true"
+            v-model="state.apartmentName"
+          />
         </div>
         <!-- claimDate -->
         <div class="col-span-6 sm:col-span-2">
@@ -132,7 +175,11 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
             />
 
             <template #panel="{ close }">
-              <AppDatePicker v-model="state.claimDate" is-required @close="close" />
+              <AppDatePicker
+                v-model="state.claimDate"
+                is-required
+                @close="close"
+              />
             </template>
           </UPopover>
         </div>
@@ -142,7 +189,13 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
             مطالبة مالية من السيد/السيدة
             <span class="text-xs text-primary-500">(اجباري)</span></label
           >
-          <UInput id="claimFrom" name="claimFrom" :size="'sm'" :required="true" v-model="state.claimFrom" />
+          <UInput
+            id="claimFrom"
+            name="claimFrom"
+            :size="'sm'"
+            :required="true"
+            v-model="state.claimFrom"
+          />
         </div>
         <!-- total -->
         <div class="col-span-6 sm:col-span-2">
@@ -174,7 +227,10 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
         </div>
         <!-- claimStatus -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="claimStatus">حالة المطالبة <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <label for="claimStatus"
+            >حالة المطالبة
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
           <USelectMenu
             id="claimStatus"
             name="claimStatus"
@@ -189,24 +245,35 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
     </div>
 
     <!-- Claim Info Section -->
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
-      <h3 class="text-center font-semibold text-xl mb-1">تفاصيل المطالبة المالية</h3>
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
+      <h3 class="text-center font-semibold text-xl mb-1">
+        تفاصيل المطالبة المالية
+      </h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <ClaimInfo @submit-add-form="addDetailData" :claimDetails="state.claimDetails" />
+      <ClaimInfo
+        @submit-add-form="addDetailData"
+        :claimDetails="state.claimDetails"
+      />
       <div class="text-right font-semibold">
         <span>المجموع الكلي للمواد: {{ totalPrices }} دينار</span>
       </div>
     </div>
 
     <!-- More Info Section -->
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">تفاصيل التحصيل</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <div class="grid sm:flex grid-cols-12 gap-x-6 gap-y-4 items-center">
         <!-- dateTime -->
-        <label for="dateTime" class="col-span-6 sm:col-span-1"> الوقت والتاريخ :</label>
+        <label for="dateTime" class="col-span-6 sm:col-span-1">
+          الوقت والتاريخ :</label
+        >
         <div class="col-span-6 sm:col-span-2">
           <UPopover :popper="{ placement: 'bottom-start' }">
             <UInput
@@ -218,7 +285,11 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
             />
 
             <template #panel="{ close }">
-              <AppDatePicker v-model="collectionData.dateTime" is-required @close="close" />
+              <AppDatePicker
+                v-model="collectionData.dateTime"
+                is-required
+                @close="close"
+              />
             </template>
           </UPopover>
           <!-- <UInput id="dateTime" name="dateTime" :size="'sm'" :required="false" v-model="collectionData.dateTime" /> -->
@@ -226,24 +297,43 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
         <!-- payment -->
         <label for="payment" class="col-span-6 sm:col-span-1"> الدفعة :</label>
         <div class="col-span-6 sm:col-span-2">
-          <UInput id="payment" name="payment" type="number" :size="'sm'" :required="false" v-model="collectionData.payment" />
+          <UInput
+            id="payment"
+            name="payment"
+            type="number"
+            :size="'sm'"
+            :required="false"
+            v-model="collectionData.payment"
+          />
         </div>
         <!-- notes -->
         <label for="notes" class="col-span-6 sm:col-span-1"> الملاحظات :</label>
         <div class="col-span-6 sm:col-span-6">
-          <UInput id="notes" name="notes" :size="'sm'" :required="false" v-model="collectionData.notes" />
+          <UInput
+            id="notes"
+            name="notes"
+            :size="'sm'"
+            :required="false"
+            v-model="collectionData.notes"
+          />
         </div>
         <UButton
           :type="'button'"
           :size="'sm'"
           class="w-20 text-center place-content-center ml-3"
           @click="addCollectionData"
-          :disabled="isNaN(collectionData.payment) || collectionData.payment <= 0 || collectionData.dateTime === undefined"
+          :disabled="
+            isNaN(collectionData.payment) ||
+            collectionData.payment <= 0 ||
+            collectionData.dateTime === undefined
+          "
         >
           اضافة
         </UButton>
       </div>
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+      <div
+        class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+      >
         <UTable
           :rows="state.claimCollections"
           :columns="[
@@ -261,7 +351,12 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
           </template>
           <template #actions-data="{ row }">
             <UDropdown :items="collectionItem(row)" class="align-middle">
-              <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" class="h-0" />
+              <UButton
+                color="gray"
+                variant="ghost"
+                icon="i-heroicons-ellipsis-horizontal-20-solid"
+                class="h-0"
+              />
             </UDropdown>
           </template>
         </UTable>
@@ -271,7 +366,9 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
       </div>
     </div>
     <!-- More Info Section -->
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">تفاصيل المخالصة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
@@ -279,15 +376,31 @@ watch(() => state.claimDetails, updateProfit, { deep: true });
         <!-- clearanceNotes -->
         <!-- <label for="clearanceNotes" class="col-span-6 sm:col-span-1"> الملاحظات :</label> -->
         <div class="col-span-12 sm:col-span-12">
-          <UTextarea id="clearanceNotes" name="clearanceNotes" :size="'sm'" :required="false" v-model="state.clearanceNotes" />
+          <UTextarea
+            id="clearanceNotes"
+            name="clearanceNotes"
+            :size="'sm'"
+            :required="false"
+            v-model="state.clearanceNotes"
+          />
         </div>
       </div>
     </div>
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton to="/claims" :size="'sm'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton
+        :type="'submit'"
+        :size="'sm'"
+        class="w-20 text-center place-content-center ml-3"
+      >
+        حفظ
+      </UButton>
+      <UButton
+        to="/claims"
+        :size="'sm'"
+        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
+      >
         الغاء
       </UButton>
     </div>
