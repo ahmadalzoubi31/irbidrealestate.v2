@@ -187,10 +187,11 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
           :class="
             row.price - row.specialPrice > 0 ? 'text-primary' : 'text-rose-500'
           "
-          >{{
-            Math.round((row.price - row.specialPrice) * 1000) / 1000 + " دينار"
-          }}</span
         >
+          {{
+            Math.round((row.price - row.specialPrice) * 1000) / 1000 + " دينار"
+          }}
+        </span>
       </template>
       <template #image-data="{ row }">
         <div

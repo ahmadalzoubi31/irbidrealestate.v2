@@ -104,7 +104,10 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
                     : 'text-rose-500',
                 ]"
               >
-                {{ row.price - row.specialPrice + " دينار" }}
+                {{
+                  Math.round((row.price - row.specialPrice) * 1000) / 1000 +
+                  " دينار"
+                }}
               </span>
             </template>
           </UTable>
