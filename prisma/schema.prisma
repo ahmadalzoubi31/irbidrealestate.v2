@@ -137,16 +137,17 @@ model Apartment {
 }
 
 model ApartmentRenterInfo {
-  id                   Int        @id @default(autoincrement())
-  renterName           String
-  renterNumber         String     @default("###")
-  renterNationality    String?
-  renterCountry        String?
-  renterIdentification String?
-  identificationImage  String?
-  contractImage        String?
-  Apartment            Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId          Int?
+  id                     Int        @id @default(autoincrement())
+  renterName             String
+  renterNumber           String     @default("###")
+  renterAdditionalNumber String?
+  renterNationality      String?
+  renterCountry          String?
+  renterIdentification   String?
+  identificationImage    String?
+  contractImage          String?
+  Apartment              Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId            Int?
 }
 
 // *** Payments ***

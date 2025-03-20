@@ -97,6 +97,7 @@ declare interface IEditApartment {
 declare interface IApartmentRenterInfo {
   renterName: string;
   renterNumber: string;
+  renterAdditionalNumber: string;
   renterNationality: string;
   renterCountry: string | null;
   renterIdentification: string;

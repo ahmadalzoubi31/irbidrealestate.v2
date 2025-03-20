@@ -18,6 +18,7 @@ const props = defineProps({
 const columns = [
   { key: "renterName", label: "الاسم الكامل", sortable: true },
   { key: "renterNumber", label: "رقم الموبايل", sortable: false },
+  { key: "renterAdditionalNumber", label: "رقم موبايل اضافي", sortable: false },
   { key: "renterNationality", label: "الجنسية", sortable: false },
   { key: "renterIdentification", label: "رقم الاثبات", sortable: false },
   { key: "identificationImage", label: "صورة الاثبات", sortable: false },
