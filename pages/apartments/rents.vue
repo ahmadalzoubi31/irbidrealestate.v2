@@ -68,12 +68,14 @@ const years = ref([
 ]);
 
 // Year Building
+const buildingList = useState<Building[]>("buildingList");
+
+if (!buildingList.value || buildingList.value.length === 0) {
+  useBuildings();
+}
 const buildings = computed(() => [
   "الكل",
-  ...(apartments.value
-    ?.map((apartment) => apartment.building)
-    .map((building) => building.name)
-    .filter((value, index, self) => self.indexOf(value) === index) || []),
+  ...(buildingList.value.map((b) => b.name) || []),
 ]);
 
 // Filtering

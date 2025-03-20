@@ -8,9 +8,14 @@ const route = useRoute();
 const selectedApartmentId = ref(Number(route.params.id));
 
 const { data: apartment } = await getOneApartment(selectedApartmentId.value);
-const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({ clearOldFiles: true });
-const { handleFileInput: handle2, files: renterIdentificationImage } = useFileStorage({ clearOldFiles: true });
-const { handleFileInput: handle3, files: contractImage } = useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle1, files: furnitureImages } = useFileStorage({
+  clearOldFiles: true,
+});
+const { handleFileInput: handle2, files: renterIdentificationImage } =
+  useFileStorage({ clearOldFiles: true });
+const { handleFileInput: handle3, files: contractImage } = useFileStorage({
+  clearOldFiles: true,
+});
 
 const state: IEditApartment = reactive({
   ownerName: "",
@@ -29,6 +34,7 @@ const state: IEditApartment = reactive({
   renterInfo: [],
   isServiceIncluded: "لا",
   insurance: 0,
+  insuranceWithWho: "غير محدد",
   commissionAmount: 0,
 });
 const isFurnitureOptions = [
@@ -75,6 +81,7 @@ watchEffect(() => {
       renterInfo: apartment.renterInfo,
       isServiceIncluded: apartment.isServiceIncluded,
       insurance: apartment.insurance,
+      insuranceWithWho: apartment.insuranceWithWho,
       commissionAmount: apartment.commissionAmount,
     });
   }
@@ -91,8 +98,13 @@ const removeFurnitureImages = (index: number) => {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm()" class="relative mt-6 flex-1 px-4 sm:px-6">
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+  <form
+    @submit.prevent="submitForm()"
+    class="relative mt-6 flex-1 px-4 sm:px-6"
+  >
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات العقار</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
@@ -166,38 +178,86 @@ const removeFurnitureImages = (index: number) => {
         </div>
         <!-- ownerName -->
         <div class="col-span-10 sm:col-span-2">
-          <label for="ownerName"> اسم المالك <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="ownerName" name="ownerName" :size="'sm'" :required="true" v-model="state.ownerName" />
+          <label for="ownerName">
+            اسم المالك
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="ownerName"
+            name="ownerName"
+            :size="'sm'"
+            :required="true"
+            v-model="state.ownerName"
+          />
         </div>
         <!-- ownerNumber -->
         <div class="col-span-10 sm:col-span-2">
           <label for="ownerNumber"> رقم المالك </label>
-          <UInput id="ownerNumber" name="ownerNumber" :size="'sm'" :required="false" v-model="state.ownerNumber" />
+          <UInput
+            id="ownerNumber"
+            name="ownerNumber"
+            :size="'sm'"
+            :required="false"
+            v-model="state.ownerNumber"
+          />
         </div>
         <!-- agentName -->
         <div class="col-span-10 sm:col-span-2">
-          <label for="agentName"> اسم الوكيل <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="agentName" name="agentName" :size="'sm'" :required="true" v-model="state.agentName" />
+          <label for="agentName">
+            اسم الوكيل
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="agentName"
+            name="agentName"
+            :size="'sm'"
+            :required="true"
+            v-model="state.agentName"
+          />
         </div>
         <!-- agentNumber -->
         <div class="col-span-10 sm:col-span-2">
           <label for="agentNumber"> رقم الوكيل </label>
-          <UInput id="agentNumber" name="agentNumber" :size="'sm'" :required="false" v-model="state.agentNumber" />
+          <UInput
+            id="agentNumber"
+            name="agentNumber"
+            :size="'sm'"
+            :required="false"
+            v-model="state.agentNumber"
+          />
         </div>
         <!-- electricSub -->
         <div class="col-span-10 sm:col-span-2">
           <label for="electricSub"> رقم اشتراك الكهرباء </label>
-          <UInput id="electricSub" name="electricSub" :size="'sm'" :required="false" v-model="state.electricSub" />
+          <UInput
+            id="electricSub"
+            name="electricSub"
+            :size="'sm'"
+            :required="false"
+            v-model="state.electricSub"
+          />
         </div>
         <!-- waterSub -->
         <div class="col-span-10 sm:col-span-2">
           <label for="waterSub"> رقم اشتراك الماء </label>
-          <UInput id="waterSub" name="waterSub" :size="'sm'" :required="false" v-model="state.waterSub" />
+          <UInput
+            id="waterSub"
+            name="waterSub"
+            :size="'sm'"
+            :required="false"
+            v-model="state.waterSub"
+          />
         </div>
         <!-- realLocation -->
-        <div class="col-span-6 sm:col-span-4">
+        <div class="col-span-10 sm:col-span-4">
           <label for="realLocation"> موقع العقار الفعلي </label>
-          <UInput id="realLocation" name="realLocation" :size="'sm'" :required="false" v-model="state.realLocation" />
+          <UInput
+            id="realLocation"
+            name="realLocation"
+            :size="'sm'"
+            :required="false"
+            v-model="state.realLocation"
+          />
         </div>
         <!-- isFurniture -->
         <div class="col-span-10 sm:col-span-2">
@@ -254,19 +314,34 @@ const removeFurnitureImages = (index: number) => {
       </div>
     </div>
 
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات الايجار</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
-      <div class="grid grid-cols-6 gap-x-6 gap-y-4">
+      <div class="grid grid-cols-10 gap-x-6 gap-y-4">
         <!-- rentAmount -->
         <div class="col-span-10 sm:col-span-2">
-          <label for="rentAmount"> قيمة الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="rentAmount" name="rentAmount" :type="'number'" :size="'sm'" :required="true" v-model="state.rentAmount" />
+          <label for="rentAmount">
+            قيمة الإيجار
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="rentAmount"
+            name="rentAmount"
+            :type="'number'"
+            :size="'sm'"
+            :required="true"
+            v-model="state.rentAmount"
+          />
         </div>
         <!-- rentDate -->
         <div class="col-span-10 sm:col-span-2">
-          <label for="rentDate"> تاريخ الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
+          <label for="rentDate">
+            تاريخ الإيجار
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
           <UPopover :popper="{ placement: 'bottom-start' }">
             <UInput
               icon="i-heroicons-calendar-days-20-solid"
@@ -277,21 +352,40 @@ const removeFurnitureImages = (index: number) => {
             />
 
             <template #panel="{ close }">
-              <AppDatePicker v-model="state.rentDate" is-required @close="close" />
+              <AppDatePicker
+                v-model="state.rentDate"
+                is-required
+                @close="close"
+              />
             </template>
           </UPopover>
           <!-- <UInput id="rentDate" name="rentDate" :size="'sm'" :required="true" v-model="state.rentDate" /> -->
         </div>
         <!-- rentDuration -->
         <div class="col-span-10 sm:col-span-2">
-          <label for="rentDuration"> مدة الإيجار <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="rentDuration" name="rentDuration" :size="'sm'" :required="true" v-model="state.rentDuration" />
+          <label for="rentDuration">
+            مدة الإيجار
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="rentDuration"
+            name="rentDuration"
+            :size="'sm'"
+            :required="true"
+            v-model="state.rentDuration"
+          />
           <!-- <USelectMenu id="rentDuration" name="rentDuration" v-model="state.rentDuration" :options="rentDurationOptions" value-attribute="value" option-attribute="name" /> -->
         </div>
         <!-- rentPaymentWay -->
         <div class="col-span-10 sm:col-span-2">
           <label for="rentPaymentWay"> طريقة دفع الإيجار </label>
-          <UInput id="rentPaymentWay" name="rentPaymentWay" :size="'sm'" :required="false" v-model="state.rentPaymentWay" />
+          <UInput
+            id="rentPaymentWay"
+            name="rentPaymentWay"
+            :size="'sm'"
+            :required="false"
+            v-model="state.rentPaymentWay"
+          />
         </div>
         <!-- isServiceIncluded -->
         <div class="col-span-10 sm:col-span-2">
@@ -309,19 +403,48 @@ const removeFurnitureImages = (index: number) => {
         <!-- insurance  -->
         <div class="col-span-10 sm:col-span-2">
           <label for="insurance "> قيمة تأمين الشقة </label>
-          <UInput id="insurance " name="insurance " :type="'number'" :size="'sm'" :required="false" v-model="state.insurance" />
+          <UInput
+            id="insurance "
+            name="insurance "
+            :type="'number'"
+            :size="'sm'"
+            :required="false"
+            v-model="state.insurance"
+          />
+        </div>
+        <!-- insuranceWithWho  -->
+        <div class="col-span-10 sm:col-span-2">
+          <label for="insuranceWithWho "> التأمين مع ؟ </label>
+          <USelectMenu
+            id="insuranceWithWho"
+            name="insuranceWithWho"
+            :required="false"
+            v-model="state.insuranceWithWho"
+            :options="[
+              { value: 'غير محدد', name: 'غير محدد' },
+              { value: 'المؤسسة', name: 'المؤسسة' },
+              { value: 'الوكيل', name: 'الوكيل' },
+              { value: 'المالك', name: 'المالك' },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
         </div>
       </div>
     </div>
 
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات المستأجرين</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
       <ApartmentRenterInfo :renterDetails="state.renterInfo" />
     </div>
 
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات اضافية</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
@@ -329,7 +452,14 @@ const removeFurnitureImages = (index: number) => {
         <!-- commissionAmount -->
         <div class="col-span-10 sm:col-span-2">
           <label for="commissionAmount"> العمولة </label>
-          <UInput id="commissionAmount" name="commissionAmount" :type="'number'" :size="'sm'" :required="false" v-model="state.commissionAmount" />
+          <UInput
+            id="commissionAmount"
+            name="commissionAmount"
+            :type="'number'"
+            :size="'sm'"
+            :required="false"
+            v-model="state.commissionAmount"
+          />
         </div>
         <!-- maintenanceAmount -->
         <div class="col-span-10 sm:col-span-2">
@@ -362,7 +492,13 @@ const removeFurnitureImages = (index: number) => {
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+      <UButton
+        :type="'submit'"
+        :size="'sm'"
+        class="w-20 text-center place-content-center ml-3"
+      >
+        حفظ
+      </UButton>
       <UButton
         :type="'button'"
         to="/apartments/rents"

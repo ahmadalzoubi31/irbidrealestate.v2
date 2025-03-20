@@ -53,7 +53,9 @@ export function useClaimActions() {
   };
 
   const createClaim = async (payload: ICreateClaim) => {
+    debugger;
     let imagesArray: string = "";
+    let imagesList: string[] = [];
 
     const { claimDetails, claimCollections, ...claimData } = payload;
 
@@ -71,9 +73,13 @@ export function useClaimActions() {
     try {
       if (billImage && billImage.length !== 0) {
         imagesArray += await uploadFile(billImage, "bill");
+        imagesList = imagesArray.split(","); 
       }
 
-      const newRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail) => ({ ...detail, image: imagesArray }));
+      const newRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail, index) => ({ 
+        ...detail, 
+        image: imagesList[index] || null 
+      }));
 
       const finalClaimDetails = [...recordWithOutImage, ...newRecordWithImageNeedUpload];
 
@@ -122,7 +128,10 @@ export function useClaimActions() {
       if (billImage && billImage.length !== 0) {
         imagesArray += await uploadFile(billImage, "bill");
       }
-      const updatedRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail) => ({ ...detail, image: imagesArray }));
+      const updatedRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail, index) => ({ 
+        ...detail, 
+        image: imagesArray.split(",")[index] || null 
+      }));
 
       const finalClaimDetails = [...recordWithOutImage, ...updatedRecordWithImageNeedUpload];
 

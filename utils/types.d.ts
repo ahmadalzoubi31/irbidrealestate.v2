@@ -67,6 +67,7 @@ declare interface ICreateApartment {
   renterInfo: Array<IApartmentRenterInfo>;
   isServiceIncluded: string;
   insurance: number;
+  insuranceWithWho: string;
   commissionAmount: number;
 }
 
@@ -87,6 +88,7 @@ declare interface IEditApartment {
   renterInfo: Array<IApartmentRenterInfo>;
   isServiceIncluded: string;
   insurance: number;
+  insuranceWithWho: string;
   commissionAmount: number;
 }
 

@@ -122,6 +122,7 @@ model Apartment {
   renterInfo        ApartmentRenterInfo[]
   isServiceIncluded String                @default("لا")
   insurance         Float                 @default(0)
+  insuranceWithWho  String                @default("غير محدد")
   commissionAmount  Float                 @default(0)
   clearanceImage    String?
   status            Boolean               @default(true)
