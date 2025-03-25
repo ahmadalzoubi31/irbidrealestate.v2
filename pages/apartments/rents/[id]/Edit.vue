@@ -161,7 +161,6 @@ const removeFurnitureImages = (index: number) => {
             name="basinName"
             :size="'sm'"
             :required="false"
-            :disabled="true"
             :model-value="apartment?.building.basinName"
           />
         </div>
@@ -173,8 +172,6 @@ const removeFurnitureImages = (index: number) => {
             name="basinNumber"
             :size="'sm'"
             :required="false"
-            :disabled="true"
-            inputClass="bg-gray-200"
             :model-value="apartment?.building.basinNumber"
           />
         </div>
@@ -186,8 +183,6 @@ const removeFurnitureImages = (index: number) => {
             name="landNumber"
             :size="'sm'"
             :required="false"
-            :disabled="true"
-            inputClass="bg-gray-200"
             :model-value="apartment?.building.landNumber"
           />
         </div>

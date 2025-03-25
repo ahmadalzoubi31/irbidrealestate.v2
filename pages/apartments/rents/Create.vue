@@ -145,7 +145,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             v-model="state.buildingId"
             :autofocus="true"
             :required="true"
-            :options="computedBuildings"
+            :options="computedBuildings.filter((b) => b.id !== 1)"
             value-attribute="id"
             option-attribute="name"
           />
@@ -157,7 +157,7 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             :required="false"
             inputClass="bg-gray-300"
             :disabled="true"
-            model-value="لا يوجد"
+            model-value="شقق متفرقة"
           />
         </div>
         <!-- apartmentNumber -->

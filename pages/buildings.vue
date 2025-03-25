@@ -13,10 +13,15 @@ const { columns, selectedColumns } = useBuildingTableColumns();
 const { buildings, status } = useBuildings();
 
 // Computed loading state
-const isLoading = computed(() => status.value !== "success" && status.value !== "error");
+const isLoading = computed(
+  () => status.value !== "success" && status.value !== "error"
+);
 
 // Filtering
-const filteredRows = useFilteredRows<Building>(buildings, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<Building>(buildings, q, [
+  "createdAt",
+  "updatedAt",
+]);
 
 // Actions
 const { deleteBuilding } = useBuildingActions();
@@ -43,16 +48,27 @@ const deleteSelectedRecord = async () => {
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة بناية" :to="'/buildings/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف بناية" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
+          <UButton
+            icon="i-heroicons-plus-circle-20-solid"
+            label="اضافة بناية"
+            :to="'/buildings/create'"
+          />
+          <UButton
+            icon="i-heroicons-minus-circle-20-solid"
+            label="حذف بناية"
+            :disabled="selected.length === 0 || selected[0].id === 1"
+            @click="deleteSelectedRecord"
+          />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
 
       <!-- Table -->
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+      <div
+        class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+      >
         <UTable
-          :rows="filteredRows"
+          :rows="filteredRows.filter((row) => row.id !== 1)"
           :columns="selectedColumns"
           v-model="selected"
           v-model:expand="expand"
@@ -66,7 +82,14 @@ const deleteSelectedRecord = async () => {
             </div>
           </template>
           <template #name-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+            <span
+              v-if="row.id !== 1"
+              :class="['font-bold text-blue-500 dark:text-blue-400 underline']"
+              @click="editSelectedRecord(row.id)"
+            >
+              {{ row.name }}
+            </span>
+            <span v-else>
               {{ row.name }}
             </span>
           </template>
