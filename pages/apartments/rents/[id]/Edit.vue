@@ -85,6 +85,7 @@ watchEffect(() => {
       isServiceIncluded: apartment.isServiceIncluded,
       insurance: apartment.insurance,
       insuranceWithWho: apartment.insuranceWithWho,
+      insuranceType: apartment.insuranceType,
       commissionAmount: apartment.commissionAmount,
     });
   }
