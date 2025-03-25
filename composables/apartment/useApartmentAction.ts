@@ -26,10 +26,13 @@ export function useApartmentActions() {
   };
 
   const getOneApartment = async (id: number) => {
-    const { data, status, error } = await useFetch<ApartmentWithBuilding>("/api/apartments/" + id, {
-      key: "getApartmentById",
-      server: true,      
-    });
+    const { data, status, error } = await useFetch<ApartmentWithBuilding>(
+      "/api/apartments/" + id,
+      {
+        key: "getApartmentById",
+        server: true,
+      }
+    );
 
     if (status.value === "error") {
       handleError(error.value, "الايجار المطلوب غير موجود.");
@@ -50,7 +53,11 @@ export function useApartmentActions() {
     return "";
   };
 
-  const updateImages = async (images: Image[], oldKeys: string[], type: string) => {
+  const updateImages = async (
+    images: Image[],
+    oldKeys: string[],
+    type: string
+  ) => {
     if (images.length > 0) {
       if (oldKeys.length > 0) {
         await $fetch("/api/v2/files", {
@@ -67,7 +74,11 @@ export function useApartmentActions() {
     return oldKeys.join(",");
   };
 
-  const createApartment = async (payload: ICreateApartment, furnitureImages: Image[]) => {
+  const createApartment = async (
+    payload: ICreateApartment,
+    furnitureImages: Image[]
+  ) => {
+    debugger;
     let contractImageKey: string = "";
     let renterIdentificationImageKey: string = "";
 
@@ -75,38 +86,57 @@ export function useApartmentActions() {
 
     const recordWithImageNeedUpload = renterInfo.filter(
       (record) =>
-        (typeof record.identificationImage === "object" && record.identificationImage !== null && "content" in record.identificationImage) ||
-        (typeof record.contractImage === "object" && record.contractImage !== null && "content" in record.contractImage)
+        (typeof record.identificationImage === "object" &&
+          record.identificationImage !== null &&
+          "content" in record.identificationImage) ||
+        (typeof record.contractImage === "object" &&
+          record.contractImage !== null &&
+          "content" in record.contractImage)
     );
     const recordWithOutImage = renterInfo.filter(
       (record) =>
-        (typeof record.identificationImage === "string" || record.identificationImage === null || record.identificationImage === undefined) &&
-        (typeof record.contractImage === "string" || record.contractImage === null || record.contractImage === undefined)
+        (typeof record.identificationImage === "string" ||
+          record.identificationImage === null ||
+          record.identificationImage === undefined) &&
+        (typeof record.contractImage === "string" ||
+          record.contractImage === null ||
+          record.contractImage === undefined)
     );
 
     const renterIdentificationImage = recordWithImageNeedUpload
       .filter((el) => el.identificationImage !== null)
       .map((detail) => detail.identificationImage) as Image[];
 
-    const contractImage = recordWithImageNeedUpload.filter((el) => el.contractImage !== null).map((detail) => detail.contractImage) as Image[];
+    const contractImage = recordWithImageNeedUpload
+      .filter((el) => el.contractImage !== null)
+      .map((detail) => detail.contractImage) as Image[];
 
-    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ contractImage, identificationImage, ...rest }) => rest);
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(
+      ({ contractImage, identificationImage, ...rest }) => rest
+    );
 
     try {
       if (renterIdentificationImage && renterIdentificationImage.length !== 0) {
-        renterIdentificationImageKey += await uploadFile(renterIdentificationImage, "renterIdentification");
+        renterIdentificationImageKey += await uploadFile(
+          renterIdentificationImage,
+          "renterIdentification"
+        );
       }
       if (contractImage && contractImage.length !== 0) {
         contractImageKey += await uploadFile(contractImage, "contract");
       }
 
-      const newRecordWithImageNeedUpload: IApartmentRenterInfo[] = recordWithImageNeedUploadRest.map((detail) => ({
-        ...detail,
-        identificationImage: renterIdentificationImageKey,
-        contractImage: contractImageKey,
-      }));
+      const newRecordWithImageNeedUpload: IApartmentRenterInfo[] =
+        recordWithImageNeedUploadRest.map((detail) => ({
+          ...detail,
+          identificationImage: renterIdentificationImageKey,
+          contractImage: contractImageKey,
+        }));
 
-      const finalRenterDetails = [...recordWithOutImage, ...newRecordWithImageNeedUpload];
+      const finalRenterDetails = [
+        ...recordWithOutImage,
+        ...newRecordWithImageNeedUpload,
+      ];
 
       try {
         // Create the Apartment
@@ -138,41 +168,63 @@ export function useApartmentActions() {
 
     const recordWithImageNeedUpload = renterInfo.filter(
       (record) =>
-        (typeof record.identificationImage === "object" && record.identificationImage !== null && "content" in record.identificationImage) ||
-        (typeof record.contractImage === "object" && record.contractImage !== null && "content" in record.contractImage)
+        (typeof record.identificationImage === "object" &&
+          record.identificationImage !== null &&
+          "content" in record.identificationImage) ||
+        (typeof record.contractImage === "object" &&
+          record.contractImage !== null &&
+          "content" in record.contractImage)
     );
     const recordWithOutImage = renterInfo.filter(
       (record) =>
-        (typeof record.identificationImage === "string" || record.identificationImage === null || record.identificationImage === undefined) &&
-        (typeof record.contractImage === "string" || record.contractImage === null || record.contractImage === undefined)
+        (typeof record.identificationImage === "string" ||
+          record.identificationImage === null ||
+          record.identificationImage === undefined) &&
+        (typeof record.contractImage === "string" ||
+          record.contractImage === null ||
+          record.contractImage === undefined)
     );
 
     const renterIdentificationImage = recordWithImageNeedUpload
       .filter((el) => el.identificationImage !== null)
       .map((detail) => detail.identificationImage) as Image[];
 
-    const contractImage = recordWithImageNeedUpload.filter((el) => el.contractImage !== null).map((detail) => detail.contractImage) as Image[];
+    const contractImage = recordWithImageNeedUpload
+      .filter((el) => el.contractImage !== null)
+      .map((detail) => detail.contractImage) as Image[];
 
-    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ contractImage, identificationImage, ...rest }) => rest);
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(
+      ({ contractImage, identificationImage, ...rest }) => rest
+    );
 
     try {
       if (renterIdentificationImage && renterIdentificationImage.length !== 0) {
-        renterIdentificationImageKey += await uploadFile(renterIdentificationImage, "renterIdentification");
+        renterIdentificationImageKey += await uploadFile(
+          renterIdentificationImage,
+          "renterIdentification"
+        );
       }
       if (contractImage && contractImage.length !== 0) {
         contractImageKey += await uploadFile(contractImage, "contract");
       }
 
-      const updatedRecordWithImageNeedUpload: IApartmentRenterInfo[] = recordWithImageNeedUploadRest.map((detail) => ({
-        ...detail,
-        identificationImage: renterIdentificationImageKey,
-        contractImage: contractImageKey,
-      }));
+      const updatedRecordWithImageNeedUpload: IApartmentRenterInfo[] =
+        recordWithImageNeedUploadRest.map((detail) => ({
+          ...detail,
+          identificationImage: renterIdentificationImageKey,
+          contractImage: contractImageKey,
+        }));
 
-      const finalRenterDetails = [...recordWithOutImage, ...updatedRecordWithImageNeedUpload];
+      const finalRenterDetails = [
+        ...recordWithOutImage,
+        ...updatedRecordWithImageNeedUpload,
+      ];
 
       try {
-        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentData, renterInfo: finalRenterDetails } });
+        await $fetch("/api/apartments/" + id, {
+          method: "PUT",
+          body: { ...apartmentData, renterInfo: finalRenterDetails },
+        });
         await refreshNuxtData("getApartments");
         await navigateTo("/apartments/rents");
         handleSuccess("تم تعديل الايجار بنجاح");
@@ -191,7 +243,10 @@ export function useApartmentActions() {
     if (!confirmDelete) return;
 
     try {
-      await $fetch("/api/apartments/" + id, { method: "DELETE", key: "deleteApartment" });
+      await $fetch("/api/apartments/" + id, {
+        method: "DELETE",
+        key: "deleteApartment",
+      });
       await refreshNuxtData("getApartments");
       handleSuccess("تم حذف الايجار بنجاح");
     } catch (error: any) {
@@ -201,7 +256,10 @@ export function useApartmentActions() {
     }
   };
 
-  const getDropdownItems = (row: { id: number }, openModal: (type: string) => void) => [
+  const getDropdownItems = (
+    row: { id: number },
+    openModal: (type: string) => void
+  ) => [
     [
       {
         label: "تعديل",
@@ -210,9 +268,21 @@ export function useApartmentActions() {
       },
     ],
     [
-      { label: "انهاء", icon: "i-heroicons-archive-box-20-solid", click: () => openModal("expired") },
-      { label: "فسخ", icon: "i-heroicons-document-duplicate-20-solid", click: () => openModal("broken") },
-      // { label: "تجديد", icon: "i-heroicons-arrow-right-circle-20-solid", click: () => openModal("renewed") },
+      {
+        label: "انهاء",
+        icon: "i-heroicons-archive-box-20-solid",
+        click: () => openModal("expired"),
+      },
+      {
+        label: "فسخ",
+        icon: "i-heroicons-document-duplicate-20-solid",
+        click: () => openModal("broken"),
+      },
+      {
+        label: "تجديد",
+        icon: "i-heroicons-arrow-right-circle-20-solid",
+        click: () => renewApartment(row.id),
+      },
     ],
   ];
 
@@ -240,7 +310,13 @@ export function useApartmentActions() {
       }
 
       try {
-        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentThatWillBeExpired, clearanceImage: clearanceImageKey } });
+        await $fetch("/api/apartments/" + id, {
+          method: "PUT",
+          body: {
+            ...apartmentThatWillBeExpired,
+            clearanceImage: clearanceImageKey,
+          },
+        });
         await refreshNuxtData("getApartments");
         await navigateTo("/apartments/rents");
         handleSuccess("تم انهاء الايجار بنجاح");
@@ -279,7 +355,13 @@ export function useApartmentActions() {
       }
 
       try {
-        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentThatWillBeExpired, clearanceImage: clearanceImageKey } });
+        await $fetch("/api/apartments/" + id, {
+          method: "PUT",
+          body: {
+            ...apartmentThatWillBeExpired,
+            clearanceImage: clearanceImageKey,
+          },
+        });
         await refreshNuxtData("getApartments");
         await navigateTo("/apartments/rents");
         handleSuccess("تم فسخ الايجار بنجاح");
@@ -294,8 +376,9 @@ export function useApartmentActions() {
     }
   };
 
-  const renewApartment = async (id: number, contractImage: Image[]) => {
-    let contractImageKey: string = "";
+  const renewApartment = async (id: number) => {
+    debugger;
+    useLoadingIndicator().start();
 
     const apartmentThatWillBeExpired = (await getOneApartment(id)).data!;
 
@@ -306,19 +389,46 @@ export function useApartmentActions() {
     // @ts-ignore
     delete apartmentThatWillBeExpired.updatedAt;
     // @ts-ignore
-    delete apartmentThatWillBeExpired.buildingId;
-    // @ts-ignore
     delete apartmentThatWillBeExpired.building;
 
-    apartmentThatWillBeExpired.rentStatus = 2;
+    const renterInfoClone = apartmentThatWillBeExpired.renterInfo?.map(
+      ({ id, apartmentId, ...renter }) => ({
+        ...renter,
+        renterNationality: renter.renterNationality as string,
+        renterIdentification: renter.renterIdentification as string,
+        identificationImage: renter.identificationImage as string,
+        contractImage: renter.contractImage as string,
+        renterAdditionalNumber: renter.renterAdditionalNumber as string,
+      })
+    );
+
+    const bodyWillClone: ICreateApartment = {
+      ...apartmentThatWillBeExpired,
+      buildingId: apartmentThatWillBeExpired.buildingId as number,
+      apartmentNumber: apartmentThatWillBeExpired.apartmentNumber!,
+      code: apartmentThatWillBeExpired.code!,
+      ownerNumber: apartmentThatWillBeExpired.ownerNumber!,
+      agentNumber: apartmentThatWillBeExpired.agentNumber!,
+      electricSub: apartmentThatWillBeExpired.electricSub!,
+      waterSub: apartmentThatWillBeExpired.waterSub!,
+      realLocation: apartmentThatWillBeExpired.realLocation!,
+      rentPaymentWay: apartmentThatWillBeExpired.rentPaymentWay!,
+      rentStatus: 2,
+      renterInfo: renterInfoClone,
+    };
+
+    // @ts-ignore
+    delete apartmentThatWillBeExpired.buildingId;
 
     try {
-      if (contractImage && contractImage.length !== 0) {
-        contractImageKey += await uploadFile(contractImage, "renewed-contract");
-      }
-
       try {
-        await $fetch("/api/apartments/" + id, { method: "PUT", body: { ...apartmentThatWillBeExpired, contractImage: contractImageKey } });
+        // expire contract
+        await $fetch("/api/apartments/" + id, {
+          method: "PUT",
+          body: { ...apartmentThatWillBeExpired, rentStatus: 0 },
+        });
+        // clone contract with status 3
+        await createApartment(bodyWillClone, []);
         await refreshNuxtData("getApartments");
         await navigateTo("/apartments/rents");
         handleSuccess("تم تجديد الايجار بنجاح");
@@ -333,5 +443,14 @@ export function useApartmentActions() {
     }
   };
 
-  return { createApartment, editApartment, expireApartment, brokeApartment, renewApartment, deleteApartment, getOneApartment, getDropdownItems };
+  return {
+    createApartment,
+    editApartment,
+    expireApartment,
+    brokeApartment,
+    renewApartment,
+    deleteApartment,
+    getOneApartment,
+    getDropdownItems,
+  };
 }

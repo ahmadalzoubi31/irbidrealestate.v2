@@ -99,7 +99,6 @@ const filteredRows_expired = useFilteredRows<ApartmentWithBuilding>(
 
 // Define the `openModal` function before passing it to `useApartmentActions`
 const openModal = (type: string) => {
-  // if (type === "renewed") useState("isRenewedModalOpen").value = true;
   if (type === "expired") useState("isExpiredModalOpen").value = true;
   if (type === "broken") useState("isBrokenModalOpen").value = true;
 };
