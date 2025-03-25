@@ -23,17 +23,17 @@ async function seed() {
 
   await prisma.building.upsert({
     where: {
-      name: "---",
+      name: "شقق متفرقة",
     },
     update: {},
     create: {
       id: 1,
-      name: "---",
+      name: "شقق متفرقة",
       apartmentsCount: 0,
       basinName: "-",
       basinNumber: "-",
       landNumber: "-",
-      status: false,
+      status: true,
     },
   });
 }

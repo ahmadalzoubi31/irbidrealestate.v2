@@ -162,7 +162,6 @@ const removeFurnitureImages = (index: number) => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            inputClass="bg-gray-200"
             :model-value="apartment?.building.basinName"
           />
         </div>
