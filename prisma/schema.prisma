@@ -4,10 +4,10 @@ generator client {
 
 datasource db {
   provider  = "postgres"
-  // url       = env("POSTGRES_PRISMA_URL")
-  // directUrl = env("POSTGRES_URL_NON_POOLING")
-  url       = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+  //url       = env("DATABASE_URL")
+  //directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // *** User ***
@@ -124,6 +124,7 @@ model Apartment {
   isServiceIncluded String                @default("لا")
   insurance         Float                 @default(0)
   insuranceWithWho  String                @default("غير محدد")
+  insuranceType     String                @default("عادي")
   commissionAmount  Float                 @default(0)
   clearanceImage    String?
   status            Boolean               @default(true)

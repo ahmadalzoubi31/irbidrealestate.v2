@@ -36,6 +36,7 @@ const state: IEditApartment = reactive({
   isServiceIncluded: "لا",
   insurance: 0,
   insuranceWithWho: "غير محدد",
+  insuranceType: "عادي",
   commissionAmount: 0,
 });
 const isFurnitureOptions = [
@@ -439,6 +440,22 @@ const removeFurnitureImages = (index: number) => {
               { value: 'المؤسسة', name: 'المؤسسة' },
               { value: 'الوكيل', name: 'الوكيل' },
               { value: 'المالك', name: 'المالك' },
+            ]"
+            value-attribute="value"
+            option-attribute="name"
+          />
+        </div>
+        <!-- insuranceType  -->
+        <div class="col-span-10 sm:col-span-2">
+          <label for="insuranceType "> نوع التأمين </label>
+          <USelectMenu
+            id="insuranceType"
+            name="insuranceType"
+            :required="false"
+            v-model="state.insuranceType"
+            :options="[
+              { value: 'عادي', name: 'عادي' },
+              { value: 'شيك', name: 'شيك' },
             ]"
             value-attribute="value"
             option-attribute="name"

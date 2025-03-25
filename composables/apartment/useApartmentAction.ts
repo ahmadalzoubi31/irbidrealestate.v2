@@ -413,6 +413,7 @@ export function useApartmentActions() {
       waterSub: apartmentThatWillBeExpired.waterSub!,
       realLocation: apartmentThatWillBeExpired.realLocation!,
       rentPaymentWay: apartmentThatWillBeExpired.rentPaymentWay!,
+      insuranceType: apartmentThatWillBeExpired.insuranceType!,
       rentStatus: 2,
       renterInfo: renterInfoClone,
     };

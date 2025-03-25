@@ -69,6 +69,7 @@ declare interface ICreateApartment {
   isServiceIncluded: string;
   insurance: number;
   insuranceWithWho: string;
+  insuranceType: string;
   commissionAmount: number;
 }
 
@@ -328,7 +329,11 @@ declare interface Image {
   readonly size: number;
   readonly type: string;
   arrayBuffer: () => Promise<ArrayBuffer>;
-  slice: (start?: number | undefined, end?: number | undefined, contentType?: string | undefined) => Blob;
+  slice: (
+    start?: number | undefined,
+    end?: number | undefined,
+    contentType?: string | undefined
+  ) => Blob;
   stream: () => ReadableStream<Uint8Array>;
   text: () => Promise<string>;
 }
