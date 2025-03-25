@@ -357,7 +357,7 @@ watchEffect(() => {
           @click="addCollectionData"
           :disabled="
             isNaN(collectionData.payment) ||
-            collectionData.payment <= 0 ||
+            collectionData.payment < 0 ||
             collectionData.dateTime === undefined
           "
         >
