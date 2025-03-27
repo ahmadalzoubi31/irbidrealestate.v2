@@ -60,7 +60,9 @@ definePageMeta({
   layout: "generate",
 });
 useHead({
-  meta: [{ name: "description", content: claim?.claimNumber || "" }],
+  meta: [
+    { name: "description", content: "مطالبة رقم: " + claim?.claimNumber || "" },
+  ],
 });
 </script>
 
