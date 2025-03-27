@@ -2,10 +2,6 @@
 import type { Claim, ClaimCollection, ClaimDetail } from "@prisma/client";
 import format from "date-fns/format";
 
-definePageMeta({
-  layout: "generate",
-});
-
 // *** Fetch Data ***
 const selectedClaimId = Number(useRoute().params.id);
 const { getOneClaim } = useClaimActions();
@@ -59,6 +55,13 @@ const base64ToBlobUrl = (base64: string, mimeType: string) => {
   const blob = new Blob([byteArray], { type: mimeType });
   return URL.createObjectURL(blob);
 };
+
+definePageMeta({
+  layout: "generate",
+});
+useHead({
+  meta: [{ name: "description", content: claim?.claimNumber || "" }],
+});
 </script>
 
 <template>

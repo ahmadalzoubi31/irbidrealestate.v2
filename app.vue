@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  title: "Irbid Real Estate",
+  title: "مؤسسة اربد العقارية",
   meta: [{ name: "description", content: "مؤسسة اربد العقارية" }],
   bodyAttrs: {},
   htmlAttrs: {
