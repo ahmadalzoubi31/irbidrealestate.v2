@@ -92,6 +92,7 @@ declare interface IEditApartment {
   isServiceIncluded: string;
   insurance: number;
   insuranceWithWho: string;
+  insuranceType: string;
   commissionAmount: number;
 }
 

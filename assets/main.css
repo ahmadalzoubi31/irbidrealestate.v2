@@ -19,7 +19,9 @@ Anchor color: #3689cc
 }
 
 html {
-  font-family: "Cairo", "Readex Pro", sans-serif;
+  line-height: 1.6;
+  font-family: "Cairo", sans-serif;
+  font-size: 14px !important;
 }
 
 body {

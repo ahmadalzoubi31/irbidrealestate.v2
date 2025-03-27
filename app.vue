@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useHead({
   title: "Irbid Real Estate",
-  meta: [{ name: "description", content: "My amazing site." }],
+  meta: [{ name: "description", content: "مؤسسة اربد العقارية" }],
   bodyAttrs: {},
   htmlAttrs: {
     dir: "rtl",
