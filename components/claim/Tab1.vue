@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 // Import necessary dependencies
-import type { Claim } from "@prisma/client";
+import type { claim } from "@prisma/client";
 import { useDateFormat } from "@vueuse/core";
 
 // Declare Props
 const props = defineProps({
   claim: {
-    type: Object as PropType<ClaimWithDetailsAndCollections>,
+    type: Object,
     required: true,
   },
 });
@@ -42,7 +42,7 @@ const keysToExtract = [
 ];
 
 // Extract the desired keys from the building object
-const extracted: Claim = useExtractKeys(props.claim, keysToExtract);
+const extracted: claim = useExtractKeys(props.claim, keysToExtract);
 
 // Format date using the useDateFormat function
 const formatted = (date: Date) =>

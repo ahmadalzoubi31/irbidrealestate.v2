@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Payment } from "@prisma/client";
+import type { payment } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
   payment: {
-    type: Object as PropType<Payment>,
+    type: Object,
     required: true,
   },
 });
@@ -29,7 +29,7 @@ const heading = [
 
 // Specify the keys you want to extract
 const keysToExtract = [
-"Apartment.Building.name",
+"Apartment.building.name",
 "Apartment.apartmentNumber",
 "Apartment.rentDate",
 "Apartment.rentAmount",
@@ -45,7 +45,7 @@ const keysToExtract = [
 ];
         
 // Extract the desired keys
-const extracted: Payment = useExtractKeys(props.payment, keysToExtract);
+const extracted: payment = useExtractKeys(props.payment, keysToExtract);
 
 // Declare Methods
 const formatted = (r: Date) => useDateFormat(r, 'ddd YYYY-MM-DD hh:mm:ss A').value;

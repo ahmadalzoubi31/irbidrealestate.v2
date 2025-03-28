@@ -27,7 +27,7 @@ async function seed() {
     },
     update: {},
     create: {
-      id: 1,
+      id: "67e6242a18da3735937f1887",
       name: "شقق متفرقة",
       apartmentsCount: 0,
       basinName: "-",

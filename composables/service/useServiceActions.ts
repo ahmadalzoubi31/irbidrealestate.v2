@@ -1,9 +1,9 @@
-import type { Flat, Service } from "@prisma/client";
+import type { flat, service } from "@prisma/client";
 
 export const useUseServiceActions = () => {
   const toast = useToast();
 
-  const updateServiceStatus = async (payload: Service[]) => {
+  const updateServiceStatus = async (payload: service[]) => {
     try {
       await $fetch("/api/flats/services/update", {
         method: "PUT",

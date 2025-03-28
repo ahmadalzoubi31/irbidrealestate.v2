@@ -1,15 +1,15 @@
 // ~/server/api/apartments/[id]/update.ts
 import prisma from "~/lib/prisma";
-import { Apartment, ApartmentRenterInfo } from "@prisma/client";
+import { apartment, apartmentRenterInfo } from "@prisma/client";
 
 // Declare interface
-interface ApartmentWithRenterInfo extends Apartment {
-  renterInfo: ApartmentRenterInfo[];
+interface ApartmentWithRenterInfo extends apartment {
+  renterInfo: apartmentRenterInfo[];
 }
 
 export default defineEventHandler(async (event) => {
   const body: ApartmentWithRenterInfo = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   // Check if body data is provided
   if (!body) {
@@ -49,17 +49,21 @@ export default defineEventHandler(async (event) => {
 
       // Extract IDs from the incoming request
       const incomingRenterInfoIds = renterInfo
-        .filter((a: ApartmentRenterInfo) => a.id) // Only include those with IDs
-        .map((a: ApartmentRenterInfo) => a.id);
+        .filter((a: apartmentRenterInfo) => a.id) // Only include those with IDs
+        .map((a: apartmentRenterInfo) => a.id);
 
       // Find IDs to delete (existing IDs not in the incoming list)
-      const idsRenterInfoToDelete = existingRenterInfo.filter((a) => !incomingRenterInfoIds.includes(a.id)).map((a) => a.id);
+      const idsRenterInfoToDelete = existingRenterInfo
+        .filter((a) => !incomingRenterInfoIds.includes(a.id))
+        .map((a) => a.id);
 
       // Perform deletions
-      const deleteRenterOperations = idsRenterInfoToDelete.map((id) => tx.apartmentRenterInfo.delete({ where: { id: id } }));
+      const deleteRenterOperations = idsRenterInfoToDelete.map((id) =>
+        tx.apartmentRenterInfo.delete({ where: { id: id } })
+      );
 
       // Handle updates and creations
-      const upsertRenterOperations = renterInfo.map((c: ApartmentRenterInfo) =>
+      const upsertRenterOperations = renterInfo.map((c: apartmentRenterInfo) =>
         c.id
           ? tx.apartmentRenterInfo.update({
               where: { id: c.id },
@@ -96,7 +100,9 @@ export default defineEventHandler(async (event) => {
     // Handle and return errors appropriately
     throw createError({
       statusCode: error.statusCode || 500, // Default to 500 for unknown errors
-      message: error.message || "An unexpected error occurred while updating the apartment.",
+      message:
+        error.message ||
+        "An unexpected error occurred while updating the apartment.",
     });
   }
 });

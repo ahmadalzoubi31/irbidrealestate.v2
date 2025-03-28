@@ -1,7 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NuxtAuthHandler } from "#auth";
 import prisma from "~/lib/prisma";
-import type { User } from "@prisma/client";
+import type { user } from "@prisma/client";
 import bycrpt from "bcrypt";
 
 export default NuxtAuthHandler({
@@ -41,7 +41,10 @@ export default NuxtAuthHandler({
             });
           }
 
-          const isValid = await bycrpt.compare(credentials.password, user.password);
+          const isValid = await bycrpt.compare(
+            credentials.password,
+            user.password
+          );
           if (!isValid) {
             throw createError({
               statusCode: 401,

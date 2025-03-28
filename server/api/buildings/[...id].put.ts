@@ -1,12 +1,11 @@
 // endpoints/building/[id].put.ts
-import type { Building } from "@prisma/client";
+import type { building } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const buildingId = Number(getRouterParams(event).id);
+  const buildingId = getRouterParams(event).id;
   const body = await readBody(event);
-  console.log("🚀 ~ defineEventHandler ~ body:", body)
 
   if (!buildingId || !body) {
     throw createError({
@@ -76,7 +75,11 @@ export default defineEventHandler(async (event) => {
         });
         const updatedBuilding = await tx.building.update({
           where: { id: buildingId },
-          data: { ...body, apartmentsCount: newCount, registeredApartmentsCount },
+          data: {
+            ...body,
+            apartmentsCount: newCount,
+            registeredApartmentsCount,
+          },
           include: { flats: true },
         });
 

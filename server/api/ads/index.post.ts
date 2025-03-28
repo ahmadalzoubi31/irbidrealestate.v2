@@ -1,4 +1,4 @@
-import { Ad, Prisma } from "@prisma/client";
+import { ad, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     };
 
     // Create a new ad entry
-    const newAd: Ad = await prisma.ad.create({
+    const newAd: ad = await prisma.ad.create({
       data: data,
     });
 
@@ -39,7 +39,8 @@ export default defineEventHandler(async (event) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // Handle unique constraint violation error (e.g., name already exists)
       if (error.code === "P2002") {
-        const msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
+        const msg =
+          "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
         console.log(msg);
         throw createError({
           statusCode: 400,
@@ -49,7 +50,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred while creating the ad.";
+    const msg =
+      error.message || "An unexpected error occurred while creating the ad.";
     console.log(msg);
     throw createError({
       statusCode: 500,

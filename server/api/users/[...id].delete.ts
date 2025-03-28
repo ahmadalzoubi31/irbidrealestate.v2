@@ -1,7 +1,7 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   try {
     // Check if the user exists
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     // Return success response
     return {
       success: true,
-      message: `User with ID ${id} successfully deleted.`,
+      message: `user with ID ${id} successfully deleted.`,
     };
   } catch (error: any) {
     // Log error and return it
@@ -34,7 +34,9 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: error.statusCode || 500, // Default to 500 if statusCode is not available
-      message: error.message || "An unexpected error occurred while deleting the user.",
+      message:
+        error.message ||
+        "An unexpected error occurred while deleting the user.",
     });
   }
 });

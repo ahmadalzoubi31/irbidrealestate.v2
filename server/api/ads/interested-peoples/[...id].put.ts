@@ -1,9 +1,9 @@
 import prisma from "~/lib/prisma";
-import type { Ad, InterestedPeople } from "@prisma/client";
+import type { ad, interestedPeople } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event); // Use any because `body` contains nested objects
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -32,10 +32,11 @@ export default defineEventHandler(async (event) => {
     }
 
     // Update the interestedPeople
-    const updatedInterestedPeople: InterestedPeople = await prisma.interestedPeople.update({
-      where: { id },
-      data: interestedPeopleData,
-    });
+    const updatedInterestedPeople: interestedPeople =
+      await prisma.interestedPeople.update({
+        where: { id },
+        data: interestedPeopleData,
+      });
 
     return {
       success: true,

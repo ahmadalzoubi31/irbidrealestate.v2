@@ -1,8 +1,8 @@
-import type { Apartment, ApartmentRenterInfo, Building } from "@prisma/client";
+import type { apartment, apartmentRenterInfo, building } from "@prisma/client";
 
-interface ApartmentWithBuilding extends Apartment {
-  building: Building;
-  renterInfo: ApartmentRenterInfo[];
+interface ApartmentWithBuilding extends apartment {
+  building: building;
+  renterInfo: apartmentRenterInfo[];
 }
 // composables/useApartmentActions.ts
 export function useApartmentActions() {
@@ -25,7 +25,7 @@ export function useApartmentActions() {
     });
   };
 
-  const getOneApartment = async (id: number) => {
+  const getOneApartment = async (id: string) => {
     const { data, status, error } = await useFetch<ApartmentWithBuilding>(
       "/api/apartments/" + id,
       {
@@ -160,7 +160,7 @@ export function useApartmentActions() {
     }
   };
 
-  const editApartment = async (id: number, payload: IEditApartment) => {
+  const editApartment = async (id: string, payload: IEditApartment) => {
     let contractImageKey: string = "";
     let renterIdentificationImageKey: string = "";
 
@@ -238,7 +238,7 @@ export function useApartmentActions() {
     }
   };
 
-  const deleteApartment = async (id: number) => {
+  const deleteApartment = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
@@ -257,7 +257,7 @@ export function useApartmentActions() {
   };
 
   const getDropdownItems = (
-    row: { id: number },
+    row: { id: string },
     openModal: (type: string) => void
   ) => [
     [
@@ -286,7 +286,7 @@ export function useApartmentActions() {
     ],
   ];
 
-  const expireApartment = async (id: number, clearanceImage: Image[]) => {
+  const expireApartment = async (id: string, clearanceImage: Image[]) => {
     let clearanceImageKey: string = "";
 
     const apartmentThatWillBeExpired = (await getOneApartment(id)).data!;
@@ -331,7 +331,7 @@ export function useApartmentActions() {
     }
   };
 
-  const brokeApartment = async (id: number, clearanceImage: Image[]) => {
+  const brokeApartment = async (id: string, clearanceImage: Image[]) => {
     let clearanceImageKey: string = "";
 
     const apartmentThatWillBeExpired = (await getOneApartment(id)).data!;
@@ -376,7 +376,7 @@ export function useApartmentActions() {
     }
   };
 
-  const renewApartment = async (id: number) => {
+  const renewApartment = async (id: string) => {
     debugger;
     useLoadingIndicator().start();
 
@@ -404,7 +404,7 @@ export function useApartmentActions() {
 
     const bodyWillClone: ICreateApartment = {
       ...apartmentThatWillBeExpired,
-      buildingId: apartmentThatWillBeExpired.buildingId as number,
+      buildingId: apartmentThatWillBeExpired.buildingId!,
       apartmentNumber: apartmentThatWillBeExpired.apartmentNumber!,
       code: apartmentThatWillBeExpired.code!,
       ownerNumber: apartmentThatWillBeExpired.ownerNumber!,

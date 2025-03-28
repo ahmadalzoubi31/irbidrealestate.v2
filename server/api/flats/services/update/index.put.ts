@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Extract IDs from the incoming request
-    const incomingIds: number[] = body.map((m: Service) => m.id);
+    const incomingIds: string[] = body.map((m: Service) => m.id);
 
     // Handle updates
     const updateOperations = body.map((s: Service) =>
@@ -54,7 +54,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred during the update.";
+    const msg =
+      error.message || "An unexpected error occurred during the update.";
     console.log(msg);
     throw createError({
       statusCode: 500,

@@ -1,8 +1,8 @@
-import { Maintenance, Prisma } from "@prisma/client";
+import { maintenance, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const body: Maintenance[] = await readBody(event);
+  const body: maintenance[] = await readBody(event);
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -15,10 +15,10 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Extract IDs from the incoming request
-    const incomingIds: number[] = body.map((m: Maintenance) => m.id);
+    const incomingIds: string[] = body.map((m: maintenance) => m.id);
 
     // Handle updates
-    const updateOperations = body.map((m: Maintenance) =>
+    const updateOperations = body.map((m: maintenance) =>
       prisma.maintenance.update({
         where: { id: m.id },
         data: {
@@ -54,7 +54,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred during the update.";
+    const msg =
+      error.message || "An unexpected error occurred during the update.";
     console.log(msg);
     throw createError({
       statusCode: 500,

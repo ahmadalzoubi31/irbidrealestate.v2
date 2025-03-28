@@ -1,4 +1,9 @@
-import type { InterestedPeople, Flat, Maintenance, Service } from "@prisma/client";
+import type {
+  interestedPeople,
+  flat,
+  maintenance,
+  service,
+} from "@prisma/client";
 
 // interface FlatWithServicesAndMaintenances extends Flat {
 //   services: Service[];
@@ -12,11 +17,14 @@ import type { InterestedPeople, Flat, Maintenance, Service } from "@prisma/clien
 export function useInterestedPeopleActions() {
   const toast = useToast();
 
-  const getOneInterestedPeople = async (id: number) => {
-    const { data, status, error } = await useFetch<InterestedPeople>("/api/ads/interested-peoples/" + id, {
-      key: "getInterestedPeopleById",
-      server: true,
-    });
+  const getOneInterestedPeople = async (id: string) => {
+    const { data, status, error } = await useFetch<interestedPeople>(
+      "/api/ads/interested-peoples/" + id,
+      {
+        key: "getInterestedPeopleById",
+        server: true,
+      }
+    );
 
     if (status.value === "error") {
       toast.add({
@@ -30,10 +38,13 @@ export function useInterestedPeopleActions() {
     return { data: data.value, status: status.value };
   };
   const getOneInterestedPeoples = async () => {
-    const { data, status, error } = await useFetch<InterestedPeople>("/api/ads/interested-peoples/", {
-      key: "getInterestedPeoples",
-      server: true,
-    });
+    const { data, status, error } = await useFetch<interestedPeople>(
+      "/api/ads/interested-peoples/",
+      {
+        key: "getInterestedPeoples",
+        server: true,
+      }
+    );
 
     if (status.value === "error") {
       toast.add({
@@ -48,7 +59,10 @@ export function useInterestedPeopleActions() {
   };
   const createInterestedPeople = async (payload: any) => {
     try {
-      await $fetch("/api/ads/interested-peoples", { method: "POST", body: payload });
+      await $fetch("/api/ads/interested-peoples", {
+        method: "POST",
+        body: payload,
+      });
       await refreshNuxtData("getInterestedPeoples");
       await navigateTo("/interested-people");
 
@@ -67,9 +81,12 @@ export function useInterestedPeopleActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editInterestedPeople = async (id: number, payload: any) => {
+  const editInterestedPeople = async (id: string, payload: any) => {
     try {
-      await $fetch("/api/ads/interested-peoples/" + id, { method: "PUT", body: payload });
+      await $fetch("/api/ads/interested-peoples/" + id, {
+        method: "PUT",
+        body: payload,
+      });
       await refreshNuxtData("getInterestedPeoples");
       await navigateTo("/interested-people");
 
@@ -88,12 +105,15 @@ export function useInterestedPeopleActions() {
       useLoadingIndicator().finish();
     }
   };
-  const deleteInterestedPeople = async (id: number) => {
+  const deleteInterestedPeople = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
     try {
-      await $fetch("/api/ads/interested-peoples/" + id, { method: "DELETE", key: "deleteInterestedPeople" });
+      await $fetch("/api/ads/interested-peoples/" + id, {
+        method: "DELETE",
+        key: "deleteInterestedPeople",
+      });
       await refreshNuxtData("getInterestedPeoples");
       toast.add({
         description: "تم حذف الشخص بنجاح",
@@ -111,5 +131,11 @@ export function useInterestedPeopleActions() {
     }
   };
 
-  return { createInterestedPeople, editInterestedPeople, deleteInterestedPeople, getOneInterestedPeople, getOneInterestedPeoples };
+  return {
+    createInterestedPeople,
+    editInterestedPeople,
+    deleteInterestedPeople,
+    getOneInterestedPeople,
+    getOneInterestedPeoples,
+  };
 }

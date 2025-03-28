@@ -1,8 +1,8 @@
-import { Order, Prisma } from "@prisma/client";
+import { order, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 // Utility function to validate incoming data
-const validateOrderData = (data: Order) => {
+const validateOrderData = (data: order) => {
   // TODO: Add any additional field validation as needed
   if (!data.date) {
     throw new Error("Missing required field: date");
@@ -10,8 +10,8 @@ const validateOrderData = (data: Order) => {
 };
 
 export default defineEventHandler(async (event) => {
-  const body: Order = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const body: order = await readBody(event);
+  const id: string = getRouterParams(event).id;
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -72,7 +72,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred during the update.";
+    const msg =
+      error.message || "An unexpected error occurred during the update.";
     console.log(msg);
     throw createError({
       statusCode: 500,

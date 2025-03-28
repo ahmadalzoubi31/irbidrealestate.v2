@@ -1,4 +1,4 @@
-import type { Claim } from "@prisma/client";
+import type { claim } from "@prisma/client";
 
 // composables/useClaims.ts
 export function useClaims() {
@@ -6,11 +6,12 @@ export function useClaims() {
   const nuxtApp = useNuxtApp();
   const toast = useToast();
 
-  const { data: claims, status } = useFetch<Claim[]>("/api/claims", {
+  const { data: claims, status } = useFetch<claim[]>("/api/claims", {
     key: "getClaims",
     server: false,
     lazy: true,
-    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+    getCachedData: (key) =>
+      nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   });
 
   if (status.value === "error") {
@@ -22,7 +23,7 @@ export function useClaims() {
   }
 
   // Create or retrieve state for claims
-  const claimList = useState<Claim[]>("claimList", () => []);
+  const claimList = useState<claim[]>("claimList", () => []);
 
   // Use watchEffect to sync `claimList` with `claims`
   watchEffect(() => {

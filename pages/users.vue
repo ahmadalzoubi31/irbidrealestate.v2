@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { User } from "@prisma/client";
+import type { user } from "@prisma/client";
 import { useUserActions } from "~/composables/user/useUserAction";
 import { useUsers } from "~/composables/user/useUsers";
 import { useUserTableColumns } from "~/composables/user/useUserTableColumns";
 
 // State
 const q = ref("");
-const selected: Ref<User[]> = ref([]);
+const selected: Ref<user[]> = ref([]);
 const expand = ref({ openedRows: [], row: null });
 
 // Columns
@@ -16,20 +16,25 @@ const { columns, selectedColumns } = useUserTableColumns();
 const { users, status } = useUsers();
 
 // Computed loading state
-const isLoading = computed(() => status.value !== "success" && status.value !== "error");
+const isLoading = computed(
+  () => status.value !== "success" && status.value !== "error"
+);
 
 // Filtering
-const filteredRows = useFilteredRows<User>(users, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<user>(users, q, [
+  "createdAt",
+  "updatedAt",
+]);
 
 // Actions
 const { deleteUser } = useUserActions();
 
-const select = (row: User) => {
+const select = (row: user) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: number) => {
+const editSelectedRecord = async (id: string) => {
   await navigateTo(`/users/${id}/edit`);
 };
 
@@ -46,14 +51,25 @@ const deleteSelectedRecord = async () => {
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة مستخدم" :to="'/users/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف مستخدم" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
+          <UButton
+            icon="i-heroicons-plus-circle-20-solid"
+            label="اضافة مستخدم"
+            :to="'/users/create'"
+          />
+          <UButton
+            icon="i-heroicons-minus-circle-20-solid"
+            label="حذف مستخدم"
+            :disabled="selected.length === 0"
+            @click="deleteSelectedRecord"
+          />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
 
       <!-- Table -->
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
+      <div
+        class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+      >
         <UTable
           :rows="filteredRows"
           :columns="selectedColumns"
@@ -70,7 +86,10 @@ const deleteSelectedRecord = async () => {
             </div>
           </template>
           <template #fullName-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.fullName)">
+            <span
+              :class="['font-bold text-blue-500 dark:text-blue-400 underline']"
+              @click="editSelectedRecord(row.fullName)"
+            >
               {{ row.fullName }}
             </span>
           </template>

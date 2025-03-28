@@ -3,16 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgres"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "mongodb"
+  // url       = env("POSTGRES_PRISMA_URL")
+  // directUrl = env("POSTGRES_URL_NON_POOLING")
   // url       = env("DATABASE_URL")
   // directUrl = env("DATABASE_URL_UNPOOLED")
+  // url      = env("MONGODB_DEV_URI")
+  url      = env("MONGODB_PROD_URI")
 }
 
-// *** User ***
-model User {
-  id        Int      @id @default(autoincrement())
+// *** user ***
+model user {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   firstName String
   lastName  String
   fullName  String
@@ -26,9 +28,9 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-// *** Building ***
-model Building {
-  id                        Int            @id @default(autoincrement())
+// *** building ***
+model building {
+  id                        String         @id @default(auto()) @map("_id") @db.ObjectId
   name                      String         @unique
   apartmentsCount           Int            @default(0)
   storeCount                Int            @default(0)
@@ -45,9 +47,9 @@ model Building {
   maintenanceTerm           String         @default("شهري")
   realLocation              String?
   registeredApartmentsCount Int            @default(0)
-  apartments                Apartment[]
-  flats                     Flat[]
-  buildingFlat              BuildingFlat[]
+  apartments                apartment[]
+  flats                     flat[]
+  buildingFlat              buildingFlat[]
   status                    Boolean        @default(true)
   createdBy                 String         @default("-")
   createdAt                 DateTime       @default(now())
@@ -55,8 +57,8 @@ model Building {
   updatedAt                 DateTime       @updatedAt
 }
 
-model BuildingFlat {
-  id              Int      @id @default(autoincrement())
+model buildingFlat {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   flatNumber      String
   ownerName       String
   ownerNumber     String?  @default("###")
@@ -72,8 +74,8 @@ model BuildingFlat {
   createdAt       DateTime @default(now())
   updatedBy       String?  @default("-")
   updatedAt       DateTime @updatedAt
-  building        Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
-  buildingId      Int
+  building        building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  buildingId      String   @db.ObjectId
 }
 
 // model BuildingStore {
@@ -92,13 +94,13 @@ model BuildingFlat {
 //   createdAt       DateTime @default(now())
 //   updatedBy       String?  @default("-")
 //   updatedAt       DateTime @updatedAt
-//   building        Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+//   building        building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 //   buildingId      Int
 // }
 
 // *** Apartment ***
-model Apartment {
-  id                Int                   @id @default(autoincrement())
+model apartment {
+  id                String                @id @default(auto()) @map("_id") @db.ObjectId
   apartmentNumber   String
   code              String?
   ownerName         String
@@ -120,7 +122,7 @@ model Apartment {
    * 3 ==> "قائم"
    */
   rentStatus        Int                   @default(3)
-  renterInfo        ApartmentRenterInfo[]
+  renterInfo        apartmentRenterInfo[]
   isServiceIncluded String                @default("لا")
   insurance         Float                 @default(0)
   insuranceWithWho  String                @default("غير محدد")
@@ -132,13 +134,13 @@ model Apartment {
   createdAt         DateTime              @default(now())
   updatedBy         String?               @default("-")
   updatedAt         DateTime              @updatedAt
-  payments          Payment[]
-  building          Building?             @relation(fields: [buildingId], references: [id], onDelete: Cascade)
-  buildingId        Int?
+  payments          payment[]
+  building          building?             @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  buildingId        String?               @db.ObjectId
 }
 
-model ApartmentRenterInfo {
-  id                     Int        @id @default(autoincrement())
+model apartmentRenterInfo {
+  id                     String     @id @default(auto()) @map("_id") @db.ObjectId
   renterName             String
   renterNumber           String     @default("###")
   renterAdditionalNumber String?
@@ -147,13 +149,13 @@ model ApartmentRenterInfo {
   renterIdentification   String?
   identificationImage    String?
   contractImage          String?
-  Apartment              Apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId            Int?
+  apartment              apartment? @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId            String?    @db.ObjectId
 }
 
 // *** Payments ***
-model Payment {
-  id                  Int       @id @default(autoincrement())
+model payment {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
   nextRentDate        DateTime
   receivedPaymentDate DateTime
   depositAmount       Float
@@ -165,13 +167,13 @@ model Payment {
   createdAt           DateTime  @default(now())
   updatedBy           String?   @default("-")
   updatedAt           DateTime  @updatedAt
-  apartment           Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
-  apartmentId         Int
+  apartment           apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  apartmentId         String    @db.ObjectId
 }
 
 // *** Ads ***
-model Ad {
-  id                    Int                @id @default(autoincrement())
+model ad {
+  id                    String             @id @default(auto()) @map("_id") @db.ObjectId
   code                  String             @unique
   propertyStatus        String
   propertyType          Int
@@ -209,7 +211,7 @@ model Ad {
   storesCount           String?
   storesArea            String?
   isRegistered          String?            @default("فارغ")
-  interestedPeople      InterestedPeople[]
+  interestedPeople      interestedPeople[]
   images                String?
   status                Boolean            @default(true)
   createdBy             String             @default("-")
@@ -219,17 +221,17 @@ model Ad {
 }
 
 // *** InterestedPeople ***
-model InterestedPeople {
-  id     Int    @id @default(autoincrement())
+model interestedPeople {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
   name   String
   number String @default("###")
-  ad     Ad     @relation(fields: [adId], references: [id])
-  adId   Int
+  ad     ad     @relation(fields: [adId], references: [id])
+  adId   String @db.ObjectId
 }
 
 // *** Orders ***
-model Order {
-  id          Int      @id @default(autoincrement())
+model order {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   type        Int
   date        DateTime
   ownerName   String
@@ -246,14 +248,14 @@ model Order {
 }
 
 // *** Claims ***
-model Claim {
-  id               Int               @id @default(autoincrement())
+model claim {
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
   apartmentName    String
   claimNumber      String
   claimDate        DateTime          @default(now())
   claimFrom        String
-  claimCollections ClaimCollection[]
-  claimDetails     ClaimDetail[]
+  claimCollections claimCollection[]
+  claimDetails     claimDetail[]
   clearanceNotes   String?
   total            Float             @default(0.0)
   profit           Float             @default(0.0)
@@ -270,24 +272,24 @@ model Claim {
   updatedAt        DateTime          @updatedAt
 }
 
-model ClaimCollection {
-  id       Int      @id @default(autoincrement())
+model claimCollection {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   dateTime DateTime @default(now())
   payment  Float    @default(0.0)
   notes    String?
-  claimId  Int
-  claim    Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId  String   @db.ObjectId
+  claim    claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
 }
 
-model ClaimDetail {
-  id           Int      @id @default(autoincrement())
+model claimDetail {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   item         String
   price        Float    @default(0.0)
   specialPrice Float    @default(0.0)
   dateTime     DateTime @default(now())
   image        String?  @default("")
-  claim        Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
-  claimId      Int
+  claim        claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  claimId      String   @db.ObjectId
 }
 
 // model AppFile {
@@ -319,29 +321,29 @@ model ClaimDetail {
 //   appFileId  Int?
 // }
 
-model Flat {
-  id           Int           @id @default(autoincrement())
+model flat {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
   counter      Int
-  services     Service[]
-  maintenances Maintenance[]
-  building     Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
-  buildingId   Int
+  services     service[]
+  maintenances maintenance[]
+  building     building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  buildingId   String        @db.ObjectId
 }
 
-model Service {
-  id     Int     @id @default(autoincrement())
+model service {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
   isPaid Boolean @default(false)
   month  Int
   year   Int
-  flat   Flat?   @relation(fields: [flatId], references: [id], onDelete: Cascade)
-  flatId Int?
+  flat   flat?   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  flatId String? @db.ObjectId
 }
 
-model Maintenance {
-  id     Int     @id @default(autoincrement())
+model maintenance {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
   isPaid Boolean @default(false)
   month  Int
   year   Int
-  flat   Flat?   @relation(fields: [flatId], references: [id], onDelete: Cascade)
-  flatId Int?
+  flat   flat?   @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  flatId String? @db.ObjectId
 }

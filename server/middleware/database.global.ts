@@ -6,7 +6,16 @@ export default defineEventHandler(async (event) => {
   const loggedUserName = session?.user?.name; // Replace this with the actual logged in user name
 
   prisma.$use(async (params, next) => {
-    const models = ["Building", "User", "Apartment", "Payment", "Ad", "Order", "Claim", "BuildingFlat"];
+    const models = [
+      "building",
+      "user",
+      "apartment",
+      "payment",
+      "ad",
+      "order",
+      "claim",
+      "buildingFlat",
+    ];
     if (models.includes(params.model as string)) {
       if (params.action === "create") {
         params.args.data.createdBy = loggedUserName;

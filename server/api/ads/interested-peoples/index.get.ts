@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import { InterestedPeople } from "@prisma/client";
+import { interestedPeople } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -7,11 +7,12 @@ export default defineEventHandler(async (event) => {
     // await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
 
     // Fetch all interestedPeoples
-    const interestedPeoples: InterestedPeople[] = await prisma.interestedPeople.findMany({
-      include: {
-        ad: true,
-      },
-    });
+    const interestedPeoples: interestedPeople[] =
+      await prisma.interestedPeople.findMany({
+        include: {
+          ad: true,
+        },
+      });
 
     return interestedPeoples;
   } catch (error: any) {

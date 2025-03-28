@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Flat, Service } from "@prisma/client";
+import type { flat, service } from "@prisma/client";
 import { useUseServiceActions } from "~/composables/service/useServiceActions";
 
-interface FlatWithServicesAndServices extends Flat {
-  services: Service[];
+interface FlatWithServicesAndServices extends flat {
+  services: service[];
 }
 
 // Composables
@@ -12,28 +12,46 @@ const { updateServiceStatus } = useUseServiceActions();
 const { buildings: availableBuildings } = useBuildings(); // For menu options
 
 // Data
-const months = ["شهر 1", "شهر 2", "شهر 3", "شهر 4", "شهر 5", "شهر 6", "شهر 7", "شهر 8", "شهر 9", "شهر 10", "شهر 11", "شهر 12"];
+const months = [
+  "شهر 1",
+  "شهر 2",
+  "شهر 3",
+  "شهر 4",
+  "شهر 5",
+  "شهر 6",
+  "شهر 7",
+  "شهر 8",
+  "شهر 9",
+  "شهر 10",
+  "شهر 11",
+  "شهر 12",
+];
 const flats = ref<FlatWithServicesAndServices[]>([]);
 const isModifyMode = ref(false);
 const isLoading = ref(true);
-const computedBuildings = computed(() => availableBuildings.value?.map((el) => ({ id: el.id, name: el.name })));
+const computedBuildings = computed(() =>
+  availableBuildings.value?.map((el) => ({ id: el.id, name: el.name }))
+);
 const selectedBuildingId = ref(availableBuildings.value?.[0]?.id);
 const selectedYear = useState(() => new Date("1/1/2025").getFullYear());
 const services = computed(() => flats.value.flatMap((f) => f.services));
-const updatedServices = ref<Service[]>([]);
+const updatedServices = ref<service[]>([]);
 
 // Watchers
 watchEffect(async () => {
   isLoading.value = true;
   if (selectedBuildingId.value) {
-    const result = await getOneBuildingWithFlats(selectedBuildingId.value, selectedYear.value);
+    const result = await getOneBuildingWithFlats(
+      selectedBuildingId.value,
+      selectedYear.value
+    );
     flats.value = result.data?.flats || [];
     isLoading.value = false;
   }
 });
 
 // Methods
-const handlePaymentStatusChange = async (mId: number, isPaid: boolean) => {
+const handlePaymentStatusChange = async (mId: string, isPaid: boolean) => {
   // find the service object and update its IsPaid status
   services.value
     .filter((m) => m.id === mId)
@@ -41,7 +59,9 @@ const handlePaymentStatusChange = async (mId: number, isPaid: boolean) => {
       m.isPaid = isPaid;
       // if the user revert the action then remove the service object from the updatedServices array
       if (updatedServices.value.find((m) => m.id === mId)) {
-        updatedServices.value = updatedServices.value.filter((m) => m.id !== mId);
+        updatedServices.value = updatedServices.value.filter(
+          (m) => m.id !== mId
+        );
       } else {
         updatedServices.value.push(m);
       }
@@ -51,8 +71,12 @@ const handlePaymentStatusChange = async (mId: number, isPaid: boolean) => {
 const handleSelectAllChange = (monthIndex: number, status: boolean) => {
   const isSelected = status;
   // Check if all flats for selected month are paid or not, then update the status of all flats for the selected month
-  if (flats.value.every((flat) => flat.services[monthIndex].isPaid === isSelected)) {
-    console.log("🚀 ~ handleSelectAllChange ~ all flats are already in the same status");
+  if (
+    flats.value.every((flat) => flat.services[monthIndex].isPaid === isSelected)
+  ) {
+    console.log(
+      "🚀 ~ handleSelectAllChange ~ all flats are already in the same status"
+    );
     return;
   }
 
@@ -61,7 +85,9 @@ const handleSelectAllChange = (monthIndex: number, status: boolean) => {
       if (service.month === monthIndex + 1) {
         service.isPaid = isSelected;
         if (updatedServices.value.find((m) => m.id === service.id)) {
-          updatedServices.value = updatedServices.value.filter((m) => m.id !== service.id);
+          updatedServices.value = updatedServices.value.filter(
+            (m) => m.id !== service.id
+          );
         } else {
           updatedServices.value.push(service);
         }
@@ -81,7 +107,12 @@ const saveServiceStatus = async () => {
     <div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="space-y-1">
-          <label for="buildingName" class="block text-sm font-medium text-gray-700"> اسم البناية </label>
+          <label
+            for="buildingName"
+            class="block text-sm font-medium text-gray-700"
+          >
+            اسم البناية
+          </label>
           <USelectMenu
             id="buildingName"
             name="buildingName"
@@ -94,12 +125,17 @@ const saveServiceStatus = async () => {
             :autofocus="true"
             :required="true"
             icon="i-heroicons-building-office-2-solid"
-            :uiMenu="{ option: { size: 'text-sm' }, selected: { size: 'text-sm' } }"
+            :uiMenu="{
+              option: { size: 'text-sm' },
+              selected: { size: 'text-sm' },
+            }"
           />
         </div>
 
         <div class="space-y-1">
-          <label for="year" class="block text-sm font-medium text-gray-700"> السنة </label>
+          <label for="year" class="block text-sm font-medium text-gray-700">
+            السنة
+          </label>
           <USelectMenu
             id="year"
             name="year"
@@ -111,12 +147,20 @@ const saveServiceStatus = async () => {
             placeholder="اختر السنة"
             :required="true"
             icon="i-heroicons-calendar-days-solid"
-            :uiMenu="{ option: { size: 'text-sm' }, selected: { size: 'text-sm' } }"
+            :uiMenu="{
+              option: { size: 'text-sm' },
+              selected: { size: 'text-sm' },
+            }"
           />
         </div>
 
         <div class="flex items-end">
-          <UButton label="تعديل" :size="'sm'" class="w-20 text-center place-content-center ml-3" @click="isModifyMode = !isModifyMode" />
+          <UButton
+            label="تعديل"
+            :size="'sm'"
+            class="w-20 text-center place-content-center ml-3"
+            @click="isModifyMode = !isModifyMode"
+          />
           <UButton
             label="حفظ"
             :loading="isLoading"
@@ -132,7 +176,11 @@ const saveServiceStatus = async () => {
           <tr>
             <th>رقم الشقة</th>
             <th v-for="(month, index) in months" :key="month">
-              <UCheckbox v-if="isModifyMode" type="checkbox" @change="handleSelectAllChange(index, $event)" />
+              <UCheckbox
+                v-if="isModifyMode"
+                type="checkbox"
+                @change="handleSelectAllChange(index, $event)"
+              />
               {{ month }}
             </th>
           </tr>
@@ -140,8 +188,17 @@ const saveServiceStatus = async () => {
         <tbody>
           <tr v-if="!isLoading" v-for="flat in flats" :key="flat.id">
             <td>{{ flat.counter }}</td>
-            <td v-for="(m, index) in flat.services" :key="index" :class="{ 'not-paid': !m.isPaid }">
-              <UCheckbox v-if="isModifyMode" type="checkbox" :model-value="m.isPaid" @change="handlePaymentStatusChange(m.id, !m.isPaid)" />
+            <td
+              v-for="(m, index) in flat.services"
+              :key="index"
+              :class="{ 'not-paid': !m.isPaid }"
+            >
+              <UCheckbox
+                v-if="isModifyMode"
+                type="checkbox"
+                :model-value="m.isPaid"
+                @change="handlePaymentStatusChange(m.id, !m.isPaid)"
+              />
               {{ m.isPaid ? "تم الدفع" : "لم يتم الدفع" }}
             </td>
           </tr>

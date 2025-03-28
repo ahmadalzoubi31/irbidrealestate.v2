@@ -3,7 +3,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   try {
     // Fetch apartment by ID to ensure it exists before deletion
@@ -37,7 +37,9 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: error.statusCode || 500, // Default to 500 if statusCode is not available
-      message: error.message || "An unexpected error occurred while deleting the apartment.",
+      message:
+        error.message ||
+        "An unexpected error occurred while deleting the apartment.",
     });
   }
 });

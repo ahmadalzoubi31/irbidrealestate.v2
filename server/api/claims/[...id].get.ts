@@ -1,7 +1,7 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   try {
     // Fetch the claim by ID
@@ -29,7 +29,9 @@ export default defineEventHandler(async (event) => {
     // Handle errors gracefully and log error details
     throw createError({
       statusCode: error.statusCode || 500,
-      message: error.message || "An unexpected error occurred while fetching the claim",
+      message:
+        error.message ||
+        "An unexpected error occurred while fetching the claim",
     });
   }
 });

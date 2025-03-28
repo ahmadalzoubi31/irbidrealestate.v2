@@ -1,10 +1,12 @@
-import { Prisma, Payment } from "@prisma/client";
+import { Prisma, payment } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 // Utility function to validate the incoming payment data
 const validatePaymentData = (data: any) => {
   if (!data.apartmentId || !data.nextRentDate || !data.depositAmount) {
-    throw new Error("Missing required fields: apartmentId, nextRentDate, and depositAmount");
+    throw new Error(
+      "Missing required fields: apartmentId, nextRentDate, and depositAmount"
+    );
   }
   // Add more validation as needed, e.g., validating date formats
 };
@@ -27,7 +29,7 @@ export default defineEventHandler(async (event) => {
     validatePaymentData(body);
 
     // Create a new payment entry
-    const newPayment: Payment = await prisma.payment.create({ data: body });
+    const newPayment: payment = await prisma.payment.create({ data: body });
 
     // Return success response
     return {
@@ -41,7 +43,8 @@ export default defineEventHandler(async (event) => {
     // Handle known Prisma errors (e.g., unique constraint violations)
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-        const msg = "ERROR: Unique constraint violation, cannot create a record with duplicate values";
+        const msg =
+          "ERROR: Unique constraint violation, cannot create a record with duplicate values";
         console.log(msg);
         throw createError({
           statusCode: 400, // Bad Request for constraint violation
@@ -51,7 +54,9 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred while creating the payment.";
+    const msg =
+      error.message ||
+      "An unexpected error occurred while creating the payment.";
     console.log(msg);
     throw createError({
       statusCode: 500,

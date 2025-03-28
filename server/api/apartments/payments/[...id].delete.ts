@@ -3,7 +3,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   try {
     // Check if the payment exists
@@ -36,7 +36,9 @@ export default defineEventHandler(async (event) => {
     // Handle and return errors appropriately
     throw createError({
       statusCode: error.statusCode || 500,
-      message: error.message || "An unexpected error occurred while deleting the payment.",
+      message:
+        error.message ||
+        "An unexpected error occurred while deleting the payment.",
     });
   }
 });

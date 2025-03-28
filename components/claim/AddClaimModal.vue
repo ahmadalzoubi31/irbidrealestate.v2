@@ -18,7 +18,7 @@ const state: ClaimState = reactive<ClaimState>({
   item: "",
   price: 0,
   specialPrice: 0,
-  dateTime: new Date(),
+  dateTime: new Date(), // Fresh Date instance
   image: null,
 });
 
@@ -59,11 +59,26 @@ const submitForm = async () => {
 <template>
   <UModal v-model="isAddClaimModalOpen" prevent-close>
     <form @submit.prevent="submitForm">
-      <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+      <UCard
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+      >
         <template #header>
           <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">اضافة مادة جديدة</h3>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="() => (isAddClaimModalOpen = false)" />
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+            >
+              اضافة مادة جديدة
+            </h3>
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              class="-my-1"
+              @click="() => (isAddClaimModalOpen = false)"
+            />
           </div>
         </template>
 
@@ -71,20 +86,46 @@ const submitForm = async () => {
           <!-- item -->
           <label for="item" class="col-span-6 sm:col-span-1"> المادة :</label>
           <div class="col-span-6 sm:col-span-2">
-            <UInput id="item" name="item" :size="'sm'" :required="false" v-model="state.item" />
+            <UInput
+              id="item"
+              name="item"
+              :size="'sm'"
+              :required="false"
+              v-model="state.item"
+            />
           </div>
           <!-- price -->
-          <label for="price" class="col-span-6 sm:col-span-1"> السعر العام :</label>
+          <label for="price" class="col-span-6 sm:col-span-1">
+            السعر العام :</label
+          >
           <div class="col-span-6 sm:col-span-2">
-            <UInput id="price" name="price" type="number" :size="'sm'" :required="false" v-model="state.price" />
+            <UInput
+              id="price"
+              name="price"
+              type="number"
+              :size="'sm'"
+              :required="false"
+              v-model="state.price"
+            />
           </div>
           <!-- specialPrice -->
-          <label for="specialPrice" class="col-span-6 sm:col-span-1"> السعر الخاص :</label>
+          <label for="specialPrice" class="col-span-6 sm:col-span-1">
+            السعر الخاص :</label
+          >
           <div class="col-span-6 sm:col-span-2">
-            <UInput id="specialPrice" name="specialPrice" type="number" :size="'sm'" :required="false" v-model="state.specialPrice" />
+            <UInput
+              id="specialPrice"
+              name="specialPrice"
+              type="number"
+              :size="'sm'"
+              :required="false"
+              v-model="state.specialPrice"
+            />
           </div>
           <!-- dateTime -->
-          <label for="dateTime" class="col-span-6 sm:col-span-1"> الوقت والتاريخ :</label>
+          <label for="dateTime" class="col-span-6 sm:col-span-1">
+            الوقت والتاريخ :</label
+          >
           <div class="col-span-6 sm:col-span-2">
             <UPopover :popper="{ placement: 'bottom-start' }">
               <UInput
@@ -96,14 +137,28 @@ const submitForm = async () => {
               />
 
               <template #panel="{ close }">
-                <AppDatePicker v-model="state.dateTime" is-required @close="close" />
+                <AppDatePicker
+                  v-model="state.dateTime"
+                  is-required
+                  @close="close"
+                />
               </template>
             </UPopover>
           </div>
           <!-- image -->
-          <label for="image" class="col-span-6 sm:col-span-1"> الفاتورة :</label>
+          <label for="image" class="col-span-6 sm:col-span-1">
+            الفاتورة :</label
+          >
           <div class="col-span-6 sm:col-span-2">
-            <UInput id="image" name="image" :type="'file'" :size="'sm'" :required="false" @input="handleFileInput" icon="i-heroicons-folder" />
+            <UInput
+              id="image"
+              name="image"
+              :type="'file'"
+              :size="'sm'"
+              :required="false"
+              @input="handleFileInput"
+              icon="i-heroicons-folder"
+            />
           </div>
         </div>
 
@@ -112,7 +167,11 @@ const submitForm = async () => {
             <UButton
               :type="'submit'"
               :size="'sm'"
-              :disabled="state.item === '' || isNaN(state.price) || state.dateTime === undefined"
+              :disabled="
+                state.item === '' ||
+                isNaN(state.price) ||
+                state.dateTime === undefined
+              "
               class="w-20 text-center place-content-center"
             >
               حفظ

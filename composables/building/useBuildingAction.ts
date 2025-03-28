@@ -1,10 +1,10 @@
-import type { Building, Flat, Maintenance, Service } from "@prisma/client";
+import type { building, flat, maintenance, service } from "@prisma/client";
 
-interface FlatWithServicesAndMaintenances extends Flat {
-  services: Service[];
-  maintenances: Maintenance[];
+interface FlatWithServicesAndMaintenances extends flat {
+  services: service[];
+  maintenances: maintenance[];
 }
-interface BuildingWithFlat extends Building {
+interface BuildingWithFlat extends building {
   flats: FlatWithServicesAndMaintenances[] | null;
 }
 
@@ -12,11 +12,14 @@ interface BuildingWithFlat extends Building {
 export function useBuildingActions() {
   const toast = useToast();
 
-  const getOneBuilding = async (id: number) => {
-    const { data, status, error } = await useFetch<Building>("/api/buildings/" + id, {
-      key: "getBuildingById",
-      server: true,
-    });
+  const getOneBuilding = async (id: string) => {
+    const { data, status, error } = await useFetch<building>(
+      "/api/buildings/" + id,
+      {
+        key: "getBuildingById",
+        server: true,
+      }
+    );
 
     if (status.value === "error") {
       toast.add({
@@ -29,12 +32,15 @@ export function useBuildingActions() {
 
     return { data: data.value, status: status.value };
   };
-  const getOneBuildingWithFlats = async (id: number, year: number) => {
-    const { data, status, error } = await useFetch<BuildingWithFlat>("/api/flats/" + id, {
-      key: "getBuildingWithFlatById",
-      server: true,
-      query: { year },
-    });
+  const getOneBuildingWithFlats = async (id: string, year: number) => {
+    const { data, status, error } = await useFetch<BuildingWithFlat>(
+      "/api/flats/" + id,
+      {
+        key: "getBuildingWithFlatById",
+        server: true,
+        query: { year },
+      }
+    );
 
     if (status.value === "error") {
       toast.add({
@@ -68,7 +74,7 @@ export function useBuildingActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editBuilding = async (id: number, payload: IEditBuilding) => {
+  const editBuilding = async (id: string, payload: IEditBuilding) => {
     try {
       await $fetch("/api/buildings/" + id, { method: "PUT", body: payload });
       await refreshNuxtData("getBuildings");
@@ -89,12 +95,15 @@ export function useBuildingActions() {
       useLoadingIndicator().finish();
     }
   };
-  const deleteBuilding = async (id: number) => {
+  const deleteBuilding = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
     try {
-      await $fetch("/api/buildings/" + id, { method: "DELETE", key: "deleteBuilding" });
+      await $fetch("/api/buildings/" + id, {
+        method: "DELETE",
+        key: "deleteBuilding",
+      });
       await refreshNuxtData("getBuildings");
       toast.add({
         description: "تم حذف البناية بنجاح",
@@ -112,5 +121,11 @@ export function useBuildingActions() {
     }
   };
 
-  return { createBuilding, editBuilding, deleteBuilding, getOneBuilding, getOneBuildingWithFlats };
+  return {
+    createBuilding,
+    editBuilding,
+    deleteBuilding,
+    getOneBuilding,
+    getOneBuildingWithFlats,
+  };
 }

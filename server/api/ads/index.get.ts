@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import { Ad } from "@prisma/client";
+import { ad } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     // await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
 
     // Fetch all ads
-    const ads: Ad[] = await prisma.ad.findMany({
+    const ads: ad[] = await prisma.ad.findMany({
       orderBy: {
         code: "asc",
       },

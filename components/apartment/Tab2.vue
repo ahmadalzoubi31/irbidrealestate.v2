@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 // Import necessary dependencies
-import type { Apartment, ApartmentRenterInfo, Building } from "@prisma/client";
+import type { apartment, apartmentRenterInfo, building } from "@prisma/client";
 
 // interface
-interface ApartmentWithRenterInfo extends Apartment {
-  building: Building;
-  renterInfo: ApartmentRenterInfo[];
+interface ApartmentWithRenterInfo extends apartment {
+  building: building;
+  renterInfo: apartmentRenterInfo[];
 }
 // Declare Props
 const props = defineProps({

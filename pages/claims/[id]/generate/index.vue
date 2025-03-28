@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { Claim, ClaimCollection, ClaimDetail } from "@prisma/client";
+import type { claim, claimCollection, claimDetail } from "@prisma/client";
+import { formatDate } from "date-fns";
 import format from "date-fns/format";
 
 // *** Fetch Data ***
-const selectedClaimId = Number(useRoute().params.id);
+const selectedClaimId = ref(useRoute().params.id as string);
 const { getOneClaim } = useClaimActions();
-const { data: claim } = await getOneClaim(selectedClaimId);
+const { data: claim } = await getOneClaim(selectedClaimId.value);
 
 // *** Config Generator ***
 const heading = [
@@ -103,7 +104,13 @@ useHead({
             class="p-4 rounded-lg bg-gray-50 hover:bg-primary-50 transition-colors duration-300"
           >
             <dt class="text-gray-600 mb-2">{{ heading[index] }}</dt>
-            <dd class="text-primary-700 font-semibold">
+            <dd
+              v-if="key === 'claimDate'"
+              class="text-primary-700 font-semibold"
+            >
+              {{ formatDate(extracted[key], "yyyy-MM-dd") }}
+            </dd>
+            <dd v-else class="text-primary-700 font-semibold">
               {{ extracted[key] || "-" }}
             </dd>
           </div>
@@ -123,7 +130,7 @@ useHead({
                 class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
               >
                 <UTable
-                  :rows="claim?.claimDetails as ClaimDetail[] || []"
+                  :rows="claim?.claimDetails as claimDetail[] || []"
                   :columns="[
                     { key: 'item', label: 'المادة' },
                     { key: 'price', label: 'السعر' },
@@ -172,7 +179,7 @@ useHead({
                 class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
               >
                 <UTable
-                  :rows="claim?.claimCollections as ClaimCollection[] || []"
+                  :rows="claim?.claimCollections as claimCollection[] || []"
                   :columns="[
                     { key: 'dateTime', label: 'الوقت والتاريخ' },
                     { key: 'payment', label: 'الدفعة' },

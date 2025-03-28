@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import { Order } from "@prisma/client";
+import { order } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all orders
-    const orders: Order[] = await prisma.order.findMany();
+    const orders: order[] = await prisma.order.findMany();
     return orders;
   } catch (error: any) {
     // Handle errors gracefully

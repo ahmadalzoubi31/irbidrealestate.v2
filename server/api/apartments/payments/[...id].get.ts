@@ -3,7 +3,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   // Extract ID from route parameters
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   try {
     // Fetch the payment record along with related apartment and building details
@@ -34,7 +34,9 @@ export default defineEventHandler(async (event) => {
     // Return an appropriate error response
     throw createError({
       statusCode: error.statusCode || 500, // Default to 500 for unknown errors
-      message: error.message || "An unexpected error occurred while fetching the payment.",
+      message:
+        error.message ||
+        "An unexpected error occurred while fetching the payment.",
     });
   }
 });

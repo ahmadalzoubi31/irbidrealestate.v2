@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 // Create 10 slides
 import type { AppFile } from "@prisma/client";
 
@@ -68,4 +68,6 @@ swiper-slide {
   font-weight: bold;
   font-family: "Roboto", sans-serif;
 }
-</style>
+</style> -->
+
+<template></template>

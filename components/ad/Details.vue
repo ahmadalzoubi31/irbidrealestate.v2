@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Ad } from "@prisma/client";
+import type { ad } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
@@ -11,7 +11,6 @@ const props = defineProps({
   },
 });
 
-console.log(props.ad);
 const isModalOpen = ref(false);
 const selectedImage = ref("");
 // Helper to define headings and keys based on `ad.code`
@@ -191,7 +190,7 @@ const getConfig = (code: string) => {
 const { heading, keys } = getConfig(props.ad.code);
 
 // Extract the desired keys
-const extracted: Ad = useExtractKeys(props.ad, keys);
+const extracted: ad = useExtractKeys(props.ad, keys);
 
 // Declare Methods
 const formatted = (date: Date) =>

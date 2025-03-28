@@ -11,9 +11,9 @@ const state: IExpireApartment = reactive({
 // Define props
 const props = defineProps({
   selectedApartmentId: {
-    type: Number,
+    type: String,
     required: true,
-    default: 0,
+    default: "",
   },
 });
 

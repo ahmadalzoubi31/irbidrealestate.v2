@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import { Claim } from "@prisma/client";
+import { claim } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all claims
-    const claims: Claim[] = await prisma.claim.findMany({
+    const claims: claim[] = await prisma.claim.findMany({
       include: {
         claimCollections: true,
         claimDetails: true,

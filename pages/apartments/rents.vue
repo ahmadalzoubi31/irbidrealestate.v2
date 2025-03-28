@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Dependencies
-import type { Apartment, Building } from "@prisma/client";
+import type { apartment, building } from "@prisma/client";
 import format from "date-fns/format";
 
 // Interface
-interface ApartmentWithBuilding extends Apartment {
-  building: Building;
+interface ApartmentWithBuilding extends apartment {
+  building: building;
 }
 
 // State
@@ -67,8 +67,8 @@ const years = ref([
   2059, 2060,
 ]);
 
-// Year Building
-const buildingList = useState<Building[]>("buildingList");
+// Year building
+const buildingList = useState<building[]>("buildingList");
 
 if (!buildingList.value || buildingList.value.length === 0) {
   useBuildings();
@@ -111,7 +111,7 @@ const select = (row: ApartmentWithBuilding) => {
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: number) => {
+const editSelectedRecord = async (id: string) => {
   await navigateTo(`/apartments/rents/${id}/edit`);
 };
 

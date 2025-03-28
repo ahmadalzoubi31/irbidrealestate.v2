@@ -1,15 +1,15 @@
-import type { Building } from "@prisma/client";
+import type { building } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
-const validateBuildingData = (data: Building) => {
+const validateBuildingData = (data: building) => {
   if (!data.name || !data.basinName) {
     throw new Error("Missing required fields: name and basinName");
   }
 };
 
 export default defineEventHandler(async (event) => {
-  const body: Building = await readBody(event);
+  const body: building = await readBody(event);
 
   if (!body) {
     throw createError({
@@ -30,7 +30,9 @@ export default defineEventHandler(async (event) => {
             registeredApartmentsCount: 0,
             flats: {
               createMany: {
-                data: Array.from({ length: body.apartmentsCount }, (_, i) => ({ counter: i + 1 })),
+                data: Array.from({ length: body.apartmentsCount }, (_, i) => ({
+                  counter: i + 1,
+                })),
               },
             },
           },
@@ -78,7 +80,8 @@ export default defineEventHandler(async (event) => {
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-        const msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
+        const msg =
+          "ERROR: There is a unique constraint violation, a new record cannot be created with this name";
         console.log(msg);
         throw createError({
           statusCode: 400,
@@ -87,7 +90,9 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const msg = error.message || "An unexpected error occurred while creating the building.";
+    const msg =
+      error.message ||
+      "An unexpected error occurred while creating the building.";
     console.log(msg);
     throw createError({
       statusCode: 500,

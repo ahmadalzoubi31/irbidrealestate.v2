@@ -1,8 +1,8 @@
 import prisma from "~/lib/prisma";
-import { Payment } from "@prisma/client";
+import { payment } from "@prisma/client";
 
 // Utility function to validate the request body
-const validatePaymentData = (data: Payment) => {
+const validatePaymentData = (data: payment) => {
   // TODO: Add any additional field validation as needed
   if (!data.depositAmount) {
     throw new Error("Missing required fields: depositAmount");
@@ -10,8 +10,8 @@ const validatePaymentData = (data: Payment) => {
 };
 
 export default defineEventHandler(async (event) => {
-  const body: Payment = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const body: payment = await readBody(event);
+  const id: string = getRouterParams(event).id;
 
   // Check if body data is provided
   if (!body) {
@@ -56,7 +56,9 @@ export default defineEventHandler(async (event) => {
     // Handle and return errors appropriately
     throw createError({
       statusCode: error.statusCode || 500,
-      message: error.message || "An unexpected error occurred while updating the payment.",
+      message:
+        error.message ||
+        "An unexpected error occurred while updating the payment.",
     });
   }
 });

@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import type { User } from "@prisma/client";
+import type { user } from "@prisma/client";
 
 export default defineEventHandler(async () => {
   try {
@@ -7,7 +7,7 @@ export default defineEventHandler(async () => {
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all users
-    const users: User[] = await prisma.user.findMany();
+    const users: user[] = await prisma.user.findMany();
     return users;
   } catch (error: any) {
     // Handle errors gracefully

@@ -1,11 +1,11 @@
-import type { Order } from "@prisma/client";
+import type { order } from "@prisma/client";
 
 // composables/useOrderActions.ts
 export function useOrderActions() {
   const toast = useToast();
 
-  const getOneOrder = async (id: number) => {
-    const { data, status, error } = await useFetch<Order>("/api/orders/" + id, {
+  const getOneOrder = async (id: string) => {
+    const { data, status, error } = await useFetch<order>("/api/orders/" + id, {
       key: "getOrderById",
       server: false,
       lazy: true,
@@ -13,7 +13,7 @@ export function useOrderActions() {
 
     if (status.value === "error") {
       toast.add({
-        description: error.value!.message || "البناية المطلوبة غير موجودة.",
+        description: error.value!.message || "الطلب المطلوب غير موجود.",
         color: "rose",
         timeout: 15000,
       });
@@ -43,7 +43,7 @@ export function useOrderActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editOrder = async (id: number, payload: IEditOrder) => {
+  const editOrder = async (id: string, payload: IEditOrder) => {
     try {
       await $fetch("/api/orders/" + id, { method: "PUT", body: payload });
       await refreshNuxtData("getOrders");
@@ -64,12 +64,15 @@ export function useOrderActions() {
       useLoadingIndicator().finish();
     }
   };
-  const deleteOrder = async (id: number) => {
+  const deleteOrder = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
     try {
-      await $fetch("/api/orders/" + id, { method: "DELETE", key: "deleteOrder" });
+      await $fetch("/api/orders/" + id, {
+        method: "DELETE",
+        key: "deleteOrder",
+      });
       await refreshNuxtData("getOrders");
       toast.add({
         description: "تم حذف البناية بنجاح",

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // *** Dependencies ***
-import type { Order } from "@prisma/client";
+import type { order } from "@prisma/client";
 import { format } from "date-fns";
 
 const { getOneOrder, editOrder } = useOrderActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedOrderId = ref(Number(route.params.id));
+const selectedOrderId = ref(route.params.id as string);
 
 const { data: order, status } = await getOneOrder(selectedOrderId.value);
 
@@ -93,8 +93,13 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm()" class="relative mt-6 flex-1 px-4 sm:px-6">
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+  <form
+    @submit.prevent="submitForm()"
+    class="relative mt-6 flex-1 px-4 sm:px-6"
+  >
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
@@ -142,7 +147,13 @@ const submitForm = async () => {
             اسم صاحب الطلب
             <span class="text-xs text-primary-500">(اجباري)</span></label
           >
-          <UInput id="ownerName" name="ownerName" :size="'sm'" :required="true" v-model="state.ownerName" />
+          <UInput
+            id="ownerName"
+            name="ownerName"
+            :size="'sm'"
+            :required="true"
+            v-model="state.ownerName"
+          />
         </div>
         <!-- ownerNumber -->
         <div class="col-span-6 sm:col-span-2">
@@ -150,7 +161,13 @@ const submitForm = async () => {
             رقم صاحب الطلب
             <span class="text-xs text-primary-500">(اجباري)</span></label
           >
-          <UInput id="ownerNumber" name="ownerNumber" :size="'sm'" :required="true" v-model="state.ownerNumber" />
+          <UInput
+            id="ownerNumber"
+            name="ownerNumber"
+            :size="'sm'"
+            :required="true"
+            v-model="state.ownerNumber"
+          />
         </div>
         <!-- price -->
         <div class="col-span-6 sm:col-span-2">
@@ -158,17 +175,36 @@ const submitForm = async () => {
             السعر
             <span class="text-xs text-primary-500">(اجباري)</span></label
           >
-          <UInput id="price" name="price" type="number" :size="'sm'" :required="true" v-model="state.price" />
+          <UInput
+            id="price"
+            name="price"
+            type="number"
+            :size="'sm'"
+            :required="true"
+            v-model="state.price"
+          />
         </div>
         <!-- firstStep -->
         <div class="col-span-6 sm:col-span-2">
           <label for="firstStep"> الحركة الاولية </label>
-          <UInput id="firstStep" name="firstStep" :size="'sm'" :required="false" v-model="state.firstStep!" />
+          <UInput
+            id="firstStep"
+            name="firstStep"
+            :size="'sm'"
+            :required="false"
+            v-model="state.firstStep!"
+          />
         </div>
         <!-- notes -->
         <div class="col-span-6 sm:col-span-2">
           <label for="notes"> ملاحظات </label>
-          <UInput id="notes" name="notes" :size="'sm'" :required="false" v-model="state.notes!" />
+          <UInput
+            id="notes"
+            name="notes"
+            :size="'sm'"
+            :required="false"
+            v-model="state.notes!"
+          />
         </div>
         <!-- details -->
         <div class="col-span-6 sm:col-span-8">
@@ -176,15 +212,31 @@ const submitForm = async () => {
             تفاصيل الطلب
             <span class="text-xs text-primary-500">(اجباري)</span></label
           >
-          <UTextarea id="details" name="details" :size="'sm'" :required="true" v-model="state.details" />
+          <UTextarea
+            id="details"
+            name="details"
+            :size="'sm'"
+            :required="true"
+            v-model="state.details"
+          />
         </div>
       </div>
     </div>
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
-      <UButton to="/orders" :size="'sm'" class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white">
+      <UButton
+        :type="'submit'"
+        :size="'sm'"
+        class="w-20 text-center place-content-center ml-3"
+      >
+        حفظ
+      </UButton>
+      <UButton
+        to="/orders"
+        :size="'sm'"
+        class="w-20 text-center place-content-center bg-gray-200 hover:bg-gray-500 text-black hover:text-white"
+      >
         الغاء
       </UButton>
     </div>

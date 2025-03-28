@@ -1,4 +1,4 @@
-import type { Building } from "@prisma/client";
+import type { building } from "@prisma/client";
 
 // composables/useBuildings.ts
 export function useBuildings() {
@@ -6,11 +6,12 @@ export function useBuildings() {
   const nuxtApp = useNuxtApp();
   const toast = useToast();
 
-  const { data: buildings, status } = useFetch<Building[]>("/api/buildings", {
+  const { data: buildings, status } = useFetch<building[]>("/api/buildings", {
     key: "getBuildings",
     server: false,
     lazy: true,
-    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+    getCachedData: (key) =>
+      nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   });
 
   if (status.value === "error") {
@@ -22,7 +23,7 @@ export function useBuildings() {
   }
 
   // Create or retrieve state for buildings
-  const buildingList = useState<Building[]>("buildingList", () => []);
+  const buildingList = useState<building[]>("buildingList", () => []);
 
   // Use watchEffect to sync `buildingList` with `buildings`
   watchEffect(() => {

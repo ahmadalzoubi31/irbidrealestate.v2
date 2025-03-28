@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Building, BuildingFlat } from "@prisma/client";
+import type { building, buildingFlat } from "@prisma/client";
 
 // interface
-interface BuildingWithFlats extends Building {
-  buildingFlat: BuildingFlat[];
+interface BuildingWithFlats extends building {
+  buildingFlat: buildingFlat[];
 }
 
 // Declare Props
@@ -38,7 +38,9 @@ const items = [
     <template #buildingInfo="{ item }">
       <UCard>
         <template #header>
-          <p class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          <p
+            class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+          >
             {{ item.label }}
           </p>
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Make changes to your account here. Click save when you're done.</p> -->
@@ -55,7 +57,9 @@ const items = [
     <template #buildingOwnersAndRenters="{ item }">
       <UCard>
         <template #header>
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          <h3
+            class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+          >
             {{ item.label }}
           </h3>
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->
@@ -72,7 +76,9 @@ const items = [
     <template #buildingFlatsInfo="{ item }">
       <UCard>
         <template #header>
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          <h3
+            class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+          >
             {{ item.label }}
           </h3>
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->

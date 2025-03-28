@@ -1,9 +1,9 @@
 import prisma from "~/lib/prisma";
-import type { Ad, InterestedPeople } from "@prisma/client";
+import type { ad, interestedPeople } from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event); // Use any because `body` contains nested objects
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -43,8 +43,8 @@ export default defineEventHandler(async (event) => {
 
       // Extract IDs from the incoming request
       const incomingIds: string[] = interestedPeople
-        .filter((person: InterestedPeople) => person.id) // Only include those with IDs
-        .map((person: InterestedPeople) => person.id);
+        .filter((person: interestedPeople) => person.id) // Only include those with IDs
+        .map((person: interestedPeople) => person.id);
 
       // Find IDs to delete (existing IDs not in the incoming list)
       // const idsToDelete = existingPeople.filter((person) => !incomingIds.includes(person.id.toString())).map((person) => person.id);
@@ -53,15 +53,16 @@ export default defineEventHandler(async (event) => {
       // const deleteOperations = idsToDelete.map((idToDelete) => tx.interestedPeople.delete({ where: { id: idToDelete } }));
 
       // Handle updates and creations
-      const upsertOperations = interestedPeople.map((person: InterestedPeople) =>
-        person.id
-          ? tx.interestedPeople.update({
-              where: { id: person.id },
-              data: { name: person.name, number: person.number },
-            })
-          : tx.interestedPeople.create({
-              data: { name: person.name, number: person.number, adId: id },
-            })
+      const upsertOperations = interestedPeople.map(
+        (person: interestedPeople) =>
+          person.id
+            ? tx.interestedPeople.update({
+                where: { id: person.id },
+                data: { name: person.name, number: person.number },
+              })
+            : tx.interestedPeople.create({
+                data: { name: person.name, number: person.number, adId: id },
+              })
       );
 
       // Execute deletions, updates, and creations

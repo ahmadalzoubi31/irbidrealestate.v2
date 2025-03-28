@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Ad } from "@prisma/client";
+import type { ad } from "@prisma/client";
 
 // State
 const q = ref("");
-const selected: Ref<Ad[]> = ref([]);
+const selected: Ref<ad[]> = ref([]);
 const expand = ref({ openedRows: [], row: null });
 
 // Columns
@@ -13,7 +13,9 @@ const { columns, selectedColumns } = useAdTableColumns();
 const { ads, status } = useAds();
 
 // Computed loading state
-const isLoading = computed(() => status.value !== "success" && status.value !== "error");
+const isLoading = computed(
+  () => status.value !== "success" && status.value !== "error"
+);
 
 // Property Type Filter
 const selectedPropertyType: Ref<number[]> = ref([]);
@@ -39,21 +41,30 @@ const propertyTypeOptions = [
 ];
 
 const filteredAds = computed(() =>
-  ads.value ? ads.value.filter((ad) => selectedPropertyType.value.length === 0 || selectedPropertyType.value.includes(ad.propertyType)) : []
+  ads.value
+    ? ads.value.filter(
+        (ad) =>
+          selectedPropertyType.value.length === 0 ||
+          selectedPropertyType.value.includes(ad.propertyType)
+      )
+    : []
 );
 
 // Filtering
-const filteredRows = useFilteredRows<Ad>(filteredAds, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<ad>(filteredAds, q, [
+  "createdAt",
+  "updatedAt",
+]);
 
 // Actions
 const { deleteAd } = useAdActions();
 
-const select = (row: Ad) => {
+const select = (row: ad) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: number) => {
+const editSelectedRecord = async (id: string) => {
   await navigateTo(`/ads/${id}/edit`);
 };
 const deleteSelectedRecord = async () => {
@@ -77,8 +88,17 @@ const generateSharedLinkSelectedRecord = async () => {
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة اعلان" :to="'/ads/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف اعلان" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
+          <UButton
+            icon="i-heroicons-plus-circle-20-solid"
+            label="اضافة اعلان"
+            :to="'/ads/create'"
+          />
+          <UButton
+            icon="i-heroicons-minus-circle-20-solid"
+            label="حذف اعلان"
+            :disabled="selected.length === 0"
+            @click="deleteSelectedRecord"
+          />
           <UButton
             icon="i-heroicons-arrow-right-on-rectangle-20-solid"
             label="نشر"
@@ -100,8 +120,17 @@ const generateSharedLinkSelectedRecord = async () => {
       </div>
 
       <!-- Table -->
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable :rows="filteredRows" :columns="selectedColumns" v-model="selected" v-model:expand="expand" @select="select" :loading="isLoading">
+      <div
+        class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+      >
+        <UTable
+          :rows="filteredRows"
+          :columns="selectedColumns"
+          v-model="selected"
+          v-model:expand="expand"
+          @select="select"
+          :loading="isLoading"
+        >
           <template #expand="{ row }">
             <div class="px-8 py-8">
               <!-- {{ row }} -->
@@ -109,7 +138,10 @@ const generateSharedLinkSelectedRecord = async () => {
             </div>
           </template>
           <template #code-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+            <span
+              :class="['font-bold text-blue-500 dark:text-blue-400 underline']"
+              @click="editSelectedRecord(row.id)"
+            >
               {{ row.code }}
             </span>
           </template>

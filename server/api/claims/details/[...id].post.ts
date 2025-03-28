@@ -5,7 +5,7 @@ import prisma from "~/lib/prisma";
 export default defineEventHandler(async (event) => {
   const { uploadFile } = useUpload();
   const body: any = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   // try {
   //   // Validate the Claim by ID

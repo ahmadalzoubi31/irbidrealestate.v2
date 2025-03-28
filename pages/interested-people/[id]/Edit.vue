@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import type { InterestedPeople } from "@prisma/client";
+import type { interestedPeople } from "@prisma/client";
 import { useInterestedPeopleActions } from "~/composables/interested-people/useInterestedPeopleAction";
 
-const { getOneInterestedPeople, editInterestedPeople } = useInterestedPeopleActions();
+const { getOneInterestedPeople, editInterestedPeople } =
+  useInterestedPeopleActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedInterestedPeopleId = ref(Number(route.params.id));
+const selectedInterestedPeopleId = ref(route.params.id as string);
 
-const { data: building, status } = await getOneInterestedPeople(selectedInterestedPeopleId.value);
+const { data: interestedPeople, status } = await getOneInterestedPeople(
+  selectedInterestedPeopleId.value
+);
 
 const state: ICreateInterestedPeople = reactive({
   name: "",
   number: "",
-  adId: 0,
+  adId: "",
 });
 
 // Reactively update the form state when `building` becomes available
 watchEffect(() => {
-  if (building) {
-    state.name = building.name;
-    state.number = building.number;
-    state.adId = building.adId;
+  if (interestedPeople) {
+    state.name = interestedPeople.name;
+    state.number = interestedPeople.number;
+    state.adId = interestedPeople.adId;
   }
 });
 
@@ -33,12 +36,19 @@ const submitForm = async () => {
 
 // Get the select menu data
 const { ads: availableAds } = useAds();
-const computedAds = computed(() => availableAds.value?.map((a) => ({ id: a.id, name: a.code })));
+const computedAds = computed(() =>
+  availableAds.value?.map((a) => ({ id: a.id, name: a.code }))
+);
 </script>
 
 <template>
-  <form @submit.prevent="submitForm()" class="relative mt-6 flex-1 px-4 sm:px-6">
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+  <form
+    @submit.prevent="submitForm()"
+    class="relative mt-6 flex-1 px-4 sm:px-6"
+  >
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
@@ -62,20 +72,46 @@ const computedAds = computed(() => availableAds.value?.map((a) => ({ id: a.id, n
         </div>
         <!-- name -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="name">اسم الشخص <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="name" name="name" :size="'sm'" :autofocus="true" :required="true" v-model:model-value="state.name" />
+          <label for="name"
+            >اسم الشخص
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="name"
+            name="name"
+            :size="'sm'"
+            :autofocus="true"
+            :required="true"
+            v-model:model-value="state.name"
+          />
         </div>
         <!-- number -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="number">رقم الشخص <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="number" name="number" :size="'sm'" :autofocus="true" :required="true" v-model:model-value="state.number" />
+          <label for="number"
+            >رقم الشخص
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="number"
+            name="number"
+            :size="'sm'"
+            :autofocus="true"
+            :required="true"
+            v-model:model-value="state.number"
+          />
         </div>
       </div>
     </div>
 
     <!-- Submit and Cancel Buttons -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+      <UButton
+        :type="'submit'"
+        :size="'sm'"
+        class="w-20 text-center place-content-center ml-3"
+      >
+        حفظ
+      </UButton>
       <UButton
         to="/interested-people"
         :size="'sm'"

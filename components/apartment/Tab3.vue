@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 // Import necessary dependencies
-import type { Building, BuildingFlat } from "@prisma/client";
+import type { building, buildingFlat } from "@prisma/client";
 
 // interface
-interface BuildingWithFlats extends Building {
-  buildingFlat: BuildingFlat[];
+interface BuildingWithFlats extends building {
+  buildingFlat: buildingFlat[];
 }
 // Declare Props
 const props = defineProps({

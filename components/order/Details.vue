@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Define Dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Order } from "@prisma/client";
+import type { order } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
@@ -45,7 +45,7 @@ const keysToExtract = [
 ];
 
 // Extract the desired keys
-const extracted: Order = useExtractKeys(props.order, keysToExtract);
+const extracted: order = useExtractKeys(props.order, keysToExtract);
 
 
 // Declare Methods

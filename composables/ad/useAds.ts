@@ -1,4 +1,4 @@
-import type { Ad } from "@prisma/client";
+import type { ad } from "@prisma/client";
 
 // composables/useAds.ts
 export function useAds() {
@@ -6,11 +6,12 @@ export function useAds() {
   const nuxtApp = useNuxtApp();
   const toast = useToast();
 
-  const { data: ads, status } = useFetch<Ad[]>("/api/ads", {
+  const { data: ads, status } = useFetch<ad[]>("/api/ads", {
     key: "getAds",
     server: false,
     lazy: true,
-    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+    getCachedData: (key) =>
+      nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   });
 
   if (status.value === "error") {
@@ -22,7 +23,7 @@ export function useAds() {
   }
 
   // Create or retrieve state for ads
-  const adList = useState<Ad[]>("adList", () => []);
+  const adList = useState<ad[]>("adList", () => []);
 
   // Use watchEffect to sync `adList` with `ads`
   watchEffect(() => {

@@ -1,15 +1,15 @@
 // ~/server/api/buildingFlats/[id]/update.ts
 import prisma from "~/lib/prisma";
-import { BuildingFlat } from "@prisma/client";
+import { buildingFlat } from "@prisma/client";
 
 // Utility function to validate the request body
-const validateApartmentData = (data: BuildingFlat) => {
+const validateApartmentData = (data: buildingFlat) => {
   // TODO: Add any additional field validation as needed
 };
 
 export default defineEventHandler(async (event) => {
-  const body: BuildingFlat = await readBody(event);
-  const id: number = Number(getRouterParams(event).id);
+  const body: buildingFlat = await readBody(event);
+  const id: string = getRouterParams(event).id;
 
   // Check if body data is provided
   if (!body) {
@@ -57,7 +57,9 @@ export default defineEventHandler(async (event) => {
     // Handle and return errors appropriately
     throw createError({
       statusCode: error.statusCode || 500, // Default to 500 for unknown errors
-      message: error.message || "An unexpected error occurred while updating the buildingFlat.",
+      message:
+        error.message ||
+        "An unexpected error occurred while updating the buildingFlat.",
     });
   }
 });

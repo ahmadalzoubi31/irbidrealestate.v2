@@ -1,9 +1,14 @@
-import type { Claim, ClaimCollection, ClaimDetail, Apartment } from "@prisma/client";
+import type {
+  claim,
+  claimCollection,
+  claimDetail,
+  apartment,
+} from "@prisma/client";
 
 // Extend the Claim type to include the files property
-interface ClaimWithDetailsAndCollections extends Claim {
-  claimDetails: ClaimDetail[];
-  claimCollections: ClaimCollection[];
+interface ClaimWithDetailsAndCollections extends claim {
+  claimDetails: claimDetail[];
+  claimCollections: claimCollection[];
 }
 
 // composables/useClaimActions.ts
@@ -38,11 +43,12 @@ export function useClaimActions() {
     return "";
   };
 
-  const getOneClaim = async (id: number) => {
-    const { data, status, error } = await useFetch<ClaimWithDetailsAndCollections>("/api/claims/" + id, {
-      key: "getClaimById",
-      server: true,
-    });
+  const getOneClaim = async (id: string) => {
+    const { data, status, error } =
+      await useFetch<ClaimWithDetailsAndCollections>("/api/claims/" + id, {
+        key: "getClaimById",
+        server: true,
+      });
 
     if (status.value === "error") {
       handleError(error.value, "حدث خطأ أثناء جلب البيانات");
@@ -60,28 +66,42 @@ export function useClaimActions() {
     const { claimDetails, claimCollections, ...claimData } = payload;
 
     const recordWithImageNeedUpload = claimDetails.filter(
-      (record) => typeof record.image === "object" && record.image !== null && "content" in record.image
+      (record) =>
+        typeof record.image === "object" &&
+        record.image !== null &&
+        "content" in record.image
     );
     const recordWithOutImage = claimDetails.filter(
-      (record) => typeof record.image === "string" || record.image === null || record.image === undefined
+      (record) =>
+        typeof record.image === "string" ||
+        record.image === null ||
+        record.image === undefined
     );
 
-    const billImage = recordWithImageNeedUpload.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];
+    const billImage = recordWithImageNeedUpload
+      .filter((el) => el.image !== null)
+      .map((detail) => detail.image) as Image[];
 
-    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ image, ...rest }) => rest);
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(
+      ({ image, ...rest }) => rest
+    );
 
     try {
       if (billImage && billImage.length !== 0) {
         imagesArray += await uploadFile(billImage, "bill");
-        imagesList = imagesArray.split(","); 
+        imagesList = imagesArray.split(",");
       }
 
-      const newRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail, index) => ({ 
-        ...detail, 
-        image: imagesList[index] || null 
-      }));
+      const newRecordWithImageNeedUpload: IDetail[] =
+        recordWithImageNeedUploadRest.map((detail, index) => ({
+          ...detail,
+          image: imagesList[index] || null,
+        }));
 
-      const finalClaimDetails = [...recordWithOutImage, ...newRecordWithImageNeedUpload];
+      const finalClaimDetails = [
+        ...recordWithOutImage,
+        ...newRecordWithImageNeedUpload,
+      ];
 
       try {
         await $fetch("/api/claims", {
@@ -105,22 +125,32 @@ export function useClaimActions() {
     }
   };
 
-  const editClaim = async (id: number, payload: ICreateClaim) => {
+  const editClaim = async (id: string, payload: ICreateClaim) => {
     let imagesArray: string = "";
 
     const { claimDetails, claimCollections, ...claimData } = payload;
 
     // fetch record that have an image need to be uploaded
     const recordWithImageNeedUpload = claimDetails.filter(
-      (record) => typeof record.image === "object" && record.image !== null && "content" in record.image
+      (record) =>
+        typeof record.image === "object" &&
+        record.image !== null &&
+        "content" in record.image
     );
     const recordWithOutImage = claimDetails.filter(
-      (record) => typeof record.image === "string" || record.image === null || record.image === undefined
+      (record) =>
+        typeof record.image === "string" ||
+        record.image === null ||
+        record.image === undefined
     );
 
-    const billImage = recordWithImageNeedUpload.filter((el) => el.image !== null).map((detail) => detail.image) as Image[];
+    const billImage = recordWithImageNeedUpload
+      .filter((el) => el.image !== null)
+      .map((detail) => detail.image) as Image[];
 
-    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(({ image, ...rest }) => rest);
+    const recordWithImageNeedUploadRest = recordWithImageNeedUpload.map(
+      ({ image, ...rest }) => rest
+    );
 
     // const oldImageKeys = recordWithOutImage.map((el) => (el.image ? el.image.toString().split(":")[1] : ""));
 
@@ -128,17 +158,25 @@ export function useClaimActions() {
       if (billImage && billImage.length !== 0) {
         imagesArray += await uploadFile(billImage, "bill");
       }
-      const updatedRecordWithImageNeedUpload: IDetail[] = recordWithImageNeedUploadRest.map((detail, index) => ({ 
-        ...detail, 
-        image: imagesArray.split(",")[index] || null 
-      }));
+      const updatedRecordWithImageNeedUpload: IDetail[] =
+        recordWithImageNeedUploadRest.map((detail, index) => ({
+          ...detail,
+          image: imagesArray.split(",")[index] || null,
+        }));
 
-      const finalClaimDetails = [...recordWithOutImage, ...updatedRecordWithImageNeedUpload];
+      const finalClaimDetails = [
+        ...recordWithOutImage,
+        ...updatedRecordWithImageNeedUpload,
+      ];
 
       try {
         await $fetch("/api/claims/" + id, {
           method: "PUT",
-          body: { ...claimData, claimDetails: finalClaimDetails, claimCollections },
+          body: {
+            ...claimData,
+            claimDetails: finalClaimDetails,
+            claimCollections,
+          },
         });
         await refreshNuxtData("getClaims");
         await navigateTo("/claims");
@@ -153,12 +191,15 @@ export function useClaimActions() {
     }
   };
 
-  const deleteClaim = async (id: number) => {
+  const deleteClaim = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 
     try {
-      await $fetch("/api/claims/" + id, { method: "DELETE", key: "deleteClaim" });
+      await $fetch("/api/claims/" + id, {
+        method: "DELETE",
+        key: "deleteClaim",
+      });
       await refreshNuxtData("getClaims");
       handleSuccess("تم حذف المطالبة بنجاح");
     } catch (error: any) {
@@ -167,23 +208,29 @@ export function useClaimActions() {
       useLoadingIndicator().finish();
     }
   };
-  const createClaimDetail = async (id: number, payload: IDetail[]) => {
+  const createClaimDetail = async (id: string, payload: IDetail[]) => {
     try {
-      await $fetch("/api/claims/details/" + id, { method: "POST", body: payload });
+      await $fetch("/api/claims/details/" + id, {
+        method: "POST",
+        body: payload,
+      });
       handleSuccess("تم إضافة التفاصيل بنجاح");
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء إضافة التفاصيل");
     }
   };
-  const editClaimDetail = async (id: number, payload: ClaimDetail) => {
+  const editClaimDetail = async (id: string, payload: claimDetail) => {
     try {
-      await $fetch("/api/claims/details/" + id, { method: "PUT", body: payload });
+      await $fetch("/api/claims/details/" + id, {
+        method: "PUT",
+        body: payload,
+      });
       handleSuccess("تم تعديل التفاصيل بنجاح");
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء تعديل التفاصيل");
     }
   };
-  const deleteClaimDetail = async (id: number) => {
+  const deleteClaimDetail = async (id: string) => {
     try {
       await $fetch("/api/claims/details/" + id, { method: "DELETE" });
       handleSuccess("تم حذف التفاصيل بنجاح");
@@ -191,23 +238,29 @@ export function useClaimActions() {
       handleError(error, "حدث خطأ أثناء حذف التفاصيل");
     }
   };
-  const createClaimCollection = async (id: number, payload: any) => {
+  const createClaimCollection = async (id: string, payload: any) => {
     try {
-      await $fetch("/api/claims/" + id + "/collections", { method: "POST", body: payload });
+      await $fetch("/api/claims/" + id + "/collections", {
+        method: "POST",
+        body: payload,
+      });
       handleSuccess("تم إضافة التحصيل بنجاح");
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء إضافة التحصيل");
     }
   };
-  const editClaimCollection = async (id: number, payload: any) => {
+  const editClaimCollection = async (id: string, payload: any) => {
     try {
-      await $fetch("/api/claims/collections/" + id, { method: "PUT", body: payload });
+      await $fetch("/api/claims/collections/" + id, {
+        method: "PUT",
+        body: payload,
+      });
       handleSuccess("تم تعديل التحصيل بنجاح");
     } catch (error: any) {
       handleError(error, "حدث خطأ أثناء تعديل التحصيل");
     }
   };
-  const deleteClaimCollection = async (id: number) => {
+  const deleteClaimCollection = async (id: string) => {
     try {
       await $fetch("/api/claims/collections/" + id, { method: "DELETE" });
       handleSuccess("تم حذف التحصيل بنجاح");

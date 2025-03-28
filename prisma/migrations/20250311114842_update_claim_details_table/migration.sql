@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Claim" ADD COLUMN     "profit" DOUBLE PRECISION NOT NULL DEFAULT 0.0;
-
--- AlterTable
-ALTER TABLE "ClaimDetail" ADD COLUMN     "specialPrice" DOUBLE PRECISION NOT NULL DEFAULT 0.0;

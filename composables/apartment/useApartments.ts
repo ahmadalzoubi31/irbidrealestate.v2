@@ -1,9 +1,9 @@
-import type { Apartment, ApartmentRenterInfo, Building } from "@prisma/client";
+import type { apartment, apartmentRenterInfo, building } from "@prisma/client";
 
-// Interface 
-interface ApartmentWithBuilding extends Apartment {
-  building: Building;
-  renterInfo: ApartmentRenterInfo[];
+// Interface
+interface ApartmentWithBuilding extends apartment {
+  building: building;
+  renterInfo: apartmentRenterInfo[];
 }
 
 // composables/useApartments.ts
@@ -12,12 +12,16 @@ export function useApartments() {
   const nuxtApp = useNuxtApp();
   const toast = useToast();
 
-  const { data: apartments, status } = useFetch<ApartmentWithBuilding[]>("/api/apartments", {
-    key: "getApartments",
-    server: false,
-    lazy: true,
-    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
-  });
+  const { data: apartments, status } = useFetch<ApartmentWithBuilding[]>(
+    "/api/apartments",
+    {
+      key: "getApartments",
+      server: false,
+      lazy: true,
+      getCachedData: (key) =>
+        nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+    }
+  );
 
   if (status.value === "error") {
     toast.add({
@@ -28,7 +32,10 @@ export function useApartments() {
   }
 
   // Create or retrieve state for apartments
-  const apartmentList = useState<ApartmentWithBuilding[]>("apartmentList", () => []);
+  const apartmentList = useState<ApartmentWithBuilding[]>(
+    "apartmentList",
+    () => []
+  );
 
   // Use watchEffect to sync `apartmentList` with `apartments`
   watchEffect(() => {

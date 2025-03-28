@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import type { Building } from "@prisma/client";
+import type { building } from "@prisma/client";
 
 export default defineEventHandler(async () => {
   try {
@@ -7,12 +7,12 @@ export default defineEventHandler(async () => {
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
 
     // Fetch all buildings
-    const buildings: Building[] = await prisma.building.findMany({
+    const buildings: building[] = await prisma.building.findMany({
       where: { status: true },
       orderBy: { id: "asc" },
       include: {
         buildingFlat: true,
-      }
+      },
     });
 
     return buildings;

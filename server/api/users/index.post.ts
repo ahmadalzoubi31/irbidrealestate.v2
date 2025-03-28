@@ -1,10 +1,10 @@
-import type { User } from "@prisma/client";
+import type { user } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 import bcrypt from "bcrypt";
 
 // Utility function for validating request data
-const validateUserData = (data: User) => {
+const validateUserData = (data: user) => {
   // TODO: Add any additional field validation as needed
   if (!data.firstName || !data.lastName) {
     throw new Error("Missing required fields: firstName and lastName");
@@ -12,7 +12,7 @@ const validateUserData = (data: User) => {
 };
 
 export default defineEventHandler(async (event) => {
-  const body: User = await readBody(event);
+  const body: user = await readBody(event);
 
   if (!body) {
     const msg = "ERROR: Argument data is missing";
@@ -23,7 +23,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const hashedPassword = await bcrypt.hash(body.password, bcrypt.genSaltSync(10));
+  const hashedPassword = await bcrypt.hash(
+    body.password,
+    bcrypt.genSaltSync(10)
+  );
 
   try {
     // Validate the incoming data
@@ -40,14 +43,14 @@ export default defineEventHandler(async (event) => {
     };
 
     // Create a new user entry
-    const newUser: User = await prisma.user.create({
+    const newUser: user = await prisma.user.create({
       data: payload,
     });
 
     // Return success response
     return {
       success: true,
-      message: "User created successfully",
+      message: "user created successfully",
       data: newUser,
     };
   } catch (error: any) {
@@ -56,7 +59,8 @@ export default defineEventHandler(async (event) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // Handle unique constraint violation error (e.g., name already exists)
       if (error.code === "P2002") {
-        const msg = "ERROR: There is a unique constraint violation, a new record cannot be created with this username";
+        const msg =
+          "ERROR: There is a unique constraint violation, a new record cannot be created with this username";
         console.log(msg);
         throw createError({
           statusCode: 400,
@@ -66,7 +70,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle other errors
-    const msg = error.message || "An unexpected error occurred while creating the user.";
+    const msg =
+      error.message || "An unexpected error occurred while creating the user.";
     console.log(msg);
     throw createError({
       statusCode: 500,

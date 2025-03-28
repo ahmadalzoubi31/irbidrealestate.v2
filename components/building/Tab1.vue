@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 // Import necessary dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Building, BuildingFlat } from "@prisma/client";
+import type { building } from "@prisma/client";
 
 // Declare Props
 const props = defineProps({
   building: {
-    type: Object as PropType<BuildingWithFlats>,
+    type: Object,
     required: true,
   },
 });
@@ -56,7 +56,7 @@ const keysToExtract = [
 ];
 
 // Extract the desired keys from the building object
-const extracted: Building = useExtractKeys(props.building, keysToExtract);
+const extracted: building = useExtractKeys(props.building, keysToExtract);
 
 // Format date using the useDateFormat function
 const formatted = (date: Date) =>

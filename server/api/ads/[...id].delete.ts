@@ -1,7 +1,7 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
-  const id: number = Number(getRouterParams(event).id);
+  const id: string = getRouterParams(event).id;
 
   try {
     // Check if the ad exists
@@ -34,7 +34,8 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: error.statusCode || 500, // Default to 500 if statusCode is not available
-      message: error.message || "An unexpected error occurred while deleting the ad.",
+      message:
+        error.message || "An unexpected error occurred while deleting the ad.",
     });
   }
 });

@@ -49,7 +49,7 @@ declare interface IEditBuilding {
 }
 
 declare interface ICreateApartment {
-  buildingId: number;
+  buildingId: string;
   apartmentNumber: string;
   code: string;
   ownerName: string;
@@ -121,7 +121,7 @@ declare interface IRenewApartment {
 }
 
 declare interface ICreatePayment {
-  apartmentId: number;
+  apartmentId: string;
   nextRentDate: Date;
   receivedPaymentDate: Date;
   depositAmount: number;
@@ -225,11 +225,11 @@ declare interface IEditAd {
 //   url: string;
 //   key: string;
 //   purpose: string;
-//   relatedId: number;
+//   relatedId:string;
 //   relatedType: string;
-//   adId: number | null;
-//   paymentId: number | null;
-//   apartmentId: number | null;
+//   adId:string | null;
+//   paymentId:string | null;
+//   apartmentId:string | null;
 // }
 
 declare interface IInterestedPeople {
@@ -287,7 +287,7 @@ declare interface ICreateClaim {
 }
 
 declare interface ICreateBuildingFlat {
-  buildingId: number;
+  buildingId: string;
   flatNumber: string;
   ownerName: string;
   ownerNumber: string | null;
@@ -300,19 +300,19 @@ declare interface ICreateBuildingFlat {
   flatStatus: number;
 }
 
-declare interface BuildingWithFlats extends Building {
-  buildingFlat: BuildingFlat[];
+declare interface BuildingWithFlats extends building {
+  buildingFlat: buildingFlat[];
 }
 
 declare interface ClaimWithDetailsAndCollections extends Claim {
-  claimDetails: ClaimDetail[];
-  claimCollections: ClaimCollection[];
+  claimDetails: claimDetail[];
+  claimCollections: claimCollection[];
 }
 
 declare interface ICreateInterestedPeople {
   name: string;
   number: string;
-  adId: number;
+  adId: string;
 }
 
 declare interface Image {

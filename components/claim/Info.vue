@@ -26,7 +26,7 @@ const columns = [
   { key: "actions" },
 ];
 const selectedColumns = ref([...columns]);
-const items = (row: ClaimState, index: number) => [
+const items = (row: claimState, index: number) => [
   [
     {
       label: "تعديل",
@@ -58,7 +58,7 @@ const filteredRows = useFilteredRows<ClaimState>(props.claimDetails, q, [
 
 const openModal = (
   type: string,
-  row: ClaimState | null,
+  row: claimState | null,
   index: number | null
 ) => {
   if (type === "add") useState("isAddClaimModalOpen").value = true;
@@ -69,7 +69,7 @@ const openModal = (
   }
 };
 
-const select = (row: ClaimState) => {
+const select = (row: claimState) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
@@ -82,11 +82,11 @@ const deleteSelectedRecord = async (index: number) => {
   emit("submitAddForm", props.claimDetails); // Send the state to Create.vue
 };
 
-const submitAddForm = (payloadFromChildeModal: ClaimState) => {
+const submitAddForm = (payloadFromChildeModal: claimState) => {
   props.claimDetails.push(payloadFromChildeModal);
   emit("submitAddForm", props.claimDetails); // Send the props.claimDetails to Create.vue
 };
-const submitEditForm = (payloadFromChildeModal: ClaimState, index: number) => {
+const submitEditForm = (payloadFromChildeModal: claimState, index: number) => {
   props.claimDetails[index] = payloadFromChildeModal;
   emit("submitAddForm", props.claimDetails); // Send the state to Create.vue
 };

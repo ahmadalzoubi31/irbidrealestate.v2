@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { user } from "@prisma/client";
 
 // composables/useUsers.ts
 export function useUsers() {
@@ -6,11 +6,12 @@ export function useUsers() {
   const nuxtApp = useNuxtApp();
   const toast = useToast();
 
-  const { data: users, status } = useFetch<User[]>("/api/users", {
+  const { data: users, status } = useFetch<user[]>("/api/users", {
     key: "getUsers",
     server: false,
     lazy: true,
-    getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+    getCachedData: (key) =>
+      nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   });
 
   if (status.value === "error") {
@@ -22,7 +23,7 @@ export function useUsers() {
   }
 
   // Create or retrieve state for users
-  const userList = useState<User[]>("userList", () => []);
+  const userList = useState<user[]>("userList", () => []);
 
   // Use watchEffect to sync `userList` with `users`
   watchEffect(() => {

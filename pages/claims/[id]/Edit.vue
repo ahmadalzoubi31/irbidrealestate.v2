@@ -15,7 +15,7 @@ const claimStatusOptions = [
 ];
 
 // *** State ***
-const selectedClaimId = ref(Number(route.params.id));
+const selectedClaimId = ref(route.params.id as string);
 const isModalOpen = ref(false);
 const modalData = ref("");
 

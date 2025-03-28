@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { Apartment, ApartmentRenterInfo, Building } from "@prisma/client";
+import type { apartment, apartmentRenterInfo, building } from "@prisma/client";
 
 // interface
-interface ApartmentWithRenterInfo extends Apartment {
-  building: Building;
-  renterInfo: ApartmentRenterInfo[];
+interface ApartmentWithRenterInfo extends apartment {
+  building: building;
+  renterInfo: apartmentRenterInfo[];
 }
 // Declare Props
 const props = defineProps({
@@ -33,7 +33,9 @@ const items = [
     <template #apartmentInfo="{ item }">
       <UCard>
         <template #header>
-          <p class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          <p
+            class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+          >
             {{ item.label }}
           </p>
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Make changes to your account here. Click save when you're done.</p> -->
@@ -50,7 +52,9 @@ const items = [
     <template #apartmentRenters="{ item }">
       <UCard>
         <template #header>
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          <h3
+            class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+          >
             {{ item.label }}
           </h3>
           <!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Change your password here. After saving, you'll be logged out.</p> -->

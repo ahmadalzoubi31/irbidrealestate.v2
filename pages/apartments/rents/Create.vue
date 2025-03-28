@@ -7,7 +7,7 @@ const { createApartment } = useApartmentActions();
 
 // *** Define Variables ***
 const state: ICreateApartment = reactive({
-  buildingId: 0,
+  buildingId: "",
   apartmentNumber: "",
   code: "",
   ownerName: "",
@@ -75,6 +75,7 @@ const removeFurnitureImages = (index: number) => {
 
 // Get the select menu data
 const { buildings: availableBuildings } = useBuildings();
+
 const computedBuildings = computed(() =>
   availableBuildings.value?.map((el) => {
     return { id: el.id, name: el.name };
@@ -107,7 +108,7 @@ const fillMaintenanceAmount = computed(
 
 watch(isOutOfBuilding, (newVal, oldVal) => {
   if (newVal) {
-    state.buildingId = 1;
+    state.buildingId = "67e6242a18da3735937f1887";
   }
 });
 </script>
@@ -145,7 +146,11 @@ watch(isOutOfBuilding, (newVal, oldVal) => {
             v-model="state.buildingId"
             :autofocus="true"
             :required="true"
-            :options="computedBuildings.filter((b) => b.id !== 1)"
+            :options="
+              computedBuildings?.filter(
+                (b) => b.id !== '67e6242a18da3735937f1887'
+              )
+            "
             value-attribute="id"
             option-attribute="name"
           />

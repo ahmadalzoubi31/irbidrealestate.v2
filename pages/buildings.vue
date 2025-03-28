@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Building } from "@prisma/client";
+import type { building } from "@prisma/client";
 
 // State
 const q = ref("");
-const selected: Ref<Building[]> = ref([]);
+const selected: Ref<building[]> = ref([]);
 const expand = ref({ openedRows: [], row: null });
 
 // Columns
@@ -18,7 +18,7 @@ const isLoading = computed(
 );
 
 // Filtering
-const filteredRows = useFilteredRows<Building>(buildings, q, [
+const filteredRows = useFilteredRows<building>(buildings, q, [
   "createdAt",
   "updatedAt",
 ]);
@@ -26,12 +26,12 @@ const filteredRows = useFilteredRows<Building>(buildings, q, [
 // Actions
 const { deleteBuilding } = useBuildingActions();
 
-const select = (row: Building) => {
+const select = (row: building) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: number) => {
+const editSelectedRecord = async (id: string) => {
   await navigateTo(`/buildings/${id}/edit`);
 };
 
@@ -56,7 +56,10 @@ const deleteSelectedRecord = async () => {
           <UButton
             icon="i-heroicons-minus-circle-20-solid"
             label="حذف بناية"
-            :disabled="selected.length === 0 || selected[0].id === 1"
+            :disabled="
+              selected.length === 0 ||
+              selected[0].id === '67e6242a18da3735937f1887'
+            "
             @click="deleteSelectedRecord"
           />
         </div>
@@ -68,7 +71,9 @@ const deleteSelectedRecord = async () => {
         class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
       >
         <UTable
-          :rows="filteredRows.filter((row) => row.id !== 1)"
+          :rows="
+            filteredRows.filter((row) => row.id != '67e6242a18da3735937f1887')
+          "
           :columns="selectedColumns"
           v-model="selected"
           v-model:expand="expand"
@@ -83,7 +88,7 @@ const deleteSelectedRecord = async () => {
           </template>
           <template #name-data="{ row }">
             <span
-              v-if="row.id !== 1"
+              v-if="row.id !== '67e6242a18da3735937f1887'"
               :class="['font-bold text-blue-500 dark:text-blue-400 underline']"
               @click="editSelectedRecord(row.id)"
             >

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 // Import necessary dependencies
 import { useDateFormat } from "@vueuse/core";
-import type { Apartment, ApartmentRenterInfo, Building } from "@prisma/client";
+import type { apartment, apartmentRenterInfo, building } from "@prisma/client";
 
-interface ApartmentWithRenterInfo extends Apartment {
-  building: Building;
-  renterInfo: ApartmentRenterInfo[];
+interface ApartmentWithRenterInfo extends apartment {
+  building: building;
+  renterInfo: apartmentRenterInfo[];
 }
 
 // Declare Props
@@ -87,7 +87,7 @@ const keysToExtract = [
 ];
 
 // Extract the desired keys from the apartment object
-const extracted: Apartment = useExtractKeys(props.apartment, keysToExtract);
+const extracted: apartment = useExtractKeys(props.apartment, keysToExtract);
 
 // Format date using the useDateFormat function
 const formatted = (date: Date) =>

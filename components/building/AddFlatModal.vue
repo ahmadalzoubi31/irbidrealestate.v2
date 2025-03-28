@@ -2,7 +2,7 @@
 // Define State
 const isAddModalOpen: Ref<boolean> = useState("isAddModalOpen");
 const state: ICreateBuildingFlat = reactive({
-  buildingId: 0,
+  buildingId: "",
   flatNumber: "",
   ownerName: "",
   ownerNumber: "",
@@ -18,7 +18,7 @@ const state: ICreateBuildingFlat = reactive({
 // Define props
 const props = defineProps({
   selectedBuildingId: {
-    type: Number,
+    type: String,
     required: true,
   },
 });
@@ -89,11 +89,26 @@ const flatStatusOptions = [
 <template>
   <UModal v-model="isAddModalOpen" prevent-close>
     <form @submit.prevent="submitForm()">
-      <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+      <UCard
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+      >
         <template #header>
           <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">اضافة شقة جديدة</h3>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="() => (isAddModalOpen = false)" />
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+            >
+              اضافة شقة جديدة
+            </h3>
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              class="-my-1"
+              @click="() => (isAddModalOpen = false)"
+            />
           </div>
         </template>
 
@@ -104,41 +119,90 @@ const flatStatusOptions = [
               رقم الشقة
               <span class="text-xs text-primary-500">(اجباري)</span>
             </label>
-            <UInput id="flatNumber" name="flatNumber" :type="'text'" :size="'sm'" :required="true" v-model="state.flatNumber" />
+            <UInput
+              id="flatNumber"
+              name="flatNumber"
+              :type="'text'"
+              :size="'sm'"
+              :required="true"
+              v-model="state.flatNumber"
+            />
           </div>
           <!-- ownerName -->
           <div class="col-span-6 sm:col-span-2">
-            <label for="ownerName"> اسم المالك <span class="text-xs text-primary-500">(اجباري)</span></label>
-            <UInput id="ownerName" name="ownerName" :size="'sm'" :required="true" v-model="state.ownerName" />
+            <label for="ownerName">
+              اسم المالك
+              <span class="text-xs text-primary-500">(اجباري)</span></label
+            >
+            <UInput
+              id="ownerName"
+              name="ownerName"
+              :size="'sm'"
+              :required="true"
+              v-model="state.ownerName"
+            />
           </div>
           <!-- ownerNumber -->
           <div class="col-span-6 sm:col-span-2">
             <label for="ownerNumber"> رقم المالك </label>
-            <UInput id="ownerNumber" name="ownerNumber" :size="'sm'" :required="false" v-model="state.ownerNumber!" />
+            <UInput
+              id="ownerNumber"
+              name="ownerNumber"
+              :size="'sm'"
+              :required="false"
+              v-model="state.ownerNumber!"
+            />
           </div>
           <!-- electricSub -->
           <div class="col-span-6 sm:col-span-2">
             <label for="electricSub"> رقم اشتراك الكهرباء </label>
-            <UInput id="electricSub" name="electricSub" :size="'sm'" :required="false" v-model="state.electricSub!" />
+            <UInput
+              id="electricSub"
+              name="electricSub"
+              :size="'sm'"
+              :required="false"
+              v-model="state.electricSub!"
+            />
           </div>
           <!-- electricCounter -->
           <div class="col-span-6 sm:col-span-2">
             <label for="electricCounter"> رقم عداد الكهرباء </label>
-            <UInput id="electricCounter" name="electricCounter" :size="'sm'" :required="false" v-model="state.electricCounter!" />
+            <UInput
+              id="electricCounter"
+              name="electricCounter"
+              :size="'sm'"
+              :required="false"
+              v-model="state.electricCounter!"
+            />
           </div>
           <!-- waterSub -->
           <div class="col-span-6 sm:col-span-2">
             <label for="waterSub"> رقم اشتراك الماء </label>
-            <UInput id="waterSub" name="waterSub" :size="'sm'" :required="false" v-model="state.waterSub!" />
+            <UInput
+              id="waterSub"
+              name="waterSub"
+              :size="'sm'"
+              :required="false"
+              v-model="state.waterSub!"
+            />
           </div>
           <!-- waterCounter -->
           <div class="col-span-6 sm:col-span-2">
             <label for="waterCounter"> رقم عداد الماء </label>
-            <UInput id="waterCounter" name="waterCounter" :size="'sm'" :required="false" v-model="state.waterCounter!" />
+            <UInput
+              id="waterCounter"
+              name="waterCounter"
+              :size="'sm'"
+              :required="false"
+              v-model="state.waterCounter!"
+            />
           </div>
           <!-- flatStatus -->
           <div class="col-span-6 sm:col-span-2">
-            <label for="flatStatus">حالة الشقة <span class="text-xs text-primary-500">(اجباري)</span></label>
+            <label for="flatStatus"
+              >حالة الشقة
+              <span class="text-xs text-primary-500">(اجباري)</span></label
+            >
             <USelectMenu
               id="flatStatus"
               name="flatStatus"
@@ -151,19 +215,40 @@ const flatStatusOptions = [
           </div>
           <!-- renterName -->
           <div class="col-span-6 sm:col-span-2" v-if="state.flatStatus === 2">
-            <label for="renterName"> الاسم المستأجر <span class="text-xs text-primary-500">(اجباري)</span></label>
-            <UInput id="renterName" name="renterName" :size="'sm'" :required="true" v-model="state.renterName" />
+            <label for="renterName">
+              الاسم المستأجر
+              <span class="text-xs text-primary-500">(اجباري)</span></label
+            >
+            <UInput
+              id="renterName"
+              name="renterName"
+              :size="'sm'"
+              :required="true"
+              v-model="state.renterName"
+            />
           </div>
           <!-- renterNumber -->
           <div class="col-span-6 sm:col-span-2" v-if="state.flatStatus === 2">
             <label for="renterNumber"> رقم المستأجر </label>
-            <UInput id="renterNumber" name="renterNumber" :size="'sm'" :required="false" v-model="state.renterNumber!" />
+            <UInput
+              id="renterNumber"
+              name="renterNumber"
+              :size="'sm'"
+              :required="false"
+              v-model="state.renterNumber!"
+            />
           </div>
         </div>
 
         <template #footer>
           <div class="text-left">
-            <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center"> حفظ </UButton>
+            <UButton
+              :type="'submit'"
+              :size="'sm'"
+              class="w-20 text-center place-content-center"
+            >
+              حفظ
+            </UButton>
           </div>
         </template>
       </UCard>

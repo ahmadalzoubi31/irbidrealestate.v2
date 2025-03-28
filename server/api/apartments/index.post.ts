@@ -1,4 +1,4 @@
-import { Apartment, Prisma } from "@prisma/client";
+import { apartment, Prisma } from "@prisma/client";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     const { renterInfo, ...apartmentData } = body;
 
     // Create a new apartment entry
-    const newApartment: Apartment = await prisma.apartment.create({
+    const newApartment: apartment = await prisma.apartment.create({
       data: {
         ...apartmentData,
         renterInfo: {
@@ -39,7 +39,8 @@ export default defineEventHandler(async (event) => {
     // Handle known Prisma client errors
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-        const msg = "ERROR: Unique constraint violation, a record with this name or apartment number already exists.";
+        const msg =
+          "ERROR: Unique constraint violation, a record with this name or apartment number already exists.";
         console.error(msg);
         throw createError({
           statusCode: 400,
@@ -51,7 +52,9 @@ export default defineEventHandler(async (event) => {
     // Handle other errors
     throw createError({
       statusCode: 500,
-      message: error.message || "An unexpected error occurred while creating the apartment.",
+      message:
+        error.message ||
+        "An unexpected error occurred while creating the apartment.",
     });
   }
 });

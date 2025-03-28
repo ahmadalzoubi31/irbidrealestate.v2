@@ -1,11 +1,11 @@
-import type { User } from "@prisma/client";
+import type { user } from "@prisma/client";
 
 // composables/useUserActions.ts
 export function useUserActions() {
   const toast = useToast();
 
-  const getOneUser = async (id: number) => {
-    const { data, status, error } = await useFetch<User>("/api/users/" + id, {
+  const getOneUser = async (id: string) => {
+    const { data, status, error } = await useFetch<user>("/api/users/" + id, {
       key: "getUserById",
       server: false,
       lazy: true,
@@ -43,7 +43,7 @@ export function useUserActions() {
       useLoadingIndicator().finish();
     }
   };
-  const editUser = async (id: number, payload: IEditUser) => {
+  const editUser = async (id: string, payload: IEditUser) => {
     try {
       await $fetch("/api/users/" + id, { method: "PUT", body: payload });
       await refreshNuxtData("getUsers");
@@ -64,7 +64,7 @@ export function useUserActions() {
       useLoadingIndicator().finish();
     }
   };
-  const deleteUser = async (id: number) => {
+  const deleteUser = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 

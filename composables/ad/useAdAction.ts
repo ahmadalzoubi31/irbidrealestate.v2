@@ -1,4 +1,4 @@
-import type { Ad } from "@prisma/client";
+import type { ad } from "@prisma/client";
 
 export function useAdActions() {
   const toast = useToast();
@@ -31,7 +31,11 @@ export function useAdActions() {
     return "";
   };
 
-  const updateImages = async (images: Image[], oldKeys: string[], type: string) => {
+  const updateImages = async (
+    images: Image[],
+    oldKeys: string[],
+    type: string
+  ) => {
     if (images.length > 0) {
       if (oldKeys.length > 0) {
         await $fetch("/api/v2/files", {
@@ -48,8 +52,8 @@ export function useAdActions() {
     return oldKeys.join(",");
   };
 
-  const getOneAd = async (id: number) => {
-    const { data, status, error } = await useFetch<Ad>("/api/ads/" + id, {
+  const getOneAd = async (id: string) => {
+    const { data, status, error } = await useFetch<ad>("/api/ads/" + id, {
       key: "getAdById",
       server: true,
     });
@@ -71,7 +75,10 @@ export function useAdActions() {
     } finally {
       try {
         // Create the ad
-        const newAd = await $fetch("/api/ads", { method: "POST", body: { ...payload, images: imagesArray } });
+        const newAd = await $fetch("/api/ads", {
+          method: "POST",
+          body: { ...payload, images: imagesArray },
+        });
         await refreshNuxtData("getAds");
         await navigateTo("/ads");
         handleSuccess("تم انشاء الاعلان بنجاح");
@@ -83,9 +90,11 @@ export function useAdActions() {
     }
   };
 
-  const editAd = async (id: number, payload: IEditAd, adImages: Image[]) => {
+  const editAd = async (id: string, payload: IEditAd, adImages: Image[]) => {
     let imagesArray: string = "";
-    const oldAdImageKeys = payload.images?.split(",").filter((key) => key.includes("ads"));
+    const oldAdImageKeys = payload.images
+      ?.split(",")
+      .filter((key) => key.includes("ads"));
 
     try {
       if (oldAdImageKeys && oldAdImageKeys.length > 0) {
@@ -96,7 +105,10 @@ export function useAdActions() {
     } finally {
       try {
         // Update the ad details
-        await $fetch("/api/ads/" + id, { method: "PUT", body: { ...payload, images: imagesArray } });
+        await $fetch("/api/ads/" + id, {
+          method: "PUT",
+          body: { ...payload, images: imagesArray },
+        });
         await refreshNuxtData("getAds");
         await navigateTo("/ads");
         handleSuccess("تم تحديث الإعلان بنجاح");
@@ -108,7 +120,7 @@ export function useAdActions() {
     }
   };
 
-  const deleteAd = async (id: number) => {
+  const deleteAd = async (id: string) => {
     const confirmDelete = confirm("هل انت متأكد من حذف هذا العنصر؟");
     if (!confirmDelete) return;
 

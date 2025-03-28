@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // *** Imports ***
-import type { ClaimDetail } from "@prisma/client";
+import type { claimDetail } from "@prisma/client";
 import format from "date-fns/format";
 
 // *** Composables ***
@@ -77,7 +77,7 @@ const addCollectionData = () => {
   });
 };
 
-const addDetailData = (payloadFromChildeModal: ClaimDetail[]) => {
+const addDetailData = (payloadFromChildeModal: claimDetail[]) => {
   state.claimDetails = payloadFromChildeModal;
   console.log("The new details record has been added.");
 };

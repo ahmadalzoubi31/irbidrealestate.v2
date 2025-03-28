@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Dependencies
-import type { Order } from "@prisma/client";
+import type { order } from "@prisma/client";
 import format from "date-fns/format";
 
 // State
 const q = ref("");
-const selected: Ref<Order[]> = ref([]);
+const selected: Ref<order[]> = ref([]);
 const expand = ref({ openedRows: [], row: null });
 
 // Columns
@@ -15,20 +15,25 @@ const { columns, selectedColumns } = useOrderTableColumns();
 const { orders, status } = useOrders();
 
 // Computed loading state
-const isLoading = computed(() => status.value !== "success" && status.value !== "error");
+const isLoading = computed(
+  () => status.value !== "success" && status.value !== "error"
+);
 
 // Filtering
-const filteredRows = useFilteredRows<Order>(orders, q, ["createdAt", "updatedAt"]);
+const filteredRows = useFilteredRows<order>(orders, q, [
+  "createdAt",
+  "updatedAt",
+]);
 
 // Actions
 const { deleteOrder } = useOrderActions();
 
-const select = (row: Order) => {
+const select = (row: order) => {
   selected.value.length = 0;
   selected.value.push(row);
 };
 
-const editSelectedRecord = async (id: number) => {
+const editSelectedRecord = async (id: string) => {
   await navigateTo(`/orders/${id}/edit`);
 };
 
@@ -45,15 +50,32 @@ const deleteSelectedRecord = async () => {
       <!-- Action Buttons & Search Filter -->
       <div class="flex my-3 justify-between">
         <div id="buttonWrapper">
-          <UButton icon="i-heroicons-plus-circle-20-solid" label="اضافة طلب" :to="'/orders/create'" />
-          <UButton icon="i-heroicons-minus-circle-20-solid" label="حذف طلب" :disabled="selected.length === 0" @click="deleteSelectedRecord" />
+          <UButton
+            icon="i-heroicons-plus-circle-20-solid"
+            label="اضافة طلب"
+            :to="'/orders/create'"
+          />
+          <UButton
+            icon="i-heroicons-minus-circle-20-solid"
+            label="حذف طلب"
+            :disabled="selected.length === 0"
+            @click="deleteSelectedRecord"
+          />
         </div>
         <UInput class="w-1/6" v-model="q" placeholder="البحث ..." />
       </div>
 
       <!-- Table -->
-      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2">
-        <UTable :rows="filteredRows" :columns="selectedColumns" @select="select" v-model="selected" v-model:expand="expand">
+      <div
+        class="shadow overflow-hidden border-b border-gray-200 sm:rounded-[0.25rem] mb-2"
+      >
+        <UTable
+          :rows="filteredRows"
+          :columns="selectedColumns"
+          @select="select"
+          v-model="selected"
+          v-model:expand="expand"
+        >
           <template #expand="{ row }">
             <div class="px-8">
               <div class="py-8">
@@ -63,7 +85,10 @@ const deleteSelectedRecord = async () => {
             </div>
           </template>
           <template #id-data="{ row }">
-            <span :class="['font-bold text-blue-500 dark:text-blue-400 underline']" @click="editSelectedRecord(row.id)">
+            <span
+              :class="['font-bold text-blue-500 dark:text-blue-400 underline']"
+              @click="editSelectedRecord(row.id)"
+            >
               {{ row.id }}
             </span>
           </template>

@@ -1,23 +1,31 @@
 <script setup lang="ts">
 import { format } from "date-fns";
-import type { Payment } from "@prisma/client";
+import type { payment } from "@prisma/client";
 
 const { editPayment } = usePaymentActions();
 const route = useRoute();
 
 // Extract route parameter
-const selectedPaymentId = ref(Number(route.params.id));
+const selectedPaymentId = ref(route.params.id as string);
 
 // Access the shared state for payments
-const payments = useState<Payment[]>("paymentList");
+const payments = useState<payment[]>("paymentList");
 // Find the specific payment reactively
-const payment: any = computed(() => payments.value?.find((el) => el.id === selectedPaymentId.value));
+const payment: any = computed(() =>
+  payments.value?.find((el) => el.id === selectedPaymentId.value)
+);
 
 if (!payments.value || payments.value.length === 0) {
   await navigateTo("/apartments/payments");
 }
 
-const state: IEditPayment = reactive({ receivedPaymentDate: new Date(), depositAmount: 0, depositDate: new Date(), notes: "" });
+const state: IEditPayment = reactive({
+  receivedPaymentDate: new Date(),
+  depositAmount: 0,
+  depositDate: new Date(),
+  notes: "",
+  images: null,
+});
 
 // Reactively update the form state when `payment` becomes available
 watchEffect(() => {
@@ -26,6 +34,7 @@ watchEffect(() => {
     state.depositAmount = payment.value.depositAmount;
     state.depositDate = payment.value.depositDate!;
     state.notes = payment.value.notes!;
+    state.images = payment.value.images;
   }
 });
 
@@ -37,8 +46,13 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm()" class="relative mt-6 flex-1 px-4 sm:px-6">
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+  <form
+    @submit.prevent="submitForm()"
+    class="relative mt-6 flex-1 px-4 sm:px-6"
+  >
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات عامة</h3>
     </div>
     <div class="pt-6 pb-8 space-y-2">
@@ -46,7 +60,10 @@ const submitForm = async () => {
         <!-- buildingName -->
         <div class="col-span-6 sm:col-span-2">
           <label for="buildingName" class="flex justify-between">
-            <div>اسم البناية <span class="text-xs text-primary-500">(اجباري) </span></div>
+            <div>
+              اسم البناية
+              <span class="text-xs text-primary-500">(اجباري) </span>
+            </div>
           </label>
           <UInput
             id="buildingName"
@@ -56,7 +73,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.Apartment.Building.name"
+            :model-value="payment?.apartment?.building?.name"
           />
         </div>
         <!-- apartmentNumber -->
@@ -74,7 +91,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.Apartment.apartmentNumber"
+            :model-value="payment?.apartment?.apartmentNumber"
           />
         </div>
         <!-- nextRentDate -->
@@ -102,7 +119,9 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="format(new Date(payment?.Apartment.rentDate), 'dd/MM/yyyy')"
+            :model-value="
+              format(new Date(payment?.Apartment.rentDate), 'dd/MM/yyyy')
+            "
           />
         </div>
         <!-- rentAmount -->
@@ -144,7 +163,7 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.Apartment.Building.maintenanceAmount"
+            :model-value="payment?.Apartment.building.maintenanceAmount"
           />
         </div>
         <!-- services -->
@@ -158,14 +177,16 @@ const submitForm = async () => {
             :size="'sm'"
             :required="false"
             :disabled="true"
-            :model-value="payment?.Apartment.Building.serviceAmount"
+            :model-value="payment?.Apartment.building.serviceAmount"
           />
         </div>
       </div>
     </div>
 
     <!-- Payment Info Section -->
-    <div class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary">
+    <div
+      class="border-l-transparent border-r-transparent border-t-transparent rounded-sm border-2 border-b-primary"
+    >
       <h3 class="text-center font-semibold text-xl mb-1">معلومات الدفعة</h3>
     </div>
     <div class="pt-2 pb-8 bg-white space-y-2">
@@ -187,14 +208,28 @@ const submitForm = async () => {
             />
 
             <template #panel="{ close }">
-              <AppDatePicker v-model="state.receivedPaymentDate" is-required @close="close" />
+              <AppDatePicker
+                v-model="state.receivedPaymentDate"
+                is-required
+                @close="close"
+              />
             </template>
           </UPopover>
         </div>
         <!-- depositAmount -->
         <div class="col-span-6 sm:col-span-2">
-          <label for="depositAmount"> صافي الايداع <span class="text-xs text-primary-500">(اجباري)</span></label>
-          <UInput id="depositAmount" name="depositAmount" :type="'number'" :size="'sm'" :required="true" v-model="state.depositAmount" />
+          <label for="depositAmount">
+            صافي الايداع
+            <span class="text-xs text-primary-500">(اجباري)</span></label
+          >
+          <UInput
+            id="depositAmount"
+            name="depositAmount"
+            :type="'number'"
+            :size="'sm'"
+            :required="true"
+            v-model="state.depositAmount"
+          />
         </div>
         <!-- depositDate -->
         <div class="col-span-6 sm:col-span-2">
@@ -212,21 +247,38 @@ const submitForm = async () => {
             />
 
             <template #panel="{ close }">
-              <AppDatePicker v-model="state.depositDate" is-required @close="close" />
+              <AppDatePicker
+                v-model="state.depositDate"
+                is-required
+                @close="close"
+              />
             </template>
           </UPopover>
         </div>
         <!-- notes -->
         <div class="col-span-6 sm:col-span-6">
           <label for="notes"> الملاحظات </label>
-          <UInput id="notes" name="notes" :type="'text'" :size="'sm'" :required="false" v-model="state.notes" />
+          <UInput
+            id="notes"
+            name="notes"
+            :type="'text'"
+            :size="'sm'"
+            :required="false"
+            v-model="state.notes"
+          />
         </div>
       </div>
     </div>
 
     <!-- <SharedSaveButton v-if="_sharedStore.slideOver.action !== 'show-details'" /> -->
     <div class="text-left mb-5">
-      <UButton :type="'submit'" :size="'sm'" class="w-20 text-center place-content-center ml-3"> حفظ </UButton>
+      <UButton
+        :type="'submit'"
+        :size="'sm'"
+        class="w-20 text-center place-content-center ml-3"
+      >
+        حفظ
+      </UButton>
       <UButton
         :type="'button'"
         to="/apartments/payments"
